@@ -1,0 +1,69 @@
+{
+  "gui_state": "exited_safely",
+  "ranging_status": "open",
+  "ranging_timestamp": "2025-08-06T10:50:11.031424",
+  "routing_status": "320+A",
+  "routing_timestamp": "2026-01-13T14:56:53.070014",
+  "source_reset_status": "unknown",
+  "source_reset_timestamp": null,
+  "pons_status_per_source": {
+    "Va": {
+      "status": "failed",
+      "timestamp": "2026-01-13T14:56:50.912885",
+      "error": "Serial port not open"
+    },
+    "Vb": {
+      "status": "failed",
+      "timestamp": "2026-01-13T14:56:50.912905",
+      "error": "Serial port not open"
+    },
+    "Vc": {
+      "status": "failed",
+      "timestamp": "2026-01-13T14:56:50.912915",
+      "error": "Serial port not open"
+    },
+    "Ia": {
+      "status": "failed",
+      "timestamp": "2026-01-13T14:56:50.912924",
+      "error": "Serial port not open"
+    },
+    "Ib": {
+      "status": "failed",
+      "timestamp": "2026-01-13T14:56:50.912932",
+      "error": "Serial port not open"
+    },
+    "Ic": {
+      "status": "failed",
+      "timestamp": "2026-01-13T14:56:50.912939",
+      "error": "Serial port not open"
+    }
+  },
+  "source_reset_state": {
+    "status": "failed",
+    "timestamp": "2026-01-13T14:56:50.913497",
+    "error": "Source reset failed for: Va: Serial port not open, Vb: Serial port not open, Vc: Serial port not open, Ia: Serial port not open, Ib: Serial port not open, Ic: Serial port not open"
+  },
+  "routing_state": {
+    "status": "open",
+    "timestamp": "2026-01-13T14:56:53.071434"
+  },
+  "ranging_state": {
+    "status": "failed",
+    "timestamp": "2026-01-13T14:56:53.073218",
+    "error": "[Errno 2] No such file or directory"
+  },
+  "ct_config": {
+    "routing_i2c_addr": 60,
+    "ranging_i2c_addr": {
+      "a": 39,
+      "b": 37,
+      "c": 33
+    },
+    "last_range_bitmask": {
+      "a": 27,
+      "b": 27,
+      "c": 27
+    },
+    "last_routing_command": 255
+  }
+}
