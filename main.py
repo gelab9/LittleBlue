@@ -3756,8 +3756,12 @@ class MainWindow(QMainWindow, QThread):
 
     def open_temperature_rise(self):
         """Launch the Temperature Rise application in a separate process."""
-        app_path = r"Z:\Software\TempRise Fixture\Current_Temperature\Current_Temperature\bin\Debug\Current_Temperature.exe"
+        app_path = config.app_paths.get("temperature_rise", "")
         
+        if not app_path:
+            self.append_log("Temperature Rise application path not configured.", "negative")
+            QMessageBox.warning(self, "Configuration Error", "Temperature Rise application path is not configured.")
+            return
         try:
             # Check if the file exists
             if not os.path.exists(app_path):

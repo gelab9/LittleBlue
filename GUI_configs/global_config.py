@@ -28,6 +28,11 @@ class GlobalConfig:
             "last_routing_command": None
         }
 
+        # External application paths (machine-specific)
+        self.app_paths = {
+            "temperature_rise": r"Z:\Software\TempRise Fixture\Current_Temperature\Current_Temperature\bin\Debug\Current_Temperature.exe"
+        }
+
     def to_dict(self):
         return {
             "gui_state": self.gui_state,
@@ -42,6 +47,7 @@ class GlobalConfig:
             "routing_state": self.routing_state,
             "ranging_state": self.ranging_state,
             "ct_config": self.ct_config,
+            "app_paths": self.app_paths,
         }
 
     def save(self):
@@ -75,6 +81,9 @@ class GlobalConfig:
                     "ranging_i2c_addr": {'a': 0x27, 'b': 0x25, 'c': 0x21},
                     "last_range_bitmask": {'a': None, 'b': None, 'c': None},
                     "last_routing_command": None
+                })
+                self.app_paths = data.get("app_paths", {
+                    "temperature_rise": r"Z:\Software\TempRise Fixture\Current_Temperature\Current_Temperature\bin\Debug\Current_Temperature.exe"
                 })
         except Exception as e:
             print(f"❌ Failed to load config: {e}")
