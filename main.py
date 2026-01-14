@@ -20,6 +20,7 @@ import csv
 import os
 import re
 import stat
+import subprocess
 import sys
 import time
 from datetime import datetime
@@ -452,6 +453,7 @@ class MainWindow(QMainWindow, QThread):
         self.test_active = False         # Disable GUI Elements when active
         self.corrected_source_values = False
         self.manual_control_active = False
+        self.temperature_rise_active = False
 
         # Safe now—even if it logs
         self.initialize_hardware()
@@ -618,6 +620,13 @@ class MainWindow(QMainWindow, QThread):
         except Exception:
             pass
 
+        # Close Temperature Rise application if active
+        try:
+            if getattr(self, "temperature_rise_active", False):
+                self.close_temperature_rise_window()
+        except Exception:
+            pass
+
         # Record state
         try:
             config.gui_state = "exited_safely"
@@ -672,6 +681,7 @@ class MainWindow(QMainWindow, QThread):
         self.set_current_button_color("grey")
 
         self.ui.pB_manualControl.clicked.connect(self.open_manual_control)
+        self.ui.pB_TemperatureRise.clicked.connect(self.open_temperature_rise)
 
         self.serial_port = QSerialPort()
         self.serial_port.setBaudRate(115200)
@@ -3743,6 +3753,56 @@ class MainWindow(QMainWindow, QThread):
                 self.append_log(f"Error closing Manual Control window: {e}", "negative")
             self.manual_control_active = False
             self.open_manual_window = None
+
+    def open_temperature_rise(self):
+        """Launch the Temperature Rise application in a separate process."""
+        app_path = r"Z:\Software\TempRise Fixture\Current_Temperature\Current_Temperature\bin\Debug\Current_Temperature.exe"
+        
+        try:
+            # Check if the file exists
+            if not os.path.exists(app_path):
+                self.append_log(f"Temperature Rise application not found at: {app_path}", "negative")
+                QMessageBox.warning(self, "File Not Found", f"Could not find application:\n{app_path}")
+                return
+            
+            # Launch the application in a separate process
+            self.temperature_rise_process = subprocess.Popen(app_path)
+            self.temperature_rise_active = True
+            self.append_log("Temperature Rise application launched.", "positive")
+            
+            # Monitor the process in the background
+            QTimer.singleShot(500, self.monitor_temperature_rise_process)
+            
+        except Exception as e:
+            self.append_log(f"Error launching Temperature Rise application: {e}", "negative")
+            QMessageBox.critical(self, "Launch Error", f"Failed to launch application:\n{e}")
+
+    def monitor_temperature_rise_process(self):
+        """Check if the Temperature Rise process is still running and clean up if closed."""
+        if getattr(self, "temperature_rise_process", None):
+            # Check if process has finished
+            if self.temperature_rise_process.poll() is not None:
+                # Process has ended
+                self.temperature_rise_active = False
+                self.append_log("Temperature Rise application closed.", "neutral")
+            else:
+                # Process still running, check again in 1 second
+                QTimer.singleShot(1000, self.monitor_temperature_rise_process)
+
+    def close_temperature_rise_window(self):
+        """Close the Temperature Rise application if it's running."""
+        if getattr(self, "temperature_rise_process", None):
+            try:
+                self.temperature_rise_process.terminate()
+                try:
+                    self.temperature_rise_process.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    self.temperature_rise_process.kill()
+                self.append_log("Temperature Rise application closed.", "neutral")
+            except Exception as e:
+                self.append_log(f"Error closing Temperature Rise application: {e}", "negative")
+            self.temperature_rise_active = False
+            self.temperature_rise_process = None
     
     def _outp0_all_voltages(self):
         """Force OFF all voltage sources (Va/Vb/Vc) now, and mark that next step must re-arm."""

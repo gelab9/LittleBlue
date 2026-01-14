@@ -540,11 +540,11 @@
     <property name="wordWrap">
      <bool>true</bool>
     </property>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>31</number>
-    </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
      <number>95</number>
+    </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>31</number>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
      <number>35</number>
@@ -608,7 +608,7 @@
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:696;&quot;&gt;Messages Received&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
@@ -690,14 +690,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="3">
-      <widget class="QPushButton" name="pB_startTest">
-       <property name="text">
-        <string>Start Test</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="6">
+     <item row="0" column="7">
       <widget class="QPushButton" name="pB_manualControl">
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens a manual control window to interact with individual Asterion sources&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -710,13 +703,11 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="dropDown_comPort">
-       <item>
-        <property name="text">
-         <string>    COM Port</string>
-        </property>
-       </item>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="pB_startTest">
+       <property name="text">
+        <string>Start Test</string>
+       </property>
       </widget>
      </item>
      <item row="0" column="2">
@@ -726,11 +717,13 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="0" column="4">
-      <widget class="QCheckBox" name="cB_creepAfter">
-       <property name="text">
-        <string>Creep after Test Finish</string>
-       </property>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="dropDown_comPort">
+       <item>
+        <property name="text">
+         <string>    COM Port</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="0" column="0">
@@ -764,6 +757,20 @@ p, li { white-space: pre-wrap; }
       <widget class="QCheckBox" name="cB_SourceCorrection">
        <property name="text">
         <string>Source Correction</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QCheckBox" name="cB_creepAfter">
+       <property name="text">
+        <string>Creep after Test Finish</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Temperature Rise</string>
        </property>
       </widget>
      </item>
@@ -828,11 +835,11 @@ p, li { white-space: pre-wrap; }
        <property name="rowCount">
         <number>150</number>
        </property>
-       <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>45</number>
-       </attribute>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>100</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>45</number>
        </attribute>
        <attribute name="verticalHeaderDefaultSectionSize">
         <number>30</number>
@@ -1101,11 +1108,11 @@ p, li { white-space: pre-wrap; }
        <property name="rowCount">
         <number>150</number>
        </property>
-       <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>45</number>
-       </attribute>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>100</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>45</number>
        </attribute>
        <row>
         <property name="text">
@@ -1393,14 +1400,14 @@ p, li { white-space: pre-wrap; }
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
-     <attribute name="verticalHeaderMinimumSectionSize">
-      <number>0</number>
-     </attribute>
      <attribute name="verticalHeaderDefaultSectionSize">
       <number>0</number>
      </attribute>
      <attribute name="verticalHeaderHighlightSections">
       <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderMinimumSectionSize">
+      <number>0</number>
      </attribute>
      <column>
       <property name="text">
@@ -1598,7 +1605,7 @@ p, li { white-space: pre-wrap; }
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:696;&quot;&gt;Voltage&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
@@ -1615,7 +1622,7 @@ p, li { white-space: pre-wrap; }
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:696;&quot;&gt;Current&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
@@ -1632,7 +1639,7 @@ p, li { white-space: pre-wrap; }
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'PibotoLt'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:696;&quot;&gt;ENERGIZED&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
@@ -1663,7 +1670,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>1655</width>
-     <height>28</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
