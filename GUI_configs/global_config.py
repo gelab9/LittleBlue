@@ -83,7 +83,7 @@ class GlobalConfig:
                     "last_routing_command": None
                 })
                 self.app_paths = data.get("app_paths", {
-                    "temperature_rise": r"Z:\Software\TempRise Fixture\Current_Temperature\Current_Temperature\bin\Debug\Current_Temperature.exe"
+                    "temperature_rise": r"Z:\\uslafvs001038\Software\\TempRise Fixture\\Current_Temperature\\Current_Temperature\bin\Debug\\Current_Temperature.exe"
                 })
         except Exception as e:
             print(f"❌ Failed to load config: {e}")

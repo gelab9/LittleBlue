@@ -67,6 +67,6 @@
     "last_routing_command": 255
   },
   "app_paths": {
-    "temperature_rise": "Z:\\Software\\TempRise Fixture\\Current_Temperature\\Current_Temperature\\bin\\Debug\\Current_Temperature.exe"
+    "temperature_rise": "Z:\\uslafvs001038\\Software\\TempRise Fixture\\Current_Temperature\\Current_Temperature\\bin\\Debug\\Current_Temperature.exe"
   }
 }
