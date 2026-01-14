@@ -768,7 +768,7 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="0" column="6">
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pB_TempRise">
        <property name="text">
         <string>Temperature Rise</string>
        </property>

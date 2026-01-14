@@ -467,8 +467,8 @@ class MainWindow(QMainWindow, QThread):
         self.ui.pB_clearChannel.clicked.connect(self.clear_channel)
         self.ui.pB_abort.clicked.connect(self.abort_test)
         self.ui.pB_clearAllChannels.clicked.connect(self.clear_all_channels)
-        self.ui.pB_wifi.clicked.connect(self.run_wifi_checker)
-        self.ui.pb_stopTest.clicked.connect(lambda: self.abort_test(IsKeepingVoltage=True))
+        #self.ui.pB_wifi.clicked.connect(self.run_wifi_checker)
+        #self.ui.pb_stopTest.clicked.connect(lambda: self.abort_test(IsKeepingVoltage=True))
 
         # Channels dropdown
         self.channel_form = [str(i) for i in range(1, 17)]
@@ -681,7 +681,7 @@ class MainWindow(QMainWindow, QThread):
         self.set_current_button_color("grey")
 
         self.ui.pB_manualControl.clicked.connect(self.open_manual_control)
-        self.ui.pB_TemperatureRise.clicked.connect(self.open_temperature_rise)
+        self.ui.pB_tempRise.clicked.connect(self.open_temperature_rise)
 
         self.serial_port = QSerialPort()
         self.serial_port.setBaudRate(115200)
