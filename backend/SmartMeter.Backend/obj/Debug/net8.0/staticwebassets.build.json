@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "ejPN3tIz8lWrMD5P09zPBHEuW+xk+8GqixlEGaLF4v0=",
+  "Source": "SmartMeter.Backend",
+  "BasePath": "_content/SmartMeter.Backend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
