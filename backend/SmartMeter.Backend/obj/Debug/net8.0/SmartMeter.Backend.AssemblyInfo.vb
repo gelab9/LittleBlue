@@ -15,7 +15,7 @@ Imports System.Reflection
 <Assembly: System.Reflection.AssemblyCompanyAttribute("SmartMeter.Backend"),  _
  Assembly: System.Reflection.AssemblyConfigurationAttribute("Debug"),  _
  Assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0"),  _
- Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f38c6ff55418a087abf65e7f4bc4d7c22b1bfa7"),  _
  Assembly: System.Reflection.AssemblyProductAttribute("SmartMeter.Backend"),  _
  Assembly: System.Reflection.AssemblyTitleAttribute("SmartMeter.Backend"),  _
  Assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")> 
