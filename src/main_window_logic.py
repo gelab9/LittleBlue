@@ -12,10 +12,10 @@ from PyQt6 import QtCore
 from src.ui.main_window import Ui_MainWindow
 from src.util.config_loader import ConfigLoader
 from src.util.logging_setup import LoggingSetup
-from src.io.csv_logger import CSVLogger
-from src.core.test_controller import TestController
-from src.core.data_statistics import DataStatistics
-from src.io.report_generator import ReportGenerator
+from src.util.stubs import NullCsvLogger
+from src.util.stubs import NullReportGenerator
+from src.util.stubs import NullStatistics
+from src.util.stubs import NullTestController
 from src.devices.daq_34970a import DAQ34970A
 from serial.tools import list_ports
 from PyQt6 import QtWidgets
@@ -50,22 +50,12 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         
-        # Initialize test controller
-        self.test_controller = TestController(
-            logger=self.logger,
-            mock_mode=self.config.is_mock_mode()
-        )
-        
-        # Initialize CSV logger
-        self.csv_logger = CSVLogger(
-            output_dir=self.data_dir,
-            test_name="current_temp_rise",
-            logger=self.logger
-        )
-        
-        # Initialize CSV with headers
-        headers = ["timestamp", "reading_id"] + [f"ch_{i}" for i in range(1, 121)]
-        self.csv_logger.initialize_csv(headers)
+        # Mock classes from before
+        self.csv_logger = NullCsvLogger()
+        self.statistics = NullStatistics()
+        self.report_generator = NullReportGenerator()
+        self.test_controller = NullTestController()
+
         
         # State variables
         self.test_start_time = None
@@ -92,8 +82,8 @@ class MainWindow(QMainWindow):
         self.logger.info("Application initialized successfully")
 
         # Initialize statistics and report generator
-        self.statistics = DataStatistics(self.logger)
-        self.report_generator = ReportGenerator(self.config.get_data_dir(), self.logger)
+        self.statistics = NullStatistics(self.logger)
+        self.report_generator = NullReportGenerator(self.config.get_data_dir(), self.logger)
         
     def setup_clock(self):
             """Setup clock to update timestamp label."""
