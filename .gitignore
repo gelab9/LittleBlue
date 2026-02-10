@@ -1,0 +1,14 @@
+# Windows reserved device name that breaks git on Windows
+nul
+**/nul
+
+# Python cache
+__pycache__/
+*.pyc
+
+# .NET build outputs
+bin/
+obj/
+
+# app output/logs
+output/

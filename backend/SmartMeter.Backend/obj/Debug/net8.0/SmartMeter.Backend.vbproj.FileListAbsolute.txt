@@ -88,6 +88,7 @@ C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\SmartMeter.Backend.AssemblyInfo.vb
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\SmartMeter.Backend.vbproj.CoreCompileInputs.cache
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\SmartMeter.Backend.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\SmartMeter.Backend.sourcelink.json
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\staticwebassets\msbuild.SmartMeter.Backend.Microsoft.AspNetCore.StaticWebAssets.props
@@ -102,4 +103,3 @@ C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\SmartMeter.Backend.pdb
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\SmartMeter.Backend.genruntimeconfig.cache
 C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\ref\SmartMeter.Backend.dll
-C:\Users\gelab\Downloads\LittleBlue-develop\backend\SmartMeter.Backend\obj\Debug\net8.0\SmartMeter.Backend.sourcelink.json

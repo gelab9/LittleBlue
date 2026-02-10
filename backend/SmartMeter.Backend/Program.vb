@@ -1,5 +1,6 @@
 Imports Microsoft.AspNetCore.Builder
 Imports Microsoft.Extensions.Hosting
+Imports System.Text.Json
 Imports Microsoft.AspNetCore.Http
 
 Imports SmartMeter.Backend.Devices
@@ -26,28 +27,70 @@ Module Program
                               Return Results.Ok(New With {.connected = _daq.IsConnected})
                           End Function)
 
-        app.MapPost("/daq/write", Function(req As WriteRequest)
-                                Try
-                                    _daq.Send(req.cmd)
-                                    Return Results.Ok(New With {.sent = req.cmd})
-                                Catch ex As Exception
-                                    Return Results.Problem(title:="DAQ write failed", detail:=ex.ToString())
-                                End Try
-                            End Function)
+        app.MapPost("/daq/write", Async Function(ctx As HttpContext)
+                              Try
+                                  Dim req = Await ctx.Request.ReadFromJsonAsync(Of WriteRequest)()
+
+                                  If req Is Nothing OrElse String.IsNullOrWhiteSpace(req.cmd) Then
+                                      Return Results.BadRequest(New With {.error = "Missing JSON body or cmd"})
+                                  End If
+
+                                  If Not _daq.IsConnected Then
+                                      Return Results.BadRequest(New With {.error = "DAQ not connected"})
+                                  End If
+
+                                  _daq.Send(req.cmd)
+                                  Return Results.Ok(New With {.sent = req.cmd})
+
+                              Catch ex As Exception
+                                  Return Results.Problem(title:="DAQ write failed", detail:=ex.ToString())
+                              End Try
+                          End Function)
+
+
+        app.MapPost("/daq/query", Async Function(ctx As HttpContext)
+                             Try
+                                 Dim req = Await ctx.Request.ReadFromJsonAsync(Of QueryRequest)()
+
+                                 If req Is Nothing OrElse String.IsNullOrWhiteSpace(req.cmd) Then
+                                     Return Results.BadRequest(New With {.error = "Missing JSON body or cmd"})
+                                 End If
+
+                                 If Not _daq.IsConnected Then
+                                     Return Results.BadRequest(New With {.error = "DAQ not connected"})
+                                 End If
+
+                                 Dim resp = _daq.Query(req.cmd)
+
+                                 ' IMPORTANT: return "response" so the GUI can read it
+                                 Return Results.Ok(New With {.cmd = req.cmd, .response = resp})
+
+                             Catch ex As Exception
+                                 Return Results.Problem(title:="DAQ query failed", detail:=ex.ToString())
+                             End Try
+                         End Function)
 
         app.MapGet("/daq/ports", Function()
                              Return SerialPort.GetPortNames()
                          End Function)
 
-                                      ' Connect
-        app.MapPost("/daq/connect", Function(req As ConnectRequest)
+        ' Connect
+        app.MapPost("/daq/connect", Async Function(ctx As HttpContext)
                                 Try
+                                    Dim req = Await ctx.Request.ReadFromJsonAsync(Of ConnectRequest)()
+
+                                    If req Is Nothing OrElse String.IsNullOrWhiteSpace(req.port) Then
+                                        Return Results.BadRequest(New With {.error = "Missing JSON body or port"})
+                                    End If
+
                                     _daq.Connect(req.port, req.baud, req.readTimeoutMs, req.writeTimeoutMs)
                                     Return Results.Ok(New With {.connected = _daq.IsConnected, .port = req.port, .baud = req.baud})
+
                                 Catch ex As Exception
                                     Return Results.Problem(title:="DAQ connect failed", detail:=ex.ToString())
                                 End Try
                             End Function)
+
 
         ' Disconnect
         app.MapPost("/daq/disconnect", Function()
@@ -86,10 +129,14 @@ Module Program
     End Sub
 
     Public Class WriteRequest
-                    Public Property cmd As String
-                End Class
-        Public Class ConnectRequest
-        
+        Public Property cmd As String
+    End Class
+
+    Public Class QueryRequest
+        Public Property cmd As String
+    End Class
+
+    Public Class ConnectRequest
         Public Property port As String
         Public Property baud As Integer = 9600
         Public Property readTimeoutMs As Integer = 2000

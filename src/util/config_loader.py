@@ -35,14 +35,11 @@ class ConfigLoader:
     
     def _ensure_directories(self):
         """Create necessary output directories if they don't exist."""
-        base_dir = Path(self.get("output.base_dir")).expanduser().resolve()
-        logs_dir = base_dir / self.get("output.logs_dir")
-        data_dir = base_dir / self.get("output.data_dir")
-
-        base_dir.mkdir(parents=True, exist_ok=True)
+        base_dir = Path("output").resolve()
+        logs_dir = base_dir / "logs"
+        data_dir = base_dir / "data"
         logs_dir.mkdir(parents=True, exist_ok=True)
         data_dir.mkdir(parents=True, exist_ok=True)
-        
         return base_dir, logs_dir, data_dir
 
     def get(self, key: str, default=None) -> Any:
@@ -80,12 +77,8 @@ class ConfigLoader:
 
     def is_mock_mode(self) -> bool:
         """Check if running in mock mode."""
-        return self.get("operation.mock_mode", True)
-    
+        return self.get("app.mock_mode", False)
+
     def get_poll_interval_ms(self) -> int:
         """Get polling interval in milliseconds."""
-        return self.get("operation.poll_interval_ms", 500)
-    
-    def get_sample_rate_hz(self) -> float:
-        """Get sample rate in Hz."""
-        return self.get("operation.sample_rate_hz", 2.0)
+        return self.get("app.poll_interval_ms", 500)

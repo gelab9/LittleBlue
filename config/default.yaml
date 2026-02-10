@@ -1,0 +1,12 @@
+output:
+  base_dir: output
+  logs_dir: output/logs
+  data_dir: output/data
+
+logging:
+  level: DEBUG
+  developer_log: developer.log
+
+app:
+  mock_mode: false
+  poll_interval_ms: 500

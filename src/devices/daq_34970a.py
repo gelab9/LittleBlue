@@ -75,37 +75,6 @@ class DAQ34970A:
         self.write("TRIG:COUN 1")
         self.write(f"ROUT:SCAN:COUN 1")
 
-    def read_scan(self):
-        """
-        Perform one scan read.
-        Returns list of dicts: [{'channel': 101, 'value': 23.4, 'timestamp': '...'}, ...]
-        """
-        raw = self.query("READ?")
-        if not raw:
-            return []
-
-        parts = [p.strip() for p in raw.split(",") if p.strip()]
-        results = []
-
-        # Expected pattern: value, timestamp, channel, ...
-        i = 0
-        while i + 2 < len(parts):
-            try:
-                value = float(parts[i])
-                timestamp = parts[i + 1].strip('"')
-                channel = int(float(parts[i + 2]))
-                results.append({
-                    "channel": channel,
-                    "value": value,
-                    "timestamp": timestamp
-                })
-            except Exception as e:
-                self.logger.warning(f"DAQ parse error at index {i}: {e} ({parts[i:i+3]})")
-            i += 3
-
-        return results
-
-
     def read_scan(self) -> list[tuple[int, float, str]]:
         """
         Returns list of (channel, value, timestamp_string).
