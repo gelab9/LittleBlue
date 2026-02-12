@@ -40,7 +40,7 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 3. Click **New SSH key**
 4. Paste your generated public key contents
 
-![Git SSH Key](gitsshkey.png)
+![Git SSH Key](images/gitsshkey.png)
 
 ### 4. Confirm SSH Connection
 
@@ -48,7 +48,7 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ssh -T git@github.com
 ```
 
-![SSH Confirm](sshconfirm.png)
+![SSH Confirm](images/sshconfirm.png)
 
 You should see a message confirming you're authenticated.
 
@@ -58,7 +58,7 @@ You should see a message confirming you're authenticated.
 eval "$(ssh-agent -s)"
 ```
 
-![SSH Agent](sshagent.png)
+![SSH Agent](images/sshagent.png)
 
 ### 6. Add Your Key to the SSH Agent
 
@@ -66,7 +66,7 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
 
-![Add Key](addkey.png)
+![Add Key](images/addkey.png)
 
 ### 7. Clone the Repository
 
@@ -74,7 +74,7 @@ ssh-add ~/.ssh/id_ed25519
 2. Click **Code**
 3. Copy the SSH link
 
-![Git Adding SSH Key](gitaddingsshkey.png)
+![Git Adding SSH Key](images/gitaddingsshkey.png)
 
 ```bash
 git clone git@github.com:username/repository.git
