@@ -382,3 +382,35 @@
 2026-02-12 09:01:26 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
 2026-02-12 09:01:26 - SmartMeterApp - INFO - Application initialized successfully
 2026-02-12 09:02:56 - SmartMeterApp - INFO - Application closed normally
+2026-02-12 09:42:00 - SmartMeterApp - INFO - ============================================================
+2026-02-12 09:42:00 - SmartMeterApp - INFO - Application starting
+2026-02-12 09:42:00 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-12 09:42:00 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-12 09:42:00 - SmartMeterApp - INFO - ============================================================
+2026-02-12 09:42:00 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 09:42:00 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-12 09:42:00 - SmartMeterApp - INFO - UI defaults populated
+2026-02-12 09:42:00 - SmartMeterApp - INFO - Detected serial ports: ['/dev/ttyACM0', '/dev/ttyAMA0', '/dev/ttyAMA10']
+2026-02-12 09:42:00 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-12 09:46:52 - SmartMeterApp - INFO - ============================================================
+2026-02-12 09:46:52 - SmartMeterApp - INFO - Application starting
+2026-02-12 09:46:52 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-12 09:46:52 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-12 09:46:52 - SmartMeterApp - INFO - ============================================================
+2026-02-12 09:46:52 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 09:46:52 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-12 09:46:52 - SmartMeterApp - INFO - UI defaults populated
+2026-02-12 09:46:52 - SmartMeterApp - INFO - Detected serial ports: ['/dev/ttyACM0', '/dev/ttyAMA0', '/dev/ttyAMA10']
+2026-02-12 09:46:52 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-12 09:47:00 - SmartMeterApp - INFO - Application closed normally
+2026-02-12 10:16:35 - SmartMeterApp - INFO - ============================================================
+2026-02-12 10:16:35 - SmartMeterApp - INFO - Application starting
+2026-02-12 10:16:35 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-12 10:16:35 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-12 10:16:35 - SmartMeterApp - INFO - ============================================================
+2026-02-12 10:16:35 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 10:16:35 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-12 10:16:35 - SmartMeterApp - INFO - UI defaults populated
+2026-02-12 10:16:35 - SmartMeterApp - INFO - Detected serial ports: ['/dev/ttyACM0', '/dev/ttyAMA0', '/dev/ttyAMA10']
+2026-02-12 10:16:35 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-12 10:17:18 - SmartMeterApp - INFO - Application closed normally

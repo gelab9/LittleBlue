@@ -1,26 +1,13 @@
-# Python 3.14.3
-pyQt6==6.6.1
-pyQt6-sip==13.6.0
-pyYAML==6.0.1
+# ======= FOR WINDOWS =======#
+# Python 3.14.3 required
+# Note: dotnet-sdk is a system package, install separately
+
+PyQt6==6.6.1
+PyQt6-sip==13.6.0
+PyYAML==6.0.1
 matplotlib==3.8.2
 pyserial==3.5
 numpy>=1.24.0
 pytest>=7.4.0
 
-# -------TESTING AND DEVELOPMENT--------
-# STEP 1. When connecting to COM Port use:
-# curl.exe -i -X POST "http://127.0.0.1:5055/daq/connect" -H "Content-Type: application/json" --data-binary "@connect.json"
-# Step 2. Immediately call daq idn to talk:
-# curl.exe -i "http://127.0.0.1:5055/daq/idn"
-
-# These following lines of code are for checking the daq34970A instrument, getting a serious connection returning:
-# Manufacturer , Serial, and FW (Firmware version), idn stands for identification truncated:
-# {"idn":"HEWLETT-PACKARD,34970A,0,13-2-2"}
-# Lines to indentify 34970A (Agilent):
-#curl.exe -i -X POST "http://127.0.0.1:5055/daq/connect" `
-#  -H "Content-Type: application/json" `
-#  --data-binary "@connect.json"
-
-#curl.exe -i "http://127.0.0.1:5055/daq/idn"
-
-# Side note: If you ever need to copy and paste these lines, get rid of # first.
+# You can install these with: pip install -r requirements.txt
