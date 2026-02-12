@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Kpo85mj54rk=",
+  "dgSpecHash": "I58D3e/OY1U=",
   "success": true,
-  "projectFilePath": "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
+  "projectFilePath": "c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
   "expectedPackageFiles": [
     "C:\\Users\\gelab\\.nuget\\packages\\runtime.android-arm.runtime.native.system.io.ports\\10.0.2\\runtime.android-arm.runtime.native.system.io.ports.10.0.2.nupkg.sha512",
     "C:\\Users\\gelab\\.nuget\\packages\\runtime.android-arm64.runtime.native.system.io.ports\\10.0.2\\runtime.android-arm64.runtime.native.system.io.ports.10.0.2.nupkg.sha512",

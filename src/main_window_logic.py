@@ -15,6 +15,7 @@ from src.util.logging_setup import LoggingSetup
 from src.util.csv_logger import CsvLogger
 from src.models.statistics import StatisticsTracker
 from src.devices.radian import RadianDevice
+from src.devices.pac_power import PacPowerDevice
 from src.models.channel import ChannelConfig, build_default_channels
 from src.models.test_controller import TestController
 from src.api.local_api import LocalApiClient, ApiWorker, ApiResult

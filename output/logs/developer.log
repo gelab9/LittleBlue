@@ -414,3 +414,77 @@
 2026-02-12 10:16:35 - SmartMeterApp - INFO - Detected serial ports: ['/dev/ttyACM0', '/dev/ttyAMA0', '/dev/ttyAMA10']
 2026-02-12 10:16:35 - SmartMeterApp - INFO - Application initialized successfully
 2026-02-12 10:17:18 - SmartMeterApp - INFO - Application closed normally
+2026-02-12 13:53:46 - SmartMeterApp - INFO - ============================================================
+2026-02-12 13:53:46 - SmartMeterApp - INFO - Application starting
+2026-02-12 13:53:46 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-12 13:53:46 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-12 13:53:46 - SmartMeterApp - INFO - ============================================================
+2026-02-12 13:53:46 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 13:53:46 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-12 13:53:46 - SmartMeterApp - INFO - UI defaults populated
+2026-02-12 13:53:46 - SmartMeterApp - INFO - Detected serial ports: ['COM3', 'COM4', 'COM5']
+2026-02-12 13:53:46 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-12 13:53:57 - SmartMeterApp - DEBUG - API finished daq_connect: status=200 data={'raw': ''} err=None
+2026-02-12 13:53:57 - SmartMeterApp - DEBUG - API finished health: status=200 data={'status': 'ok', 'service': 'SmartMeter.Backend', 'utc': '2026-02-12T18:53:57.0053290Z'} err=None
+2026-02-12 13:53:57 - SmartMeterApp - DEBUG - API finished daq_status: status=200 data={'connected': True} err=None
+2026-02-12 13:53:59 - SmartMeterApp - DEBUG - API finished daq_idn: status=200 data={'idn': 'HEWLETT-PACKARD,34970A,0,13-2-2'} err=None
+2026-02-12 13:55:08 - SmartMeterApp - INFO - CSV logging to C:\Users\gelab\Downloads\LittleBlue-develop\output\data\daq_data_20260212_135508.csv
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_tc_type: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_abort: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_cls: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_conf: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_scan: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_fmt_chan: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_fmt_time: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:08 - SmartMeterApp - DEBUG - API finished daq_init: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:10 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '-113,"Undefined header"'} err=None
+2026-02-12 13:55:12 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+521,"Communications: input buffer overflow"'} err=None
+2026-02-12 13:55:14 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '-103,"Invalid separator"'} err=None
+2026-02-12 13:55:16 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-12 13:55:19 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-12 13:55:21 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-12 13:55:23 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-12 13:55:25 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-12 13:55:27 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:29 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'raw': ''} err=None
+2026-02-12 13:55:31 - SmartMeterApp - DEBUG - Test mode changed to: Duration
+2026-02-12 13:55:31 - SmartMeterApp - DEBUG - Test mode changed to: Duration
+2026-02-12 13:55:32 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '-213,"INIT ignored"'} err=None
+2026-02-12 13:55:32 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 13:55:32 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 13:55:34 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '-213,"INIT ignored"'} err=None
+2026-02-12 13:55:51 - SmartMeterApp - INFO - Connecting to Radian on COM3 @ 9600
+2026-02-12 13:55:51 - SmartMeterApp - DEBUG - API finished radian_connect: status=200 data={'raw': ''} err=None
+2026-02-12 13:56:30 - SmartMeterApp - DEBUG - API finished radian_disconnect: status=200 data={'connected': False} err=None
+2026-02-12 13:56:32 - SmartMeterApp - INFO - Connecting to Radian on COM3 @ 9600
+2026-02-12 13:56:33 - SmartMeterApp - DEBUG - API finished radian_connect: status=200 data={'raw': ''} err=None
+2026-02-12 13:57:03 - SmartMeterApp - DEBUG - API finished radian_disconnect: status=200 data={'connected': False} err=None
+2026-02-12 13:57:06 - SmartMeterApp - DEBUG - API finished daq_disconnect: status=200 data={'connected': False} err=None
+2026-02-12 13:57:10 - SmartMeterApp - INFO - Application closed normally
+2026-02-12 14:09:00 - SmartMeterApp - INFO - ============================================================
+2026-02-12 14:09:00 - SmartMeterApp - INFO - Application starting
+2026-02-12 14:09:00 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-12 14:09:00 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-12 14:09:00 - SmartMeterApp - INFO - ============================================================
+2026-02-12 14:09:00 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 14:09:00 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-12 14:09:00 - SmartMeterApp - INFO - UI defaults populated
+2026-02-12 14:09:00 - SmartMeterApp - INFO - Detected serial ports: ['COM3', 'COM4', 'COM5']
+2026-02-12 14:09:00 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-12 14:09:07 - SmartMeterApp - DEBUG - API finished daq_connect: status=200 data={'connected': True, 'port': 'COM5', 'baud': 115200} err=None
+2026-02-12 14:09:07 - SmartMeterApp - DEBUG - API finished health: status=200 data={'status': 'ok', 'service': 'SmartMeter.Backend', 'utc': '2026-02-12T19:09:07.8416536Z'} err=None
+2026-02-12 14:09:07 - SmartMeterApp - DEBUG - API finished daq_status: status=200 data={'connected': True} err=None
+2026-02-12 14:09:10 - SmartMeterApp - DEBUG - API finished daq_idn: status=200 data={'idn': 'HEWLETT-PACKARD,34970A,0,13-2-2'} err=None
+2026-02-12 14:10:00 - SmartMeterApp - INFO - Connecting to Radian on COM3 @ 9600
+2026-02-12 14:10:00 - SmartMeterApp - DEBUG - API finished radian_connect: status=200 data={'connected': True, 'port': 'COM3', 'baud': 9600} err=None
+2026-02-12 14:15:00 - SmartMeterApp - DEBUG - API finished radian_disconnect: status=200 data={'connected': False} err=None
+2026-02-12 14:15:03 - SmartMeterApp - INFO - Connecting to Radian on COM4 @ 9600
+2026-02-12 14:15:04 - SmartMeterApp - DEBUG - API finished radian_connect: status=200 data={'connected': True, 'port': 'COM4', 'baud': 9600} err=None
+2026-02-12 14:15:25 - SmartMeterApp - DEBUG - API finished radian_disconnect: status=200 data={'connected': False} err=None
+2026-02-12 14:15:27 - SmartMeterApp - INFO - Connecting to Radian on COM5 @ 9600
+2026-02-12 14:15:28 - SmartMeterApp - ERROR - radian_connect failed: 500 {"type":"https://tools.ietf.org/html/rfc9110#section-15.6.1","title":"Radian connect failed","status":500,"detail":"System.Exception: Failed to connect to Radian on COM5: Access to the path 'COM5' is denied.\r\n   at SmartMeter.Backend.Devices.Radian.Connect(String portName, Int32 baudRate, Parity parity, StopBits stopBits, Int32 dataBits) in c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\Devices\\Radian.vb:line 58\r\n   at SmartMeter.Backend.Program._Closure$__._Lambda$__3-11(ConnectRequest req) in c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\Program.vb:line 135"}
+2026-02-12 14:15:39 - SmartMeterApp - INFO - Connecting to Radian on COM3 @ 9600
+2026-02-12 14:15:39 - SmartMeterApp - DEBUG - API finished radian_connect: status=200 data={'connected': True, 'port': 'COM3', 'baud': 9600} err=None
+2026-02-12 14:16:41 - SmartMeterApp - DEBUG - API finished radian_disconnect: status=200 data={'connected': False} err=None
+2026-02-12 14:16:42 - SmartMeterApp - DEBUG - API finished daq_disconnect: status=200 data={'connected': False} err=None
+2026-02-12 14:16:44 - SmartMeterApp - INFO - Application closed normally

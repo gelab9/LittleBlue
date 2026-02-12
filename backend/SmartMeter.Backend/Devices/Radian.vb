@@ -9,7 +9,7 @@ Imports System.IO.Ports
 Imports System.Text
 Imports System.Threading
 
-Namespace SmartMeter.Backend.Devices
+Namespace Devices
     Public Class Radian
         Private _port As SerialPort
         Private _receiveBuffer(4095) As Byte
