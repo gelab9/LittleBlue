@@ -1,4 +1,3 @@
-# ======== FOR LINUX ========= #
 #!/bin/bash
 # Installation script for Debian/Ubuntu Linux
 
@@ -21,13 +20,30 @@ sudo apt-get install -y \
     libqt6widgets6
 
 # Install .NET SDK 8.0
-# Add Microsoft package repository
-wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-rm packages-microsoft-prod.deb
+# Check Debian version
+DEBIAN_VERSION=$(cat /etc/debian_version | cut -d. -f1)
 
-sudo apt-get update
-sudo apt-get install -y dotnet-sdk-8.0
+if [ "$DEBIAN_VERSION" -ge 13 ]; then
+    echo "Detected Debian 13 (Trixie) or newer - using dotnet-install script..."
+    # Use official install script for Debian 13+
+    wget https://dot.net/v1/dotnet-install.sh
+    chmod +x dotnet-install.sh
+    ./dotnet-install.sh --channel 8.0
+    rm dotnet-install.sh
+    
+    # Add to PATH
+    echo 'export PATH=$PATH:$HOME/.dotnet' >> ~/.bashrc
+    export PATH=$PATH:$HOME/.dotnet
+else
+    echo "Detected Debian 12 or older - using apt repository..."
+    # Add Microsoft package repository for Debian 12
+    wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+    
+    sudo apt-get update
+    sudo apt-get install -y dotnet-sdk-8.0
+fi
 
 # Install Python build dependencies
 sudo apt-get install -y \
@@ -50,5 +66,3 @@ echo "Installation complete!"
 echo ""
 echo "To activate the virtual environment, run:"
 echo "  source venv/bin/activate"
-
-# Just run chmod +x install_debian.sh && ./install_debian.sh to get started!

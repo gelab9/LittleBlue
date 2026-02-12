@@ -229,108 +229,70 @@ curl.exe -i "http://127.0.0.1:5055/daq/idn"
 
 ---
 
+## Troubleshooting
+
+### .NET Installation Issues on Debian 13 (Trixie)
+
+If you're running **Debian 13 (Trixie)** instead of Debian 12 (Bookworm), you may encounter issues installing `dotnet-sdk-8.0.417` via apt. This is because Microsoft has not officially published a Debian 13 apt repository yet.
+
+#### ✅ Clean Fix for Debian 13
+
+Use Microsoft's official install script instead of apt. This is the recommended method for Debian 13.
+
+**Step 1: Download the Installer**
+
+```bash
+wget https://dot.net/v1/dotnet-install.sh
+chmod +x dotnet-install.sh
+```
+
+**Step 2: Install .NET 8 SDK**
+
+```bash
+./dotnet-install.sh --channel 8.0
+```
+
+This installs the latest .NET 8 SDK (including the correct patch version).
+
+**Step 3: Add .NET to PATH**
+
+Add .NET to your current shell session:
+
+```bash
+export PATH=$PATH:$HOME/.dotnet
+```
+
+To make it permanent:
+
+```bash
+echo 'export PATH=$PATH:$HOME/.dotnet' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Step 4: Verify Installation**
+
+```bash
+dotnet --version
+```
+
+You should see output like:
+
+```
+8.0.xxx
+```
+
+#### Checking Your Debian Version
+
+Not sure which Debian version you're running? Check with:
+
+```bash
+cat /etc/debian_version
+# or
+lsb_release -a
+```
+
+---
+
 ## Additional Resources
 
 For installation instructions on Linux Debian environments, see [README_INSTALL.md](README_INSTALL.md)
-
-# Installation Instructions for Debian/Ubuntu Linux
-
-## Prerequisites
-- Debian 12 (Bookworm) or Ubuntu 22.04+ recommended
-- Sudo access
-
-## Quick Install
-
-1. Make the install script executable:
-```bash
-chmod +x install_debian.sh
-```
-
-2. Run the installation script:
-```bash
-./install_debian.sh
-```
-
-3. Activate the virtual environment:
-```bash
-source venv/bin/activate
-```
-
-## Manual Installation
-
-### 1. Install System Dependencies
-
-```bash
-# Update package list
-sudo apt-get update
-
-# Install Python development tools
-sudo apt-get install -y python3 python3-pip python3-venv python3-dev build-essential
-
-# Install Qt6 libraries (required for PyQt6)
-sudo apt-get install -y qt6-base-dev libqt6core6 libqt6gui6 libqt6widgets6
-
-# Install .NET SDK 8.0
-wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-rm packages-microsoft-prod.deb
-sudo apt-get update
-sudo apt-get install -y dotnet-sdk-8.0
-```
-
-### 2. Create Virtual Environment
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Python Packages
-
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-## Verification
-
-Verify installations:
-
-```bash
-# Check Python version
-python --version
-
-# Check .NET version
-dotnet --version
-
-# Check installed packages
-pip list
-```
-
-## Notes
-
-- **Python 3.14**: If Python 3.14 is not available in your distribution's repositories, you may need to:
-  - Use [deadsnakes PPA](https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa) (Ubuntu)
-  - Build from source
-  - Use pyenv
-
-- **Qt6**: If you encounter issues with PyQt6, ensure Qt6 libraries are installed system-wide
-
-- **Virtual Environment**: Always activate the virtual environment before running your application:
-  ```bash
-  source venv/bin/activate
-  ```
-
-## Troubleshooting
-
-### PyQt6 Installation Issues
-If PyQt6 fails to install, try:
-```bash
-sudo apt-get install -y python3-pyqt6
-```
-
-### Missing Development Headers
-If you get compilation errors:
-```bash
-sudo apt-get install -y libpython3-dev
-```
