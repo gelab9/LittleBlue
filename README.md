@@ -21,7 +21,7 @@ For security and easy authentication, we recommend using SSH to clone the reposi
 git clone git@github.com:gelab9/LittleBlue.git
 ```
 
-![Git Clone](gitclone.png)
+![Git Clone](images/gitclone.png)
 
 > **Note:** Depending on admin rights and IT blockage, you will highly likely need to generate this key using PowerShell as administrator.
 
@@ -31,7 +31,7 @@ git clone git@github.com:gelab9/LittleBlue.git
 ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 
-![Git Admin Key](gitadminkey.png)
+![Git Admin Key](images/gitadminkey.png)
 
 ### 3. Add SSH Key to GitHub
 
