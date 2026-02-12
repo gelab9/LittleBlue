@@ -323,3 +323,62 @@
 2026-02-10 12:19:00 - SmartMeterApp - DEBUG - API finished daq_disconnect: status=200 data={'connected': False} err=None
 2026-02-10 12:19:00 - SmartMeterApp - DEBUG - API finished daq_disconnect: status=200 data={'connected': False} err=None
 2026-02-10 12:19:39 - SmartMeterApp - INFO - Application closed normally
+2026-02-10 14:34:09 - SmartMeterApp - INFO - ============================================================
+2026-02-10 14:34:09 - SmartMeterApp - INFO - Application starting
+2026-02-10 14:34:09 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-10 14:34:09 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-10 14:34:09 - SmartMeterApp - INFO - ============================================================
+2026-02-10 14:34:09 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-10 14:34:09 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-10 14:34:09 - SmartMeterApp - INFO - UI defaults populated
+2026-02-10 14:34:09 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
+2026-02-10 14:34:09 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-10 14:34:26 - SmartMeterApp - INFO - Application closed normally
+2026-02-11 09:41:53 - SmartMeterApp - INFO - ============================================================
+2026-02-11 09:41:53 - SmartMeterApp - INFO - Application starting
+2026-02-11 09:41:53 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-11 09:41:53 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-11 09:41:53 - SmartMeterApp - INFO - ============================================================
+2026-02-11 09:41:54 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-11 09:41:54 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-11 09:41:54 - SmartMeterApp - INFO - UI defaults populated
+2026-02-11 09:41:54 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
+2026-02-11 09:41:54 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-11 09:42:18 - SmartMeterApp - ERROR - daq_connect failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/connect (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:42:20 - SmartMeterApp - ERROR - health failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /health (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:42:22 - SmartMeterApp - ERROR - daq_status failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/status (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:42:24 - SmartMeterApp - ERROR - daq_idn failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/idn (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:03 - SmartMeterApp - INFO - CSV logging to C:\Users\kogutama\OneDrive - Landis+Gyr\Desktop\smart_meter_gui_migration\output\data\daq_data_20260211_094303.csv
+2026-02-11 09:43:05 - SmartMeterApp - ERROR - daq_tc_type failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:07 - SmartMeterApp - ERROR - daq_abort failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:09 - SmartMeterApp - ERROR - daq_cls failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:11 - SmartMeterApp - ERROR - daq_conf failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:13 - SmartMeterApp - ERROR - daq_scan failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:15 - SmartMeterApp - ERROR - daq_fmt_chan failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:17 - SmartMeterApp - ERROR - daq_fmt_time failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:19 - SmartMeterApp - ERROR - daq_init failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/write (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:21 - SmartMeterApp - ERROR - daq_read failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/query (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:23 - SmartMeterApp - ERROR - daq_read failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/query (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-02-11 09:43:26 - SmartMeterApp - INFO - Application closed normally
+2026-02-11 09:43:37 - SmartMeterApp - INFO - ============================================================
+2026-02-11 09:43:37 - SmartMeterApp - INFO - Application starting
+2026-02-11 09:43:37 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-11 09:43:37 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-11 09:43:37 - SmartMeterApp - INFO - ============================================================
+2026-02-11 09:43:37 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-11 09:43:37 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-11 09:43:37 - SmartMeterApp - INFO - UI defaults populated
+2026-02-11 09:43:37 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
+2026-02-11 09:43:37 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-11 09:48:48 - SmartMeterApp - INFO - Application closed normally
+2026-02-12 09:01:26 - SmartMeterApp - INFO - ============================================================
+2026-02-12 09:01:26 - SmartMeterApp - INFO - Application starting
+2026-02-12 09:01:26 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-12 09:01:26 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-12 09:01:26 - SmartMeterApp - INFO - ============================================================
+2026-02-12 09:01:26 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-12 09:01:26 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-12 09:01:26 - SmartMeterApp - INFO - UI defaults populated
+2026-02-12 09:01:26 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
+2026-02-12 09:01:26 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-12 09:02:56 - SmartMeterApp - INFO - Application closed normally

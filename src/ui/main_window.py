@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1516, 884)
+        MainWindow.resize(1529, 899)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(parent=self.centralwidget)
@@ -351,6 +351,14 @@ class Ui_MainWindow(object):
         self.textBrowser_SlotData = QtWidgets.QTextBrowser(parent=self.tab)
         self.textBrowser_SlotData.setGeometry(QtCore.QRect(20, 210, 271, 351))
         self.textBrowser_SlotData.setObjectName("textBrowser_SlotData")
+        self.verticalScrollBar_2 = QtWidgets.QScrollBar(parent=self.tab)
+        self.verticalScrollBar_2.setGeometry(QtCore.QRect(1500, 0, 16, 831))
+        self.verticalScrollBar_2.setOrientation(QtCore.Qt.Orientation.Vertical)
+        self.verticalScrollBar_2.setObjectName("verticalScrollBar_2")
+        self.horizontalScrollBar = QtWidgets.QScrollBar(parent=self.tab)
+        self.horizontalScrollBar.setGeometry(QtCore.QRect(0, 820, 1501, 16))
+        self.horizontalScrollBar.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.horizontalScrollBar.setObjectName("horizontalScrollBar")
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
@@ -372,7 +380,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_5, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1516, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1529, 21))
         self.menubar.setObjectName("menubar")
         self.menuTemperature_Rise = QtWidgets.QMenu(parent=self.menubar)
         self.menuTemperature_Rise.setObjectName("menuTemperature_Rise")
@@ -505,3 +513,12 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("MainWindow", "Error Log"))
         self.menuTemperature_Rise.setTitle(_translate("MainWindow", "Temperature Rise"))
 
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec())

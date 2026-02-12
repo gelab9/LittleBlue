@@ -1,10 +1,11 @@
-Python==Python 3.14.3
-PyQt6==6.6.1
-PyQt6-sip==13.6.0
-PyYAML==6.0.1
+# Python 3.14.3
+pyQt6==6.6.1
+pyQt6-sip==13.6.0
+pyYAML==6.0.1
 matplotlib==3.8.2
 pyserial==3.5
-dotnet==8.0.417
+numpy>=1.24.0
+pytest>=7.4.0
 
 # -------TESTING AND DEVELOPMENT--------
 # STEP 1. When connecting to COM Port use:

@@ -14,6 +14,7 @@ from src.util.config_loader import ConfigLoader
 from src.util.logging_setup import LoggingSetup
 from src.util.csv_logger import CsvLogger
 from src.models.statistics import StatisticsTracker
+from src.devices.radian import RadianDevice
 from src.models.channel import ChannelConfig, build_default_channels
 from src.models.test_controller import TestController
 from src.api.local_api import LocalApiClient, ApiWorker, ApiResult
@@ -83,6 +84,9 @@ class MainWindow(QMainWindow):
         self.test_start_time: datetime | None = None
         self.test_end_time: datetime | None = None
         self.daq_connected = False
+
+        self.radian_connected = False
+        self.radian_device = RadianDevice(logger=self.logger)
 
         # Wire UI
         self.setup_connections()
@@ -244,6 +248,20 @@ class MainWindow(QMainWindow):
             err = data.get("error", "")
             if err and not err.startswith('+0,"No error"'):
                 self.ui.textBrowser_lowerData.append(f"SYST:ERR? -> {err}")
+        
+        elif action == "radian_connect":
+            self.radian_connected = True
+            self.ui.pb_ConnectRadian.setText("Disconnect")
+            self.ui.textBrowser_State.setText(f"RADIAN CONNECTED: {data.get('port', '')}")
+
+        elif action == "radian_disconnect":
+            self.radian_connected = False
+            self.ui.pb_ConnectRadian.setText("Connect")
+            self.ui.textBrowser_State.setText("RADIAN DISCONNECTED")
+
+        elif action == "radian_identify":
+            response = data.get("response", "")
+            self.ui.textBrowser_lowerData.append(f"Radian ID: {response}")
 
         # Check SCPI errors only after DAQ command actions
         if action in (
@@ -544,10 +562,20 @@ class MainWindow(QMainWindow):
     # ----------------------------------------------------------------
 
     def on_connect_radian(self):
-        self.logger.info("Radian connection requested (Mock)")
-        QMessageBox.information(
-            self, "Radian", "Radian connection (Mock implementation)"
-        )
+        """Connect or disconnect to Radian power analyzer."""
+        if self.ui.pb_ConnectRadian.text() == "Disconnect":
+            self.api_post("radian_disconnect", "/radian/disconnect", {})
+            return
+
+        port = self.ui.cB_PortRadian.currentText()
+        baud_rate = 9600
+
+        if not port:
+            QMessageBox.warning(self, "Connection Error", "Please select a COM port for Radian")
+            return
+
+        self.logger.info(f"Connecting to Radian on {port} @ {baud_rate}")
+        self.api_post("radian_connect", "/radian/connect", {"port": port, "baud": baud_rate})
 
     # ----------------------------------------------------------------
     # Cal Inst handlers
