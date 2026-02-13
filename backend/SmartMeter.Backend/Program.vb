@@ -139,12 +139,16 @@ Module Program
                 ' 1) Abort any running scan
                 _daq.Send("ABOR")
                 cmds.Add("ABOR")
-                Threading.Thread.Sleep(200)
+                Threading.Thread.Sleep(500)
 
-                ' 2) Clear status
+                ' 2) Clear status and errors
                 _daq.Send("*CLS")
                 cmds.Add("*CLS")
                 Threading.Thread.Sleep(200)
+
+                ' Drain any stale errors so they don't contaminate the final check
+                _daq.Query("SYST:ERR?")
+                Threading.Thread.Sleep(100)
 
                 ' 3) TC type (only for thermocouple mode)
                 If Not req.useRtd Then
@@ -181,7 +185,17 @@ Module Program
                 cmds.Add("FORM:READ:TIME ON")
                 Threading.Thread.Sleep(100)
 
-                ' 8) Initiate scan
+                ' 8) Trigger source and timer interval
+                If req.triggerTimerSeconds > 0 Then
+                    _daq.Send("TRIGger:SOURce TIMer")
+                    cmds.Add("TRIGger:SOURce TIMer")
+                    Threading.Thread.Sleep(100)
+                    _daq.Send($"TRIGger:TIMer {req.triggerTimerSeconds}")
+                    cmds.Add($"TRIGger:TIMer {req.triggerTimerSeconds}")
+                    Threading.Thread.Sleep(100)
+                End If
+
+                ' 9) Initiate scan
                 _daq.Send("INIT")
                 cmds.Add("INIT")
                 Threading.Thread.Sleep(500)
@@ -719,5 +733,6 @@ Module Program
         Public Property scanList As String          ' e.g. "101,102,...,120"
         Public Property useRtd As Boolean = False   ' True = RTD, False = Thermocouple
         Public Property tcType As String = "K"      ' Thermocouple type (K, J, T, etc.)
+        Public Property triggerTimerSeconds As Integer = 0  ' 0 = no trigger timer
     End Class
 End Module

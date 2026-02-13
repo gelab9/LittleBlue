@@ -53,6 +53,7 @@ class PacPowerDevice:
         self._connected = False
         self.metrics = PacPowerMetrics()
         self.idn: str = ""
+        self.voltage_setpoint: float = 0.0
 
     @property
     def is_connected(self) -> bool:

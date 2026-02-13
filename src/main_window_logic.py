@@ -5,9 +5,10 @@ from pathlib import Path
 from datetime import datetime
 from PyQt6.QtWidgets import (
     QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout,
-    QTextBrowser, QHBoxLayout, QPushButton, QComboBox, QLabel,
+    QTextBrowser, QHBoxLayout, QPushButton, QComboBox, QLabel, QSpinBox,
+    QTimeEdit, QLineEdit,
 )
-from PyQt6.QtCore import QTimer, QThread, pyqtSignal, QSettings, QObject
+from PyQt6.QtCore import QTimer, QThread, pyqtSignal, QSettings, QObject, QTime
 from PyQt6.QtGui import QColor, QTextCharFormat, QFont
 from PyQt6 import QtCore
 
@@ -147,7 +148,19 @@ class MainWindow(QMainWindow):
         tab2_layout.addWidget(self.plot_widget)
 
         # Error Log tab (tab_5)
-        # self._setup_error_log_tab()
+        self._setup_error_log_tab()
+
+        # DAQ Log tab (tab_3)
+        self._setup_daq_log_tab()
+
+        # Radian tab (tab_6)
+        self._setup_radian_tab()
+
+        # PAC Power tab (tab_7)
+        self._setup_pac_power_tab()
+
+        # Mode input widgets (Duration HH:MM:SS, Readings count)
+        self._setup_mode_inputs()
 
         # Wire UI
         self.setup_connections()
@@ -227,6 +240,41 @@ class MainWindow(QMainWindow):
     def update_timestamp(self):
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.ui.label_timeStamp.setText(current_time)
+
+    # ----------------------------------------------------------------
+    # Mode input widgets
+    # ----------------------------------------------------------------
+
+    def _setup_mode_inputs(self):
+        """Add Duration (HH:MM:SS) and Readings (count) inputs to gB_Mode."""
+        # Duration: time edit placed below the radio buttons
+        self._duration_edit = QTimeEdit(self.ui.gB_Mode)
+        self._duration_edit.setDisplayFormat("HH:mm:ss")
+        self._duration_edit.setTime(QTime(1, 0, 0))
+        self._duration_edit.setVisible(False)
+
+        # Readings: spin box for target count
+        self._readings_spinbox = QSpinBox(self.ui.gB_Mode)
+        self._readings_spinbox.setRange(1, 999999)
+        self._readings_spinbox.setValue(100)
+        self._readings_spinbox.setVisible(False)
+
+        # Add to the mode groupbox layout
+        mode_layout = self.ui.gB_Mode.layout()
+        if mode_layout is not None:
+            mode_layout.addWidget(self._duration_edit)
+            mode_layout.addWidget(self._readings_spinbox)
+        else:
+            # Fallback: position manually
+            self._duration_edit.move(10, 90)
+            self._readings_spinbox.move(10, 90)
+
+        # Show the right widget for the current mode
+        self._update_mode_input_visibility()
+
+    def _update_mode_input_visibility(self):
+        self._duration_edit.setVisible(self.ui.button_Duration.isChecked())
+        self._readings_spinbox.setVisible(self.ui.button_Readings.isChecked())
 
     # ----------------------------------------------------------------
     # SCPI helpers
@@ -330,6 +378,19 @@ class MainWindow(QMainWindow):
             response = data.get("response", "")
             self.ui.textBrowser_lowerData.append(f"Radian ID: {response}")
 
+        elif action == "radian_instant_metrics":
+            hex_resp = data.get("response", "")
+            if hex_resp:
+                try:
+                    raw_bytes = bytes.fromhex(hex_resp)
+                    metrics = self.radian_device.parse_instant_metrics(raw_bytes)
+                    if metrics:
+                        self._last_radian_metrics = metrics
+                        self._append_daq_log_entry(metrics)
+                        self._execute_close_loop()
+                except (ValueError, Exception) as e:
+                    self.logger.warning(f"Failed to parse Radian metrics: {e}")
+
         # Cal Inst handlers
         elif action == "cal_inst_connect":
             self.cal_inst_connected = True
@@ -387,6 +448,10 @@ class MainWindow(QMainWindow):
             self.ui.textBrowser_lowerData.append(f"PAC IDN: {idn}")
 
         elif action == "pac_set_voltage":
+            try:
+                self.pac_power_device.voltage_setpoint = float(data.get("voltage", 0))
+            except (ValueError, TypeError):
+                pass
             self.ui.textBrowser_State.setText(f"Voltage set to {data.get('voltage', '?')}V")
 
         elif action == "pac_output_on":
@@ -403,11 +468,42 @@ class MainWindow(QMainWindow):
             self.ui.textBrowser_lowerData.append(
                 f"PAC Metrics: {self.pac_power_device.metrics.to_dict()}"
             )
+            # Also display in PAC Power tab log
+            m = self.pac_power_device.metrics
+            self._pac_log_browser.append(
+                f"V={m.volt_ln[0]:.2f}V  I={m.current_rms[0]:.3f}A  "
+                f"F={m.frequency:.2f}Hz  P={m.power[0]:.2f}W  PF={m.pf[0]:.3f}"
+            )
 
-        # Check SCPI errors after DAQ read actions
-        # (daq_setup already checks errors internally)
-        if action in ("daq_read", "daq_write", "daq_query"):
-            self.api_get("daq_err", "/daq/err")
+        elif action == "pac_tab_get_voltage":
+            v1 = data.get("volt1", "?")
+            v2 = data.get("volt2", "?")
+            v3 = data.get("volt3", "?")
+            self._pac_log_browser.append(f"Voltage: V1={v1}  V2={v2}  V3={v3}")
+
+        elif action == "pac_tab_get_frequency":
+            freq = data.get("frequency", "?")
+            self._pac_log_browser.append(f"Frequency: {freq} Hz")
+
+        elif action == "pac_tab_set_frequency":
+            self._pac_log_browser.append(f"Frequency set: {data.get('sent', '?')}")
+
+        elif action == "radian_tab_instant":
+            hex_resp = data.get("response", "")
+            if hex_resp:
+                try:
+                    raw_bytes = bytes.fromhex(hex_resp)
+                    metrics = self.radian_device.parse_instant_metrics(raw_bytes)
+                    if metrics:
+                        self._last_radian_metrics = metrics
+                        self._display_radian_instant_metrics(metrics)
+                except (ValueError, Exception) as e:
+                    self.logger.warning(f"Failed to parse Radian metrics: {e}")
+
+        # NOTE: Do NOT auto-query SYST:ERR? after daq_read — the READ?
+        # response for many channels takes time to transmit and a follow-up
+        # SYST:ERR? will collide with it, causing -410 "Query INTERRUPTED"
+        # and truncated data.  /daq/setup already checks errors internally.
 
         self.logger.debug(
             f"API finished {action}: status={res.status} data={res.data} err={res.error}"
@@ -548,17 +644,20 @@ class MainWindow(QMainWindow):
             self.test_controller.mode = TestController.MODE_FREE
         elif self.ui.button_Readings.isChecked():
             self.test_controller.mode = TestController.MODE_READINGS
-            # TODO: Add a line edit for target readings in the UI
-            self.test_controller.target_readings = 100
+            self.test_controller.target_readings = self._readings_spinbox.value()
         else:
             self.test_controller.mode = TestController.MODE_DURATION
-            # TODO: Add HH:MM:SS input fields in the UI
-            self.test_controller.target_duration_s = 3600  # default 1 hour
+            t = self._duration_edit.time()
+            self.test_controller.target_duration_s = t.hour() * 3600 + t.minute() * 60 + t.second()
 
         # Initialize CSV logger
         self.csv_logger = CsvLogger(self.data_dir)
         self.csv_logger.initialize(channels)
         self.logger.info(f"CSV logging to {self.csv_logger.filepath}")
+
+        # Read the selected reading interval (seconds)
+        interval_seconds = int(self.ui.cB_readIntervals.currentText() or "5")
+        self.poll_interval_ms = interval_seconds * 1000
 
         # Configure DAQ via single sequenced setup call
         use_rtd = self.ui.button_RTD.isChecked()
@@ -566,6 +665,7 @@ class MainWindow(QMainWindow):
             "scanList": scan_list,
             "useRtd": use_rtd,
             "tcType": "K",
+            "triggerTimerSeconds": interval_seconds,
         })
 
         # Populate compare comboboxes with active channels
@@ -583,6 +683,7 @@ class MainWindow(QMainWindow):
         # Start test
         self.test_controller.start()
         self.test_start_time = datetime.now()
+        self.ui.progressBar.setValue(0)
         self.ui.pB_Start.setText("Stop Test")
         self.ui.pB_Start.setStyleSheet("background-color: #ff6b6b;")
         self.ui.textBrowser_State.setText("RUNNING")
@@ -598,6 +699,12 @@ class MainWindow(QMainWindow):
             self.on_test_complete()
             return
         self.daq_query("daq_read", "READ?")
+        # Also fetch Radian instant metrics if connected (for DAQ log + close loop)
+        if self.radian_connected:
+            self.api_post("radian_instant_metrics", "/radian/command", {
+                "hexCommand": "A6040000",
+                "timeoutMs": 2000,
+            })
 
     def on_test_complete(self):
         """Handle test completion (auto-stop from mode or manual)."""
@@ -616,10 +723,16 @@ class MainWindow(QMainWindow):
             self.csv_logger = None
 
         self.plot_widget.stop_test()
+        self.ui.progressBar.setValue(100)
         self.ui.pB_Start.setText("Start Reading!")
         self.ui.pB_Start.setStyleSheet("")
         self.ui.textBrowser_State.setText("TEST COMPLETE")
         self._update_test_info()
+
+        # Turn off power source if requested
+        if self.ui.cB_sourceOff.isChecked():
+            self.logger.info("Turning off power source after test completion")
+            self.on_voltage_off()
 
         QMessageBox.information(
             self,
@@ -628,6 +741,20 @@ class MainWindow(QMainWindow):
             f"Readings: {self.test_controller.reading_count}\n"
             f"Duration: {duration:.2f}s",
         )
+
+    def _update_progress_bar(self):
+        """Update the progress bar based on the current test mode."""
+        if self.test_controller.mode == TestController.MODE_READINGS:
+            target = self.test_controller.target_readings
+            if target > 0:
+                pct = min(100, int(self.test_controller.reading_count / target * 100))
+                self.ui.progressBar.setValue(pct)
+        elif self.test_controller.mode == TestController.MODE_DURATION:
+            target = self.test_controller.target_duration_s
+            if target > 0:
+                elapsed = self.test_controller.elapsed_seconds()
+                pct = min(100, int(elapsed / target * 100))
+                self.ui.progressBar.setValue(pct)
 
     def _update_test_info(self):
         """Update the information panel labels."""
@@ -654,7 +781,8 @@ class MainWindow(QMainWindow):
         for ch_str, value in channels.items():
             ch_id = int(ch_str)
             cfg = self._get_channel_config(ch_id)
-            calibrated = cfg.apply_calibration(float(value)) if cfg else float(value)
+            raw = float(value)
+            calibrated = cfg.apply_calibration(raw) if (cfg and self.ui.cB_Calibration.isChecked()) else raw
             self.statistics.update_channel(ch_id, calibrated)
             self.update_table_row(ch_id)
 
@@ -684,7 +812,7 @@ class MainWindow(QMainWindow):
 
                 # Apply calibration
                 cfg = self._get_channel_config(ch_id)
-                calibrated = cfg.apply_calibration(raw_value) if cfg else raw_value
+                calibrated = cfg.apply_calibration(raw_value) if (cfg and self.ui.cB_Calibration.isChecked()) else raw_value
 
                 # Update statistics
                 self.statistics.update_channel(ch_id, calibrated)
@@ -700,6 +828,7 @@ class MainWindow(QMainWindow):
         # Record reading in test controller
         if channel_values:
             self.test_controller.record_reading()
+            self._update_progress_bar()
 
             # Log to CSV
             if self.csv_logger:
@@ -790,6 +919,66 @@ class MainWindow(QMainWindow):
                 )
 
     # ----------------------------------------------------------------
+    # Close current loop (proportional voltage control)
+    # ----------------------------------------------------------------
+
+    def _execute_close_loop(self):
+        """Proportional control: adjust voltage to maintain target current."""
+        if not self.ui.cB_closeLoop.isChecked():
+            return
+        if not self.radian_connected:
+            return
+
+        metrics = self._last_radian_metrics
+        if metrics is None:
+            return
+
+        measured_current = metrics.amp
+        if measured_current <= 0:
+            return
+
+        try:
+            target_current = float(self.ui.comboBox.currentText() or "0")
+        except ValueError:
+            return
+        if target_current <= 0:
+            return
+
+        try:
+            controller_db_pct = float(self.ui.lineEdit_Controller.text() or "5")
+            accuracy_db_pct = float(self.ui.lineEdit_Accuracy.text() or "1")
+        except ValueError:
+            return
+
+        control_deadband = controller_db_pct / 100.0 * target_current
+        accuracy_deadband = accuracy_db_pct / 100.0 * target_current
+        difference = measured_current - target_current
+
+        if abs(difference) < control_deadband:
+            if abs(difference) > accuracy_deadband / 1.7:
+                if self.cal_inst_connected:
+                    old_voltage = self.cal_inst_device.voltage_setpoint
+                elif self.pac_connected:
+                    old_voltage = self.pac_power_device.voltage_setpoint
+                else:
+                    return
+
+                if old_voltage <= 0:
+                    return
+
+                new_voltage = round(old_voltage * target_current / measured_current, 1)
+
+                self.logger.info(
+                    f"Close Loop: Measured={measured_current:.3f}A, "
+                    f"Target={target_current}A, OldV={old_voltage}V, NewV={new_voltage}V"
+                )
+
+                if self.cal_inst_connected:
+                    self.api_post("cal_inst_set_voltage", "/cal-inst/set-voltage", {"voltage": new_voltage})
+                elif self.pac_connected:
+                    self.api_post("pac_set_voltage", "/pac/set-voltage", {"voltage": new_voltage})
+
+    # ----------------------------------------------------------------
     # Radian tab handlers
     # ----------------------------------------------------------------
 
@@ -800,7 +989,8 @@ class MainWindow(QMainWindow):
             return
 
         port = self.ui.cB_PortRadian.currentText()
-        baud_rate = 9600
+        baud_text = self.ui.lineEdit_baudRateRadian.text().strip()
+        baud_rate = int(baud_text) if baud_text else 9600
 
         if not port:
             QMessageBox.warning(self, "Connection Error", "Please select a COM port for Radian")
@@ -887,6 +1077,7 @@ class MainWindow(QMainWindow):
             mode = "# of Readings"
         else:
             mode = "Duration"
+        self._update_mode_input_visibility()
         self.logger.debug(f"Test mode changed to: {mode}")
 
     def on_slot_changed(self):
@@ -897,6 +1088,309 @@ class MainWindow(QMainWindow):
         else:
             slot = "Slot 300"
         self.logger.debug(f"Slot changed to: {slot}")
+
+    # ----------------------------------------------------------------
+    # Radian tab
+    # ----------------------------------------------------------------
+
+    def _setup_radian_tab(self):
+        """Build Radian tab (tab_6) with instant and accumulated metrics."""
+        layout = QVBoxLayout(self.ui.tab_6)
+        layout.setContentsMargins(4, 4, 4, 4)
+
+        # Instant metrics section
+        selector_row = QHBoxLayout()
+        self._radian_metric_combo = QComboBox()
+        self._radian_metric_combo.addItems([
+            "All Instant Metrics", "Volts", "Amps", "Watts", "VA",
+            "Frequency", "Phase", "VAR", "Power Factor",
+        ])
+        self._radian_get_btn = QPushButton("Get Instant Metrics")
+        self._radian_get_btn.clicked.connect(self._on_get_radian_instant_metrics)
+        selector_row.addWidget(QLabel("Metric:"))
+        selector_row.addWidget(self._radian_metric_combo)
+        selector_row.addWidget(self._radian_get_btn)
+        selector_row.addStretch()
+        layout.addLayout(selector_row)
+
+        self._radian_instant_browser = QTextBrowser()
+        self._radian_instant_browser.setFont(QFont("Consolas", 10))
+        layout.addWidget(self._radian_instant_browser)
+
+        # Accumulated metrics section
+        layout.addWidget(QLabel("Accumulated Metrics:"))
+        self._radian_accum_browser = QTextBrowser()
+        self._radian_accum_browser.setFont(QFont("Consolas", 10))
+        self._radian_accum_browser.setMaximumHeight(150)
+        layout.addWidget(self._radian_accum_browser)
+
+    def _on_get_radian_instant_metrics(self):
+        """Manual button: request instant metrics from Radian."""
+        if not self.radian_connected:
+            QMessageBox.warning(self, "Not Connected", "Radian is not connected")
+            return
+        self.api_post("radian_tab_instant", "/radian/command", {
+            "hexCommand": "A6040000",
+            "timeoutMs": 2000,
+        })
+
+    def _display_radian_instant_metrics(self, metrics):
+        """Display parsed instant metrics in the Radian tab."""
+        selected = self._radian_metric_combo.currentText()
+        lines = []
+
+        def add(label, value, unit):
+            lines.append(f"{label:20s}: {value:>12.5f} {unit}")
+
+        if selected == "All Instant Metrics" or selected == "Volts":
+            add("Voltage", metrics.volt, "V")
+        if selected == "All Instant Metrics" or selected == "Amps":
+            add("Current", metrics.amp, "A")
+        if selected == "All Instant Metrics" or selected == "Watts":
+            add("Power", metrics.watt, "W")
+        if selected == "All Instant Metrics" or selected == "VA":
+            add("Apparent Power", metrics.va, "VA")
+        if selected == "All Instant Metrics" or selected == "VAR":
+            add("Reactive Power", metrics.var, "VAR")
+        if selected == "All Instant Metrics" or selected == "Frequency":
+            add("Frequency", metrics.frequency, "Hz")
+        if selected == "All Instant Metrics" or selected == "Phase":
+            add("Phase", metrics.phase, "deg")
+        if selected == "All Instant Metrics" or selected == "Power Factor":
+            add("Power Factor", metrics.power_factor, "")
+
+        self._radian_instant_browser.setText("\n".join(lines))
+
+    # ----------------------------------------------------------------
+    # PAC Power tab
+    # ----------------------------------------------------------------
+
+    def _setup_pac_power_tab(self):
+        """Build PAC Power tab (tab_7) with voltage/frequency controls."""
+        layout = QVBoxLayout(self.ui.tab_7)
+        layout.setContentsMargins(4, 4, 4, 4)
+
+        # Voltage control
+        volt_row = QHBoxLayout()
+        self._pac_volt_edit = QLineEdit()
+        self._pac_volt_edit.setPlaceholderText("Voltage RMS")
+        self._pac_set_volt_btn = QPushButton("Set Voltage")
+        self._pac_get_volt_btn = QPushButton("Get Voltage")
+        self._pac_set_volt_btn.clicked.connect(self._on_pac_set_voltage)
+        self._pac_get_volt_btn.clicked.connect(self._on_pac_get_voltage)
+        volt_row.addWidget(QLabel("Voltage:"))
+        volt_row.addWidget(self._pac_volt_edit)
+        volt_row.addWidget(QLabel("V"))
+        volt_row.addWidget(self._pac_set_volt_btn)
+        volt_row.addWidget(self._pac_get_volt_btn)
+        layout.addLayout(volt_row)
+
+        # Frequency control
+        freq_row = QHBoxLayout()
+        self._pac_freq_edit = QLineEdit()
+        self._pac_freq_edit.setPlaceholderText("Frequency Hz")
+        self._pac_set_freq_btn = QPushButton("Set Frequency")
+        self._pac_get_freq_btn = QPushButton("Get Frequency")
+        self._pac_set_freq_btn.clicked.connect(self._on_pac_set_frequency)
+        self._pac_get_freq_btn.clicked.connect(self._on_pac_get_frequency)
+        freq_row.addWidget(QLabel("Frequency:"))
+        freq_row.addWidget(self._pac_freq_edit)
+        freq_row.addWidget(QLabel("Hz"))
+        freq_row.addWidget(self._pac_set_freq_btn)
+        freq_row.addWidget(self._pac_get_freq_btn)
+        layout.addLayout(freq_row)
+
+        # Output control
+        output_row = QHBoxLayout()
+        self._pac_output_on_btn = QPushButton("Output ON")
+        self._pac_output_off_btn = QPushButton("Output OFF")
+        self._pac_measure_btn = QPushButton("Measure All")
+        self._pac_output_on_btn.clicked.connect(
+            lambda: self.api_post("pac_output_on", "/pac/output-on", {}))
+        self._pac_output_off_btn.clicked.connect(
+            lambda: self.api_post("pac_output_off", "/pac/output-off", {}))
+        self._pac_measure_btn.clicked.connect(
+            lambda: self.api_get("pac_measure_all", "/pac/measure/all"))
+        output_row.addWidget(self._pac_output_on_btn)
+        output_row.addWidget(self._pac_output_off_btn)
+        output_row.addWidget(self._pac_measure_btn)
+        output_row.addStretch()
+        layout.addLayout(output_row)
+
+        # Log/readback display
+        self._pac_log_browser = QTextBrowser()
+        self._pac_log_browser.setFont(QFont("Consolas", 9))
+        layout.addWidget(self._pac_log_browser)
+
+    def _on_pac_set_voltage(self):
+        if not self.pac_connected:
+            QMessageBox.warning(self, "Not Connected", "PAC Power is not connected")
+            return
+        try:
+            voltage = float(self._pac_volt_edit.text())
+            self.api_post("pac_set_voltage", "/pac/set-voltage", {"voltage": voltage})
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Input", "Enter a valid voltage")
+
+    def _on_pac_get_voltage(self):
+        if not self.pac_connected:
+            QMessageBox.warning(self, "Not Connected", "PAC Power is not connected")
+            return
+        self.api_get("pac_tab_get_voltage", "/pac/measure/voltage")
+
+    def _on_pac_set_frequency(self):
+        if not self.pac_connected:
+            QMessageBox.warning(self, "Not Connected", "PAC Power is not connected")
+            return
+        try:
+            freq = float(self._pac_freq_edit.text())
+            self.api_post("pac_tab_set_frequency", "/pac/set-frequency", {"frequency": freq})
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Input", "Enter a valid frequency")
+
+    def _on_pac_get_frequency(self):
+        if not self.pac_connected:
+            QMessageBox.warning(self, "Not Connected", "PAC Power is not connected")
+            return
+        self.api_get("pac_tab_get_frequency", "/pac/measure/frequency")
+
+    # ----------------------------------------------------------------
+    # DAQ Log tab
+    # ----------------------------------------------------------------
+
+    def _setup_daq_log_tab(self):
+        """Build DAQ Log tab (tab_3) with timestamped Radian metric samples."""
+        layout = QVBoxLayout(self.ui.tab_3)
+        layout.setContentsMargins(4, 4, 4, 4)
+
+        controls = QHBoxLayout()
+        self._daq_log_clear_btn = QPushButton("Clear")
+        self._daq_log_clear_btn.clicked.connect(lambda: self._daq_log_browser.clear())
+        self._daq_log_save_btn = QPushButton("Save")
+        self._daq_log_save_btn.clicked.connect(self._save_daq_log)
+        controls.addStretch()
+        controls.addWidget(self._daq_log_clear_btn)
+        controls.addWidget(self._daq_log_save_btn)
+        layout.addLayout(controls)
+
+        self._daq_log_browser = QTextBrowser()
+        self._daq_log_browser.setFont(QFont("Consolas", 9))
+        layout.addWidget(self._daq_log_browser)
+
+        self._daq_sample_count = 0
+        self._last_radian_metrics = None
+
+    def _append_daq_log_entry(self, metrics):
+        """Append a Radian metric sample to the DAQ Log tab."""
+        self._daq_sample_count += 1
+        parts = [str(self._daq_sample_count)]
+
+        def fmt(val):
+            """Format number like original VB: magnitude-based decimal places."""
+            av = abs(val)
+            if av < 10:
+                return f"{val:.5f}"
+            elif av < 100:
+                return f"{val:.4f}"
+            return f"{val:.3f}"
+
+        if self.ui.cb_VoltsData.isChecked():
+            parts.append(fmt(metrics.volt))
+        if self.ui.cb_CurrentData.isChecked():
+            parts.append(fmt(metrics.amp))
+        if self.ui.cb_DataFrequency.isChecked():
+            parts.append(fmt(metrics.frequency))
+        if self.ui.cb_PhaseData.isChecked():
+            parts.append(fmt(metrics.phase))
+
+        parts.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        self._daq_log_browser.append("\t".join(parts))
+
+    def _save_daq_log(self):
+        """Save DAQ log contents to a text file."""
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Save DAQ Log", str(self.data_dir / "daq_log.txt"),
+            "Text Files (*.txt);;All Files (*)",
+        )
+        if path:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(self._daq_log_browser.toPlainText())
+            self.logger.info(f"DAQ log saved to {path}")
+
+    # ----------------------------------------------------------------
+    # Error Log tab
+    # ----------------------------------------------------------------
+
+    def _setup_error_log_tab(self):
+        """Build the Error Log tab UI and attach the Qt log handler."""
+        layout = QVBoxLayout(self.ui.tab_5)
+        layout.setContentsMargins(4, 4, 4, 4)
+
+        # Controls row
+        controls = QHBoxLayout()
+        self._log_level_combo = QComboBox()
+        self._log_level_combo.addItems(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+        self._log_level_combo.setCurrentText("DEBUG")
+        self._log_level_combo.currentTextChanged.connect(self._on_log_level_filter_changed)
+
+        self._log_clear_btn = QPushButton("Clear")
+        self._log_clear_btn.clicked.connect(lambda: self._log_browser.clear())
+
+        self._log_export_btn = QPushButton("Export")
+        self._log_export_btn.clicked.connect(self._export_error_log)
+
+        controls.addWidget(QLabel("Min Level:"))
+        controls.addWidget(self._log_level_combo)
+        controls.addStretch()
+        controls.addWidget(self._log_clear_btn)
+        controls.addWidget(self._log_export_btn)
+        layout.addLayout(controls)
+
+        # Log text browser
+        self._log_browser = QTextBrowser()
+        self._log_browser.setOpenExternalLinks(False)
+        self._log_browser.setFont(QFont("Consolas", 9))
+        layout.addWidget(self._log_browser)
+
+        # Current filter level
+        self._log_min_level = logging.DEBUG
+
+        # Attach Qt handler to logger
+        self._qt_log_handler = QtLogHandler()
+        self._qt_log_handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        )
+        self._qt_log_handler.emitter.log_record.connect(self._on_log_record)
+        self.logger.addHandler(self._qt_log_handler)
+
+    def _on_log_record(self, message: str, level: int):
+        """Append a color-coded log record to the Error Log browser."""
+        if level < self._log_min_level:
+            return
+        color = QtLogHandler.LEVEL_COLORS.get(level, "#000000")
+        self._log_browser.append(f'<span style="color:{color}">{message}</span>')
+
+    def _on_log_level_filter_changed(self, text: str):
+        """Update the minimum log level filter."""
+        level_map = {
+            "DEBUG": logging.DEBUG,
+            "INFO": logging.INFO,
+            "WARNING": logging.WARNING,
+            "ERROR": logging.ERROR,
+            "CRITICAL": logging.CRITICAL,
+        }
+        self._log_min_level = level_map.get(text, logging.DEBUG)
+
+    def _export_error_log(self):
+        """Export the error log contents to a text file."""
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Export Error Log", str(self.logs_dir / "error_log.txt"),
+            "Text Files (*.txt);;All Files (*)",
+        )
+        if path:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(self._log_browser.toPlainText())
+            self.logger.info(f"Error log exported to {path}")
 
     # ----------------------------------------------------------------
     # Window close
@@ -984,6 +1478,10 @@ class MainWindow(QMainWindow):
         # Read interval
         s.setValue("test/read_interval_idx", self.ui.cB_readIntervals.currentIndex())
 
+        # Mode inputs
+        s.setValue("test/duration_time", self._duration_edit.time().toString("HH:mm:ss"))
+        s.setValue("test/target_readings", self._readings_spinbox.value())
+
         self.logger.info("Settings saved")
 
     def _restore_settings(self):
@@ -1055,6 +1553,14 @@ class MainWindow(QMainWindow):
         read_idx = s.value("test/read_interval_idx", 0, type=int)
         if 0 <= read_idx < self.ui.cB_readIntervals.count():
             self.ui.cB_readIntervals.setCurrentIndex(read_idx)
+
+        # Mode inputs
+        dur_str = s.value("test/duration_time", "01:00:00")
+        dur_time = QTime.fromString(str(dur_str), "HH:mm:ss")
+        if dur_time.isValid():
+            self._duration_edit.setTime(dur_time)
+        target_readings = s.value("test/target_readings", 100, type=int)
+        self._readings_spinbox.setValue(target_readings)
 
         self.logger.info("Settings restored")
 
