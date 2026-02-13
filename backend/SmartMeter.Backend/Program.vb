@@ -12,6 +12,7 @@ Module Program
     Private ReadOnly _daq As New Daq34970A()
     Private ReadOnly _radian As New Radian()
     Private ReadOnly _pac As New PacPower()
+    Private ReadOnly _calInst As New CalInst()
 
     Sub Main(args As String())
         Dim builder = WebApplication.CreateBuilder(args)
@@ -470,6 +471,95 @@ Module Program
                                            End Try
                                        End Function)
 
+        ' ===== CAL INST (GPIB) ENDPOINTS =====
+
+        app.MapGet("/cal-inst/status", Function()
+                                           Return Results.Ok(New With {
+                                               .connected = _calInst.IsConnected,
+                                               .voltageSetPoint = _calInst.VoltageASetPoint
+                                           })
+                                       End Function)
+
+        app.MapPost("/cal-inst/connect", Function(req As CalInstConnectRequest)
+                                             Try
+                                                 If req Is Nothing Then
+                                                     Return Results.BadRequest(New With {.error = "Missing request body"})
+                                                 End If
+
+                                                 _calInst.Connect(req.boardId, req.primaryAddress, req.secondaryAddress)
+                                                 Dim timeout = _calInst.GetTimeout()
+                                                 Return Results.Ok(New With {
+                                                     .connected = _calInst.IsConnected,
+                                                     .boardId = req.boardId,
+                                                     .primaryAddress = req.primaryAddress,
+                                                     .secondaryAddress = req.secondaryAddress,
+                                                     .timeout = timeout
+                                                 })
+                                             Catch ex As Exception
+                                                 Return Results.Problem(title:="Cal Inst connect failed", detail:=ex.ToString())
+                                             End Try
+                                         End Function)
+
+        app.MapPost("/cal-inst/disconnect", Function()
+                                                Try
+                                                    _calInst.Disconnect()
+                                                    Return Results.Ok(New With {.connected = _calInst.IsConnected})
+                                                Catch ex As Exception
+                                                    Return Results.Problem(title:="Cal Inst disconnect failed", detail:=ex.ToString())
+                                                End Try
+                                            End Function)
+
+        app.MapPost("/cal-inst/write", Function(req As WriteRequest)
+                                           Try
+                                               If req Is Nothing OrElse String.IsNullOrWhiteSpace(req.cmd) Then
+                                                   Return Results.BadRequest(New With {.error = "Missing cmd"})
+                                               End If
+                                               _calInst.Write(req.cmd)
+                                               Return Results.Ok(New With {.sent = req.cmd})
+                                           Catch ex As Exception
+                                               Return Results.Problem(title:="Cal Inst write failed", detail:=ex.ToString())
+                                           End Try
+                                       End Function)
+
+        app.MapPost("/cal-inst/query", Function(req As QueryRequest)
+                                           Try
+                                               If req Is Nothing OrElse String.IsNullOrWhiteSpace(req.cmd) Then
+                                                   Return Results.BadRequest(New With {.error = "Missing cmd"})
+                                               End If
+                                               Dim resp = _calInst.Query(req.cmd)
+                                               Return Results.Ok(New With {.cmd = req.cmd, .response = resp})
+                                           Catch ex As Exception
+                                               Return Results.Problem(title:="Cal Inst query failed", detail:=ex.ToString())
+                                           End Try
+                                       End Function)
+
+        app.MapPost("/cal-inst/set-voltage", Function(req As CalInstVoltageRequest)
+                                                 Try
+                                                     If req Is Nothing Then
+                                                         Return Results.BadRequest(New With {.error = "Missing request body"})
+                                                     End If
+                                                     _calInst.SetVoltage(req.voltage)
+                                                     Return Results.Ok(New With {
+                                                         .voltage = req.voltage,
+                                                         .setPoint = _calInst.VoltageASetPoint
+                                                     })
+                                                 Catch ex As Exception
+                                                     Return Results.Problem(title:="Cal Inst set-voltage failed", detail:=ex.ToString())
+                                                 End Try
+                                             End Function)
+
+        app.MapPost("/cal-inst/voltage-off", Function()
+                                                 Try
+                                                     _calInst.VoltageOff()
+                                                     Return Results.Ok(New With {
+                                                         .voltage = "0.0",
+                                                         .setPoint = _calInst.VoltageASetPoint
+                                                     })
+                                                 Catch ex As Exception
+                                                     Return Results.Problem(title:="Cal Inst voltage-off failed", detail:=ex.ToString())
+                                                 End Try
+                                             End Function)
+
         app.Run("http://127.0.0.1:5055")
     End Sub
 
@@ -533,5 +623,17 @@ Module Program
 
     Public Class PacCurrentLimitRequest
         Public Property limit As Single
+    End Class
+
+    ' ===== Cal Inst Request Classes =====
+
+    Public Class CalInstConnectRequest
+        Public Property boardId As Integer = 0
+        Public Property primaryAddress As Integer = 1
+        Public Property secondaryAddress As Integer = 0
+    End Class
+
+    Public Class CalInstVoltageRequest
+        Public Property voltage As Single
     End Class
 End Module

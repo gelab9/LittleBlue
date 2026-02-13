@@ -1,64 +1,88 @@
 This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
 
 Analysis:
-Let me chronologically analyze the conversation:
+Let me chronologically analyze the entire conversation:
 
-1. **Initial Request**: User explained the LittleBlue project - a Python refactoring of a VB application called "Current Temperature" with a .NET VB backend. They wanted a plan and next steps for getting connections configured to the GUI.
+1. The conversation starts with a continuation summary from a previous session that covers Phases 0-2 (bug fixes, DAQ functionality, Radian device) and the beginning of Phase 3 (PAC Power).
 
-2. **Exploration Phase**: I explored the entire project structure thoroughly, understanding:
-   - PyQt6 frontend
-   - .NET VB backend on port 5055
-   - Original VB code in `original/` folder
-   - Current state of all files
+2. The user's first message continues from where they left off - Phase 3.3 was in progress (wiring PAC Power into main_window_logic.py).
 
-3. **User Clarification**: User answered questions saying:
-   - ALL connections need work (DAQ, Radian, Cal Inst, PAC Power)
-   - Full original feature parity (minus email)
-   - Backend IS running on port 5055
+3. I completed Phase 3.3 by:
+   - Adding `self.pac_power_device` and `self.pac_connected` in `__init__`
+   - Adding `comboBox_2` population in `refresh_serial_ports()`
+   - Replacing mock `on_connect_pac_power()` with real API calls
+   - Wiring `on_set_voltage()` and `on_voltage_off()` to PAC Power
+   - Adding PAC Power action handlers in `on_api_finished()`
 
-4. **Plan Creation**: Created an 8-phase plan and got it approved.
+4. User said "Ok I want to move onto phase 4" - skipping testing Phase 3 for now.
 
-5. **Phase 0 - Bug Fixes** (all completed):
-   - 0.1: Removed premature IDN query at startup (line 139 in main_window_logic.py)
-   - 0.2: Fixed infinite API error-check loop (line 227 - unconditional daq_err call)
-   - 0.3: Fixed duplicate daq_latest handler (lines 198-212)
-   - 0.4: Fixed config key mismatch (operation.* → app.*)
-   - 0.5: Fixed duplicate read_scan() in daq_34970a.py
+5. Phase 4 - Cal Inst GPIB Support:
+   - Created `CalInst.vb` - GPIB driver using NationalInstruments.NI4882
+   - Added NI-488.2 assembly reference to `.vbproj`
+   - Added Cal Inst endpoints to `Program.vb`
+   - Created `src/devices/cal_inst.py` - frontend device state tracker
+   - Wired into `main_window_logic.py` with real API calls replacing mocks
+   - Updated voltage routing to check Cal Inst first, then PAC Power
 
-6. **Phase 1 - DAQ Functionality** (all completed):
-   - Created `src/models/__init__.py`
-   - Created `src/models/statistics.py` - ChannelStats + StatisticsTracker
-   - Created `src/models/channel.py` - ChannelConfig + build_default_channels()
-   - Created `src/models/test_controller.py` - TestController with 3 modes
-   - Created `src/util/csv_logger.py` - CsvLogger
-   - Rewrote `src/main_window_logic.py` with integrated data table, statistics, CSV logging
-   - Fixed UI widget name mismatches (label_readingCount → label_totalNumReadings, etc.)
+6. User said "ok I am ready for phase 5!"
 
-7. **User confirmed Phase 0+1 worked**: "Ok just checked and it seems like it does what it needs to for now, I am ready for Phase 2."
+7. Phase 5 - Plotting:
+   - Created `src/ui/plot_widget.py` with `LiveChart` and `PlotWidget` classes
+   - Uses matplotlib FigureCanvas embedded in PyQt6
+   - Two charts: Temperature vs Time and Current vs Time
+   - Controls: radio toggle, zoom reset, save/load, line width, navigation toolbar
+   - Wired into `tab_2` ("DAQ Plot") in main_window_logic.py
+   - Real-time data point plotting in `apply_daq_response()`
+   - Chart lifecycle tied to test start/stop
 
-8. **Phase 2 - Radian**: User and assistant worked on this together. The user made significant modifications to files themselves (visible in system-reminder diffs):
-   - Modified `Program.vb` to add Radian endpoints and `_radian` singleton
-   - Modified `main_window_logic.py` to add RadianDevice import, radian_connected state, radian action handlers
-   - Created `src/devices/radian.py` with RadianDevice class
-   - Created `src/models/radian_metrics.py` with RadianInstantMetrics, RadianAccumulatedMetrics, RadianPacket
-   - Created `backend/SmartMeter.Backend/Devices/Radian.vb`
-   - Several request classes added to Program.vb
+8. User said "ok I am ready for phase 6!"
 
-9. **User confirmed Phase 2 worked**: "ok so we already finished phase 2 and now ready for phase 3 where we get the PAC power ready for GUI implementation! The radian connects!"
+9. Phase 6 - Channel Comparison:
+   - Created `src/models/comparison.py` with `ComparePair` and `ComparisonTracker`
+   - 5 comparison pairs using existing UI ComboBoxes (3-12) and LineEdits (2-6)
+   - Real-time difference calculation with color feedback
+   - Red font on hotter channel's ComboBox
+   - Red background on difference LineEdit when threshold exceeded
+   - Wired into `main_window_logic.py` with populate/update methods
 
-10. **Phase 3 - PAC Power** (in progress):
-    - Created `backend/SmartMeter.Backend/Devices/PacPower.vb` - SCPI protocol with OPC handshaking
-    - Added PAC Power endpoints to `Program.vb` (connect, disconnect, identify, send, query, set-voltage, set-frequency, output-on/off, set-current-limit, measure/voltage, measure/current, measure/frequency, measure/power, measure/all)
-    - Added request classes (PacConnectRequest, PacVoltageRequest, PacFrequencyRequest, PacCurrentLimitRequest)
-    - Created `src/devices/pac_power.py` with PacPowerMetrics and PacPowerDevice
-    - Started editing `main_window_logic.py` - added PacPowerDevice import
-    - **LEFT OFF**: Still need to wire PAC Power handlers into main_window_logic.py (init, refresh ports, on_api_finished handlers, replace mock on_connect_pac_power, wire voltage buttons)
+10. User said "ok ready for phase 7!"
 
-The last IDE diagnostic shows `"PacPowerDevice" is not accessed` - confirming I added the import but haven't yet used it in the code.
+11. Phase 7 - Settings Persistence:
+    - Added QSettings("LandisGyr", "SmartMeterGUI") for Windows registry persistence
+    - Saves/restores: window geometry, all device ports/settings, test mode, slot, sensor type, voltage, filters, read interval
+    - `_restore_settings()` called after `populate_defaults()` in init
+    - `_save_settings()` called in `closeEvent()`
+
+12. User said "ok ready for phase 8!"
+
+13. Phase 8 - Error Log Tab: I was actively working on this when the summary was requested.
+    - Created `_LogSignalEmitter` QObject class with `log_record` signal
+    - Created `QtLogHandler` logging handler that emits Qt signals
+    - Added imports for additional Qt widgets (QTextBrowser, QPushButton, QComboBox, etc.)
+    - Added `_setup_error_log_tab()` call in `__init__` after plot widget
+    - BUT: The `_setup_error_log_tab()` method itself was NOT yet written
+    - The `_on_log_record()` slot was NOT yet written
+    - The handler was NOT yet attached to the logger
+
+The work on Phase 8 is incomplete. I added the class definitions and the call to `_setup_error_log_tab()` but haven't written the method body yet.
+
+Let me make sure I capture all the files accurately:
+
+Files created this session:
+- `src/devices/pac_power.py` - already existed from before, was read
+- `src/devices/cal_inst.py` - new, CalInstDevice frontend
+- `backend/SmartMeter.Backend/Devices/CalInst.vb` - new, GPIB driver
+- `src/ui/plot_widget.py` - new, matplotlib chart widget
+- `src/models/comparison.py` - new, channel comparison model
+
+Files modified this session:
+- `src/main_window_logic.py` - heavily modified across all phases
+- `backend/SmartMeter.Backend/Program.vb` - added Cal Inst endpoints and request classes
+- `backend/SmartMeter.Backend/SmartMeter.Backend.vbproj` - added NI-488.2 reference
 
 Summary:
 1. Primary Request and Intent:
-   The user is refactoring a VB application called "Current Temperature" into a Python (PyQt6) frontend + .NET VB backend architecture, in a project called "LittleBlue." The user wanted a comprehensive plan to achieve full feature parity with the original VB app (minus email notifications), with all device connections working (DAQ 34970A, Radian, Cal Inst, PAC Power). The backend runs on `http://127.0.0.1:5055`. Work has progressed through Phases 0-2 (bug fixes, DAQ functionality, Radian device), and Phase 3 (PAC Power) is currently in progress.
+   The user is refactoring a VB application called "Current Temperature" into a Python (PyQt6) frontend + .NET VB backend architecture, in a project called "LittleBlue." They want full feature parity with the original VB app (minus email notifications), with all device connections working (DAQ 34970A, Radian, Cal Inst, PAC Power). The backend runs on `http://127.0.0.1:5055`. An 8-phase plan was created and approved. Phases 0-2 were completed in a prior session. This session continued from Phase 3.3 and progressed through Phases 3-7 completely, with Phase 8 (Error Log Tab) actively in progress when this summary was requested.
 
 2. Key Technical Concepts:
    - **Architecture**: PyQt6 GUI → HTTP REST API (localhost:5055) → .NET VB Backend → Serial/GPIB → Hardware
@@ -66,6 +90,11 @@ Summary:
    - **SCPI protocol** for DAQ 34970A (ASCII, CRLF terminated)
    - **Binary packet protocol** for Radian (start byte 0xA6, type, length, data, checksum)
    - **ASCII SCPI with OPC handshaking** for PAC Power (appends `;*OPC?`, waits for `1\r\n`)
+   - **GPIB (NI-488.2)** for Cal Inst CA501TAC (simple `AMPA <voltage>` commands)
+   - **matplotlib embedded in PyQt6** via `FigureCanvasQTAgg` for real-time plotting
+   - **Channel comparison** with threshold monitoring (5 pairs, color feedback)
+   - **QSettings** for persistent user preferences (Windows registry)
+   - **Custom logging handler** (`QtLogHandler`) emitting Qt signals for Error Log tab
    - **Per-channel statistics**: current, max, min, average, temperature rise
    - **Channel calibration**: gain/offset per channel
    - **Test modes**: Free (manual stop), Duration (timed), Number of Readings
@@ -74,133 +103,161 @@ Summary:
 
 3. Files and Code Sections:
 
-   - **`src/main_window_logic.py`** - Central GUI logic hub; all device handlers, API routing, data display
-     - Completely rewritten in Phase 1 to integrate real models replacing Null* stubs
-     - User modified during Phase 2 to add Radian support (RadianDevice import, radian_connected state, radian action handlers in on_api_finished)
-     - Phase 3 edit in progress: added `from src.devices.pac_power import PacPowerDevice` but NOT YET used
-     - Current PAC Power handler is still a mock:
+   - **`src/main_window_logic.py`** - Central GUI logic hub; ALL device handlers, API routing, data display
+     - Most heavily modified file across all phases this session
+     - Phase 3: Added PAC Power device init, port population, API handlers, real connect/disconnect, voltage routing
+     - Phase 4: Added Cal Inst device init, replaced mock handlers with real API calls, voltage routing updated (Cal Inst first, then PAC Power)
+     - Phase 5: Added PlotWidget embedded in tab_2, chart init on test start, data points on each reading, stop on test end
+     - Phase 6: Added ComparisonTracker, _compare_widgets list, _populate_compare_combos(), _update_comparisons() with color feedback
+     - Phase 7: Added QSettings save/restore for all UI preferences, called in init and closeEvent
+     - Phase 8 (in progress): Added QtLogHandler class, _LogSignalEmitter class, additional widget imports, `_setup_error_log_tab()` call in init BUT method body NOT yet written
+     - Current imports:
      ```python
-     def on_connect_pac_power(self):
-         baud_rate = self.ui.lineEdit.text()
-         port = self.ui.comboBox_2.currentText()
-         self.logger.info(f"Connecting to PAC Power on {port} at {baud_rate} baud")
-         QMessageBox.information(
-             self, "PAC Power", "PAC Power connection (Mock implementation)"
-         )
+     from PyQt6.QtWidgets import (
+         QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout,
+         QTextBrowser, QHBoxLayout, QPushButton, QComboBox, QLabel,
+     )
+     from PyQt6.QtCore import QTimer, QThread, pyqtSignal, QSettings, QObject
+     from PyQt6.QtGui import QColor, QTextCharFormat, QFont
      ```
-     - Still needs: PAC Power device initialization in `__init__`, `comboBox_2` populated in `refresh_serial_ports`, PAC Power action handlers in `on_api_finished`, real `on_connect_pac_power`, voltage set/off wired to PAC Power
+     - Classes added before MainWindow:
+     ```python
+     class _LogSignalEmitter(QObject):
+         """Bridge between Python logging and Qt signals."""
+         log_record = pyqtSignal(str, int)  # message, level
 
-   - **`backend/SmartMeter.Backend/Devices/PacPower.vb`** - NEW, created in Phase 3
-     - ASCII SCPI driver with OPC handshaking pattern from original `PacPowerUCP1.vb`
-     - Key methods: `Connect()`, `Disconnect()`, `Send()` (with `;*OPC?` + CRLF), `Query()`, `QueryRaw()` (for *IDN?)
-     - `WaitForOpc()` and `ReadResponse()` handle the "1\r\n" OPC acknowledgment pattern
-     ```vb
-     Public Sub Send(command As String)
-         EnsureConnected()
-         _port.DiscardInBuffer()
-         _port.DiscardOutBuffer()
-         Dim fullCommand = command.TrimEnd() & ";*OPC?" & vbCrLf
-         Dim bytes = Encoding.ASCII.GetBytes(fullCommand)
-         _port.Write(bytes, 0, bytes.Length)
-         _port.BaseStream.Flush()
-         WaitForOpc(3000)
-     End Sub
+     class QtLogHandler(logging.Handler):
+         """Logging handler that emits Qt signals for each log record."""
+         LEVEL_COLORS = {
+             logging.DEBUG: "#888888",
+             logging.INFO: "#000000",
+             logging.WARNING: "#cc8800",
+             logging.ERROR: "#cc0000",
+             logging.CRITICAL: "#ff0000",
+         }
+         def __init__(self):
+             super().__init__()
+             self.emitter = _LogSignalEmitter()
+         def emit(self, record: logging.LogRecord):
+             try:
+                 msg = self.format(record)
+                 self.emitter.log_record.emit(msg, record.levelno)
+             except Exception:
+                 self.handleError(record)
      ```
+     - In `__init__`, after plot widget setup:
+     ```python
+     # Error Log tab (tab_5)
+     self._setup_error_log_tab()
+     ```
+     - Voltage routing logic (Phase 4 update):
+     ```python
+     def on_set_voltage(self):
+         ...
+         if self.cal_inst_connected:
+             self.api_post("cal_inst_set_voltage", "/cal-inst/set-voltage", {"voltage": voltage})
+         elif self.pac_connected:
+             self.api_post("pac_set_voltage", "/pac/set-voltage", {"voltage": voltage})
+             self.api_post("pac_output_on", "/pac/output-on", {})
+         else:
+             QMessageBox.warning(self, "Not Connected", "No voltage source connected (Cal Inst or PAC Power)")
+     ```
+
+   - **`backend/SmartMeter.Backend/Devices/CalInst.vb`** - NEW, GPIB driver for CA501TAC
+     - Uses `NationalInstruments.NI4882` Device class
+     - `Connect(boardId, primaryAddress, secondaryAddress)`, `Disconnect()`, `Write()`, `Read()`, `Query()`
+     - `SetVoltage(voltage)` sends `AMPA <voltage>`, `VoltageOff()` sends `AMPA 0.0`
+     - Auto-calls `VoltageOff()` on connect for safety
 
    - **`backend/SmartMeter.Backend/Program.vb`** - REST API endpoints
-     - Added `Private ReadOnly _pac As New PacPower()` singleton
-     - Added 14 PAC Power endpoints: `/pac/status`, `/pac/connect`, `/pac/disconnect`, `/pac/identify`, `/pac/send`, `/pac/query`, `/pac/set-voltage`, `/pac/set-frequency`, `/pac/output-on`, `/pac/output-off`, `/pac/set-current-limit`, `/pac/measure/voltage`, `/pac/measure/current`, `/pac/measure/frequency`, `/pac/measure/power`, `/pac/measure/all`
-     - Added request classes: `PacConnectRequest`, `PacVoltageRequest`, `PacFrequencyRequest`, `PacCurrentLimitRequest`
+     - Added `Private ReadOnly _calInst As New CalInst()` singleton
+     - 7 Cal Inst endpoints: `/cal-inst/status`, `/cal-inst/connect`, `/cal-inst/disconnect`, `/cal-inst/write`, `/cal-inst/query`, `/cal-inst/set-voltage`, `/cal-inst/voltage-off`
+     - Added `CalInstConnectRequest` (boardId, primaryAddress, secondaryAddress) and `CalInstVoltageRequest` (voltage) classes
 
-   - **`src/devices/pac_power.py`** - NEW, created in Phase 3
-     - `PacPowerMetrics` dataclass: volt_ln, current_rms, frequency, power, kva, pf (all 3-phase)
-     - `PacPowerDevice` class: state tracker with `update_*_from_api()` methods to parse backend responses
+   - **`backend/SmartMeter.Backend/SmartMeter.Backend.vbproj`** - Project file
+     - Added NI-488.2 assembly reference with HintPath to `C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.NI4882.dll`
+
+   - **`src/devices/cal_inst.py`** - NEW, frontend device state tracker
      ```python
-     class PacPowerDevice:
+     class CalInstDevice:
          def __init__(self, logger=None):
-             self.logger = logger or logging.getLogger(__name__)
              self._connected = False
-             self.metrics = PacPowerMetrics()
-             self.idn: str = ""
+             self.voltage_setpoint: float = 0.0
+             self.board_id: int = 0
+             self.primary_address: int = 1
+             self.secondary_address: int = 0
+             self.timeout_str: str = ""
+         def update_from_connect(self, data: dict): ...
+         def update_voltage_setpoint(self, data: dict): ...
      ```
 
-   - **`src/models/statistics.py`** - Created in Phase 1
-     - `ChannelStats`: per-channel current/max/min/sum/count with `update()` and `average` property
-     - `StatisticsTracker`: manages dict of ChannelStats, ambient channel for temp rise
+   - **`src/ui/plot_widget.py`** - NEW, matplotlib chart widget for PyQt6
+     - `LiveChart` class: manages axes with named series, add_series/add_point/refresh/set_line_width/set_visible
+     - `PlotWidget(QWidget)` class: embeddable widget with full controls
+       - Two charts: Temperature vs Time (ax_temp) and Current vs Time (ax_current)
+       - Radio toggle, zoom reset (X/Y/XY), line width combo, save PNG, load CSV
+       - Built-in NavigationToolbar for zoom/pan
+       - Public API: `start_test(channel_names)`, `add_temperature_points(dict)`, `add_current_point(float)`, `stop_test()`
 
-   - **`src/models/channel.py`** - Created in Phase 1
-     - `ChannelConfig` dataclass with gain/offset calibration
-     - `build_default_channels()` returns 60 channels (3 slots × 20)
+   - **`src/models/comparison.py`** - NEW, channel comparison with thresholds
+     - `ComparePair` dataclass: channel_a/b, threshold, enabled, difference, value_a/b, warning_sent
+       - Properties: is_configured, a_is_hotter, b_is_hotter, threshold_exceeded
+     - `ComparisonTracker`: manages 5 pairs
+       - `configure_pair()`, `set_threshold()`, `update_readings(channel_values)` returns exceeded indices, `reset()`
 
-   - **`src/models/test_controller.py`** - Created in Phase 1
-     - `TestController` with MODE_FREE/MODE_DURATION/MODE_READINGS and `should_stop()`
+   - **`src/devices/pac_power.py`** - PAC Power frontend (read, not modified this session)
+     - `PacPowerMetrics` dataclass with 3-phase measurements
+     - `PacPowerDevice` with `update_*_from_api()` methods
 
-   - **`src/util/csv_logger.py`** - Created in Phase 1
-     - Writes to `output/data/daq_data_YYYYMMDD_HHMMSS.csv`
+   - **`backend/SmartMeter.Backend/Devices/PacPower.vb`** - PAC Power SCPI driver (read, not modified)
+     - OPC handshaking pattern: `command;*OPC?\r\n` → waits for `1\r\n`
 
-   - **`src/util/config_loader.py`** - Fixed in Phase 0.4
-     - Changed `operation.mock_mode` → `app.mock_mode`, `operation.poll_interval_ms` → `app.poll_interval_ms`
+   - **`src/util/config_loader.py`** - Config loader (read, not modified)
+   - **`src/util/logging_setup.py`** - Logging setup (read for Phase 8 understanding)
+   - **`config/default.yaml`** - YAML config (read, not modified)
 
-   - **`src/devices/radian.py`** - Created by user in Phase 2
-     - `RadianDevice(DeviceBase)` with `parse_instant_metrics()`, `parse_accumulated_metrics()`, command builders
-
-   - **`src/models/radian_metrics.py`** - Created by user in Phase 2
-     - `RadianInstantMetrics`, `RadianAccumulatedMetrics`, `RadianPacket`, `RadianPacketType`, `RadianMessageState`
-
-   - **`backend/SmartMeter.Backend/Devices/Radian.vb`** - Created in Phase 2
-     - Binary protocol driver with 16-bit checksum, packet-based receive
-
-   - **`backend/SmartMeter.Backend/Devices/Daq34970A.vb`** - Existing, pattern reference
-     - Simple Send/Query with CRLF, ReadRaw with timeout
-
-   - **UI widget names for PAC Power** (from `src/ui/main_window.ui`):
-     - `lineEdit` - baud rate input
-     - `comboBox_2` - port selection
-     - `pushButton` - connect button
-     - `tab_7` - PAC Power tab (currently empty)
+   - **UI widget names used throughout**:
+     - DAQ: `pb_Connect34970A`, `cb_Port24970A`, `cb_baudRate24970A`, `pB_Start`, `lineEdit_Voltage`, `pb_setVoltage`, `pb_voltageOff`
+     - Radian: `pb_ConnectRadian`, `cB_PortRadian`
+     - Cal Inst: `pb_OpenCalInstConx`, `pb_CloseCalInstConx`, `spinBox_BoardID`, `spinBox_PrimAddress`, `cb_SecAddress`
+     - PAC Power: `pushButton`, `comboBox_2`, `lineEdit`
+     - Compare: `comboBox_3`-`comboBox_12`, `lineEdit_2`-`lineEdit_6`, `label_3`-`label_7` (°C)
+     - Tabs: `tab` (DAQ), `tab_2` (DAQ Plot), `tab_3` (DAQ Log), `tab_4` (Current Controller), `tab_5` (Error Log), `tab_6` (Radian), `tab_7` (PAC Power)
 
 4. Errors and fixes:
-   - **Premature IDN query at startup** (Phase 0.1): `api_post("daq_query", "/daq/query", ...)` was called in `setup_connections()` before any device connected → removed the line
-   - **Infinite API error-check loop** (Phase 0.2): `api_get("daq_err", "/daq/err")` called unconditionally at end of `on_api_finished` → moved inside conditional block for DAQ-specific actions only
-   - **Duplicate `daq_latest` handler** (Phase 0.3): Two elif blocks for same action → merged into one
-   - **Config key mismatch** (Phase 0.4): Code used `operation.*` but YAML used `app.*` → updated code to match YAML
-   - **Duplicate `read_scan()` method** (Phase 0.5): Defined twice in daq_34970a.py → removed first definition
-   - **UI widget name mismatches** (Phase 1): Referenced `label_readingCount`, `lineEdit_numReadings`, `lineEdit_Hours/Minutes/Seconds` which don't exist → changed to use existing `label_totalNumReadings` with inline text, and TODOs for missing input fields
-   - **File write before read error**: Got `File has not been read yet` error when trying to Write to `pac_power.py` → read the file first, then wrote
+   - No runtime errors encountered this session. All changes were code modifications done proactively.
+   - The NI-488.2 DLL HintPath in `.vbproj` may need adjustment based on the user's actual NI driver install location - noted in the summary to user.
 
 5. Problem Solving:
-   - Designed 8-phase implementation plan covering all features
-   - Solved the data table approach: changed from inserting rows per reading to fixed rows per channel with in-place updates
-   - Handled UI labels that are static text (no separate value labels) by setting full text like `f"Start Time: {value}"`
-   - Filtered out `+0,"No error"` SCPI responses to reduce noise in error display
-   - For PAC Power, implemented OPC handshaking protocol: every command gets `;*OPC?` appended, waits for `1\r\n` acknowledgment
+   - **Voltage source routing**: Solved by checking Cal Inst first, then PAC Power, matching original VB behavior where radio buttons selected the voltage source
+   - **Dual chart toggle**: Solved by using two matplotlib axes on the same figure subplot, toggling visibility with radio buttons
+   - **Real-time plot performance**: Used `draw_idle()` for incremental updates during test, `draw()` for full refreshes
+   - **Compare color feedback**: Used Qt stylesheets on ComboBoxes (`color: red; font-weight: bold;`) since PyQt6 doesn't support foreground color on combos directly
+   - **Settings persistence**: Used QSettings which saves to Windows registry, with `_select_combo_value()` helper to safely restore port selections only if the port still exists
+   - **Phase 8 architecture**: Designed `QtLogHandler` + `_LogSignalEmitter` bridge pattern to safely emit log records from any thread to the Qt UI thread via signals
 
 6. All user messages:
-   - "So this is a project called LittleBlue where I am trying to recreate an application that was originally called Current Temperature and in Visual Basic code where now I am refactoring it to be in python with a its backend as a .net visual basic application and need it to be like the original code but in python. All the original code is in the \original folder, so I originally created a plan with Chat GPT but now need to recreate that plan so we have a working application. Right now, I was trying to get my connections configured to me GUI so let me know the plan and what to do next. Take a moment to go through this entire project to understand what's going on."
-   - [Answered questions]: All connections, Full original feature parity but without the email, Yes backend runs
-   - "Ok just checked and it seems like it does what it needs to for now, I am ready for Phase 2."
-   - "ok so we already finished phase 2 and now ready for phase 3 where we get the PAC power ready for GUI implementation! The radian connects!"
+   - (From prior session summary) "So this is a project called LittleBlue where I am trying to recreate an application..."
+   - (From prior session) Answered questions: All connections, Full feature parity minus email, Yes backend runs
+   - (From prior session) "Ok just checked and it seems like it does what it needs to for now, I am ready for Phase 2."
+   - (From prior session) "ok so we already finished phase 2 and now ready for phase 3 where we get the PAC power ready for GUI implementation! The radian connects!"
+   - "Ok, I want to move onto phase 4 because my pac power and all my connections for that matter, should be wired up the same as it is in the code and it should still work because that setup hasn't changed at all. Since I am not actually connected to the hardware right now at the moment, I want to move onto phase 4 and then test phase 3 and 4 together so that I am able to debug later when I can!"
+   - "ok I am ready for phase 5!"
+   - "ok I am ready for phase 6!"
+   - "ok ready for phase 7!"
+   - "ok ready for phase 8!"
 
 7. Pending Tasks:
-   - **Complete Phase 3.3**: Wire PAC Power handlers into `main_window_logic.py` (initialize PacPowerDevice, populate port combo, add on_api_finished handlers, replace mock on_connect_pac_power, wire voltage set/off buttons)
-   - Phase 4: California Instruments GPIB Support
-   - Phase 5: Plotting (matplotlib in PyQt6)
-   - Phase 6: Channel Comparison with Thresholds
-   - Phase 7: Settings Persistence
-   - Phase 8: Error Log Tab
+   - **Complete Phase 8**: Error Log Tab - need to write `_setup_error_log_tab()` method body, `_on_log_record()` slot, attach handler to logger, add controls (clear, filter by level, export)
+   - Future testing of Phase 3 (PAC Power) and Phase 4 (Cal Inst) when hardware is available
 
 8. Current Work:
-   Phase 3.3 is actively in progress. The backend components are complete (PacPower.vb driver and all REST endpoints in Program.vb). The frontend data model (`src/devices/pac_power.py`) is complete. The last edit was adding `from src.devices.pac_power import PacPowerDevice` to `main_window_logic.py` (line 18), which triggered an IDE diagnostic: `"PacPowerDevice" is not accessed`. 
-   
-   Still remaining for Phase 3.3:
-   - Add `self.pac_power_device = PacPowerDevice(logger=self.logger)` and `self.pac_connected = False` in `__init__`
-   - Add `comboBox_2` population in `refresh_serial_ports()`
-   - Add PAC Power action handlers in `on_api_finished()` (pac_connect, pac_disconnect, pac_identify, pac_set_voltage, pac_output_on/off, pac_measure_*)
-   - Replace mock `on_connect_pac_power()` with real connect/disconnect toggle via API
-   - Wire `on_set_voltage()` and `on_voltage_off()` to PAC Power backend endpoints
+   Phase 8 (Error Log Tab) is actively in progress. The `QtLogHandler` class and `_LogSignalEmitter` class have been added to `main_window_logic.py`. Additional Qt widget imports have been added (`QTextBrowser`, `QHBoxLayout`, `QPushButton`, `QComboBox`, `QLabel`, `QColor`, `QTextCharFormat`, `QFont`). A call to `self._setup_error_log_tab()` has been inserted in `__init__` after the plot widget setup. However, the **`_setup_error_log_tab()` method body has NOT been written yet**, nor has the `_on_log_record()` slot, nor has the handler been attached to the logger. The `tab_5` widget exists in the UI as "Error Log" and is currently empty.
+
+   I had read the full `main_window_logic.py` file (1077 lines) and `logging_setup.py` to understand the log handler architecture before starting Phase 8 implementation.
 
 9. Optional Next Step:
-   Continue wiring PAC Power into `main_window_logic.py`. The import was just added but the class isn't used yet. Need to add initialization, port population, API response handlers, and replace the mock connect handler. This directly continues the Phase 3 work the user requested: "ok so we already finished phase 2 and now ready for phase 3 where we get the PAC power ready for GUI implementation!"
+   Continue Phase 8 by writing the `_setup_error_log_tab()` method (create QTextBrowser + controls layout in `tab_5`), the `_on_log_record()` slot (append color-coded messages to the text browser), and attaching the `QtLogHandler` to `self.logger`. This directly continues the user's most recent request: "ok ready for phase 8!" and the Error Log Tab work that was actively in progress.
 
-If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\gelab\.claude\projects\c--Users-gelab-Downloads-LittleBlue-develop\893b155b-29b9-45f6-a9f8-27957fd0101f.jsonl
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\kogutama\.claude\projects\c--Users-kogutama-OneDrive---Landis-Gyr-Desktop-smart-meter-gui-migration\2c8b7b88-bbb5-4a36-8462-b8faa370d580.jsonl
 Please continue the conversation from where we left off without asking the user any further questions. Continue with the last task that you were asked to work on.

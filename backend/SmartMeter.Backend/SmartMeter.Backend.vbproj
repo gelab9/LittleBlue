@@ -10,4 +10,13 @@
     <PackageReference Include="System.IO.Ports" Version="10.0.2" />
   </ItemGroup>
 
+  <!-- NI-488.2 GPIB assembly (requires NI-VISA/NI-488.2 drivers installed) -->
+  <!-- If the path below doesn't match your install, update HintPath to your NationalInstruments.NI4882.dll location -->
+  <ItemGroup>
+    <Reference Include="NationalInstruments.NI4882">
+      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.NI4882.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
 </Project>
