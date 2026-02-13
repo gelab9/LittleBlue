@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
         tab2_layout.addWidget(self.plot_widget)
 
         # Error Log tab (tab_5)
-        self._setup_error_log_tab()
+        # self._setup_error_log_tab()
 
         # Wire UI
         self.setup_connections()
