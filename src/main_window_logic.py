@@ -293,6 +293,9 @@ class MainWindow(QMainWindow):
             self.apply_latest_reading(data)
 
         elif action == "daq_setup":
+            err = data.get("error", "")
+            if err and not err.startswith('+0,"No error"'):
+                self.ui.textBrowser_lowerData.append(f"DAQ setup error: {err}")
             self.ui.textBrowser_State.setText("DAQ setup complete")
 
         elif action == "daq_run":
@@ -401,12 +404,9 @@ class MainWindow(QMainWindow):
                 f"PAC Metrics: {self.pac_power_device.metrics.to_dict()}"
             )
 
-        # Check SCPI errors only after DAQ command actions
-        if action in (
-            "daq_read", "daq_write", "daq_conf", "daq_scan",
-            "daq_abort", "daq_cls", "daq_init", "daq_fmt_chan",
-            "daq_fmt_time", "daq_tc_type",
-        ):
+        # Check SCPI errors after DAQ read actions
+        # (daq_setup already checks errors internally)
+        if action in ("daq_read", "daq_write", "daq_query"):
             self.api_get("daq_err", "/daq/err")
 
         self.logger.debug(
@@ -560,21 +560,13 @@ class MainWindow(QMainWindow):
         self.csv_logger.initialize(channels)
         self.logger.info(f"CSV logging to {self.csv_logger.filepath}")
 
-        # Choose sensor type
-        if self.ui.button_RTD.isChecked():
-            conf = f"CONF:TEMP RTD,(@{scan_list})"
-        else:
-            conf = f"CONF:TEMP TC,(@{scan_list})"
-            self.daq_write("daq_tc_type", "SENS:TEMP:TC:TYPE K")
-
-        # Configure DAQ via SCPI
-        self.daq_write("daq_abort", "ABOR")
-        self.daq_write("daq_cls", "*CLS")
-        self.daq_write("daq_conf", conf)
-        self.daq_write("daq_scan", f"ROUT:SCAN (@{scan_list})")
-        self.daq_write("daq_fmt_chan", "FORM:READ:CHAN ON")
-        self.daq_write("daq_fmt_time", "FORM:READ:TIME ON")
-        self.daq_write("daq_init", "INIT")
+        # Configure DAQ via single sequenced setup call
+        use_rtd = self.ui.button_RTD.isChecked()
+        self.api_post("daq_setup", "/daq/setup", {
+            "scanList": scan_list,
+            "useRtd": use_rtd,
+            "tcType": "K",
+        })
 
         # Populate compare comboboxes with active channels
         self._populate_compare_combos(channels)

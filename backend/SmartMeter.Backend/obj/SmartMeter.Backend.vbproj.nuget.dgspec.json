@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj": {}
+    "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj": {}
   },
   "projects": {
-    "c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj": {
+    "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
+        "projectUniqueName": "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
         "projectName": "SmartMeter.Backend",
-        "projectPath": "c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
+        "projectPath": "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
         "packagesPath": "C:\\Users\\gelab\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\obj\\",
+        "outputPath": "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\gelab\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -43,6 +43,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.Windows.Compatibility": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "System.IO.Ports": {
               "target": "Package",
               "version": "[10.0.2, )"

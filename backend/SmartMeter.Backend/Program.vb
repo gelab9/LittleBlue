@@ -122,6 +122,84 @@ Module Program
             Return Results.Ok(New With {.error = err})
         End Function)
 
+        ' Sequenced DAQ setup – sends all SCPI commands with delays so the
+        ' instrument can process each one before the next arrives.
+        app.MapPost("/daq/setup", Function(req As DaqSetupRequest)
+            Try
+                If req Is Nothing OrElse String.IsNullOrWhiteSpace(req.scanList) Then
+                    Return Results.BadRequest(New With {.error = "Missing scanList"})
+                End If
+
+                If Not _daq.IsConnected Then
+                    Return Results.BadRequest(New With {.error = "DAQ not connected"})
+                End If
+
+                Dim cmds As New List(Of String)
+
+                ' 1) Abort any running scan
+                _daq.Send("ABOR")
+                cmds.Add("ABOR")
+                Threading.Thread.Sleep(200)
+
+                ' 2) Clear status
+                _daq.Send("*CLS")
+                cmds.Add("*CLS")
+                Threading.Thread.Sleep(200)
+
+                ' 3) TC type (only for thermocouple mode)
+                If Not req.useRtd Then
+                    Dim tcCmd = $"SENS:TEMP:TC:TYPE {req.tcType}"
+                    _daq.Send(tcCmd)
+                    cmds.Add(tcCmd)
+                    Threading.Thread.Sleep(200)
+                End If
+
+                ' 4) Configure temperature measurement
+                Dim confCmd As String
+                If req.useRtd Then
+                    confCmd = $"CONF:TEMP RTD,(@{req.scanList})"
+                Else
+                    confCmd = $"CONF:TEMP TC,(@{req.scanList})"
+                End If
+                _daq.Send(confCmd)
+                cmds.Add(confCmd)
+                Threading.Thread.Sleep(200)
+
+                ' 5) Configure scan list
+                Dim scanCmd = $"ROUT:SCAN (@{req.scanList})"
+                _daq.Send(scanCmd)
+                cmds.Add(scanCmd)
+                Threading.Thread.Sleep(200)
+
+                ' 6) Format: include channel numbers
+                _daq.Send("FORM:READ:CHAN ON")
+                cmds.Add("FORM:READ:CHAN ON")
+                Threading.Thread.Sleep(100)
+
+                ' 7) Format: include timestamps
+                _daq.Send("FORM:READ:TIME ON")
+                cmds.Add("FORM:READ:TIME ON")
+                Threading.Thread.Sleep(100)
+
+                ' 8) Initiate scan
+                _daq.Send("INIT")
+                cmds.Add("INIT")
+                Threading.Thread.Sleep(500)
+
+                ' 9) Check for errors
+                Dim errStr = _daq.Query("SYST:ERR?")
+
+                Return Results.Ok(New With {
+                    .setup = "ok",
+                    .commands = cmds,
+                    .error = errStr
+                })
+
+            Catch ex As Exception
+                Return Results.Problem(title:="DAQ setup failed", detail:=ex.ToString())
+            End Try
+        End Function)
+
         ' ===== RADIAN ENDPOINTS =====
 
         app.MapGet("/radian/status", Function()
@@ -635,5 +713,11 @@ Module Program
 
     Public Class CalInstVoltageRequest
         Public Property voltage As Single
+    End Class
+
+    Public Class DaqSetupRequest
+        Public Property scanList As String          ' e.g. "101,102,...,120"
+        Public Property useRtd As Boolean = False   ' True = RTD, False = Thermocouple
+        Public Property tcType As String = "K"      ' Thermocouple type (K, J, T, etc.)
     End Class
 End Module

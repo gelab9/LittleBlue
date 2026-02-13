@@ -15,8 +15,16 @@
   <ItemGroup>
     <Reference Include="NationalInstruments.NI4882">
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.NI4882.dll</HintPath>
-      <Private>false</Private>
+      <Private>true</Private>
     </Reference>
+  </ItemGroup>
+
+  <!-- Allow .NET Framework assemblies to be used in .NET 8 -->
+  <PropertyGroup>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

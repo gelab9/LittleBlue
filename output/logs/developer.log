@@ -551,3 +551,100 @@
 2026-02-12 23:09:05 - SmartMeterApp - ERROR - daq_read failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/query (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
 2026-02-12 23:09:07 - SmartMeterApp - ERROR - daq_read failed: 0 HTTPConnectionPool(host='127.0.0.1', port=5055): Max retries exceeded with url: /daq/query (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=5055): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
 2026-02-12 23:09:09 - SmartMeterApp - INFO - Application closed normally
+2026-02-13 07:49:49 - SmartMeterApp - INFO - ============================================================
+2026-02-13 07:49:49 - SmartMeterApp - INFO - Application starting
+2026-02-13 07:49:49 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-13 07:49:49 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-13 07:49:49 - SmartMeterApp - INFO - ============================================================
+2026-02-13 07:49:49 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-13 07:49:49 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-13 07:49:49 - SmartMeterApp - INFO - UI defaults populated
+2026-02-13 07:49:49 - SmartMeterApp - INFO - Detected serial ports: ['COM3', 'COM4', 'COM5']
+2026-02-13 07:49:49 - SmartMeterApp - INFO - Settings restored
+2026-02-13 07:49:49 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-13 07:50:15 - SmartMeterApp - INFO - Settings saved
+2026-02-13 07:50:15 - SmartMeterApp - INFO - Application closed normally
+2026-02-13 08:19:08 - SmartMeterApp - INFO - ============================================================
+2026-02-13 08:19:08 - SmartMeterApp - INFO - Application starting
+2026-02-13 08:19:08 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-13 08:19:08 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-13 08:19:08 - SmartMeterApp - INFO - ============================================================
+2026-02-13 08:19:08 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-13 08:19:08 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-13 08:19:08 - SmartMeterApp - INFO - UI defaults populated
+2026-02-13 08:19:08 - SmartMeterApp - INFO - Detected serial ports: ['COM3', 'COM4', 'COM5']
+2026-02-13 08:19:08 - SmartMeterApp - INFO - Settings restored
+2026-02-13 08:19:08 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-13 08:19:16 - SmartMeterApp - DEBUG - API finished daq_connect: status=200 data={'connected': True, 'port': 'COM5', 'baud': 115200} err=None
+2026-02-13 08:19:16 - SmartMeterApp - DEBUG - API finished health: status=200 data={'status': 'ok', 'service': 'SmartMeter.Backend', 'utc': '2026-02-13T13:19:16.1196111Z'} err=None
+2026-02-13 08:19:16 - SmartMeterApp - DEBUG - API finished daq_status: status=200 data={'connected': True} err=None
+2026-02-13 08:19:18 - SmartMeterApp - DEBUG - API finished daq_idn: status=200 data={'idn': 'HEWLETT-PACKARD,34970A,0,13-2-2'} err=None
+2026-02-13 08:19:46 - SmartMeterApp - INFO - Connecting to Radian on COM3 @ 9600
+2026-02-13 08:19:46 - SmartMeterApp - DEBUG - API finished radian_connect: status=200 data={'connected': True, 'port': 'COM3', 'baud': 9600} err=None
+2026-02-13 08:20:07 - SmartMeterApp - INFO - Connecting to PAC Power on COM4 @ 19200
+2026-02-13 08:20:08 - SmartMeterApp - DEBUG - API finished pac_connect: status=200 data={'connected': True, 'port': 'COM4', 'baud': 19200} err=None
+2026-02-13 08:20:10 - SmartMeterApp - DEBUG - API finished pac_identify: status=200 data={'idn': 'PPSC,UPC-1,v5.22,141500'} err=None
+2026-02-13 08:21:40 - SmartMeterApp - DEBUG - Data filters: Current
+2026-02-13 08:21:43 - SmartMeterApp - INFO - CSV logging to C:\Users\gelab\Downloads\LittleBlue-develop\output\data\daq_data_20260213_082143.csv
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_tc_type: status=200 data={'sent': 'SENS:TEMP:TC:TYPE K'} err=None
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_abort: status=200 data={'sent': 'ABOR'} err=None
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_cls: status=200 data={'sent': '*CLS'} err=None
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_conf: status=200 data={'sent': 'CONF:TEMP TC,(@101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120)'} err=None
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_scan: status=200 data={'sent': 'ROUT:SCAN (@101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120)'} err=None
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_fmt_chan: status=200 data={'sent': 'FORM:READ:CHAN ON'} err=None
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_fmt_time: status=200 data={'sent': 'FORM:READ:TIME ON'} err=None
+2026-02-13 08:21:43 - SmartMeterApp - DEBUG - API finished daq_init: status=200 data={'sent': 'INIT'} err=None
+2026-02-13 08:21:46 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '-113,"Undefined header"'} err=None
+2026-02-13 08:21:48 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+521,"Communications: input buffer overflow"'} err=None
+2026-02-13 08:21:50 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '-103,"Invalid separator"'} err=None
+2026-02-13 08:21:52 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-13 08:21:54 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-13 08:21:57 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-13 08:21:59 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-13 08:22:01 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': '+0,"No error"'} err=None
+2026-02-13 08:22:03 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:05 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:07 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:10 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:12 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:14 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:16 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:18 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:20 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:23 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:25 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:27 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:29 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:31 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:34 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:36 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:38 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:40 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:42 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:44 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:47 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:49 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:51 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:53 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:55 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:22:58 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:00 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:02 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:04 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:06 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:08 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:11 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:13 - SmartMeterApp - DEBUG - API finished daq_read: status=200 data={'cmd': 'READ?', 'response': ''} err=None
+2026-02-13 08:23:15 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:17 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:19 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:21 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:24 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:26 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:28 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:30 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:32 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:35 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:37 - SmartMeterApp - DEBUG - API finished daq_err: status=200 data={'error': ''} err=None
+2026-02-13 08:23:37 - SmartMeterApp - INFO - Settings saved
+2026-02-13 08:23:37 - SmartMeterApp - INFO - Application closed normally
