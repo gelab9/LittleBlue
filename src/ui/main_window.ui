@@ -46,27 +46,403 @@
         <string>DAQ</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="8" column="7">
-         <widget class="QGroupBox" name="gB_Radian">
-          <property name="title">
-           <string>Radian Standard</string>
+        <item row="2" column="6" rowspan="3">
+         <widget class="QTextBrowser" name="textBrowser_State">
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9.75pt;&quot;&gt;INITIAL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
-          <widget class="QLineEdit" name="lineEdit_baudRateRadian">
+         </widget>
+        </item>
+        <item row="0" column="8">
+         <widget class="QLabel" name="label_timeStamp">
+          <property name="text">
+           <string>TIMESTAMP HERE</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="button_slot100">
+          <property name="text">
+           <string>Slot 100</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QRadioButton" name="button_slot300">
+          <property name="text">
+           <string>Slot 300</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="6" column="0" rowspan="4" colspan="2">
+         <widget class="QTextBrowser" name="textBrowser_SlotData">
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Gain             Offset&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="3" rowspan="6" colspan="4">
+         <widget class="QGroupBox" name="gb_Data">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>790</width>
+            <height>430</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Data</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>768</width>
+                <height>395</height>
+               </rect>
+              </property>
+              <widget class="QTextBrowser" name="textBrowser_lowerData">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>200</y>
+                 <width>601</width>
+                 <height>192</height>
+                </rect>
+               </property>
+              </widget>
+              <widget class="QTableWidget" name="tableWidget_Data">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>781</width>
+                 <height>201</height>
+                </rect>
+               </property>
+               <attribute name="horizontalHeaderDefaultSectionSize">
+                <number>154</number>
+               </attribute>
+               <column>
+                <property name="text">
+                 <string>Instantaneous Reading</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Maximum Reading</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Minimum Reading</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Average Reading</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Temperature Risen</string>
+                </property>
+               </column>
+              </widget>
+              <widget class="QCheckBox" name="cb_PhaseData">
+               <property name="geometry">
+                <rect>
+                 <x>640</x>
+                 <y>220</y>
+                 <width>52</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Phase</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="cb_DataFrequency">
+               <property name="geometry">
+                <rect>
+                 <x>640</x>
+                 <y>250</y>
+                 <width>74</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Frequency</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="cb_CurrentData">
+               <property name="geometry">
+                <rect>
+                 <x>640</x>
+                 <y>280</y>
+                 <width>60</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Current</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="cb_VoltsData">
+               <property name="geometry">
+                <rect>
+                 <x>640</x>
+                 <y>310</y>
+                 <width>46</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Volts</string>
+               </property>
+              </widget>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QRadioButton" name="button_slot200">
+          <property name="text">
+           <string>Slot 200</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="cB_Calibration">
+          <property name="text">
+           <string>Calibration</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="6" rowspan="2">
+         <widget class="QGroupBox" name="gB_Parameters">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Parameters</string>
+          </property>
+          <widget class="QComboBox" name="cB_readIntervals">
            <property name="geometry">
             <rect>
-             <x>30</x>
-             <y>40</y>
-             <width>61</width>
+             <x>120</x>
+             <y>30</y>
+             <width>69</width>
              <height>22</height>
             </rect>
            </property>
+           <item>
+            <property name="text">
+             <string>5</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>10</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>15</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>20</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>30</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>60</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>120</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>180</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>300</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>600</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>900</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1200</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1800</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>3600</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>7200</string>
+            </property>
+           </item>
           </widget>
-          <widget class="QLabel" name="label_baudRateRadian">
+          <widget class="QLabel" name="label_readingIntervals">
            <property name="geometry">
             <rect>
-             <x>30</x>
-             <y>20</y>
+             <x>10</x>
+             <y>30</y>
+             <width>101</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Reading Intervals</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_Seconds">
+           <property name="geometry">
+            <rect>
+             <x>200</x>
+             <y>30</y>
              <width>55</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>seconds</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="button_RTD">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>60</y>
+             <width>101</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>RTD (4 Wire)</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="button_Thermocouple">
+           <property name="geometry">
+            <rect>
+             <x>130</x>
+             <y>60</y>
+             <width>111</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Thermocouple</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item row="10" column="0" colspan="3">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>PAC Power ASX115</string>
+          </property>
+          <widget class="QLineEdit" name="lineEdit">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>40</y>
+             <width>71</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>20</y>
+             <width>51</width>
              <height>16</height>
             </rect>
            </property>
@@ -74,33 +450,33 @@
             <string>BaudRate</string>
            </property>
           </widget>
-          <widget class="QLabel" name="label_PortRadian">
+          <widget class="QComboBox" name="comboBox_2">
            <property name="geometry">
             <rect>
-             <x>130</x>
-             <y>20</y>
-             <width>31</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Port</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="cB_PortRadian">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
+             <x>100</x>
              <y>40</y>
-             <width>51</width>
+             <width>69</width>
              <height>22</height>
             </rect>
            </property>
           </widget>
-          <widget class="QPushButton" name="pb_ConnectRadian">
+          <widget class="QLabel" name="label_2">
            <property name="geometry">
             <rect>
-             <x>210</x>
+             <x>120</x>
+             <y>20</y>
+             <width>41</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Power</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButton">
+           <property name="geometry">
+            <rect>
+             <x>190</x>
              <y>30</y>
              <width>75</width>
              <height>31</height>
@@ -112,266 +488,145 @@
           </widget>
          </widget>
         </item>
-        <item row="0" column="4" rowspan="3">
-         <widget class="QGroupBox" name="gB_controlSettings">
-          <property name="title">
-           <string>Control Settings</string>
+        <item row="11" column="0" rowspan="2" colspan="3">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <widget class="QComboBox" name="comboBox">
+          <property name="title">
+           <string>Cal Inst Connection</string>
+          </property>
+          <widget class="QSpinBox" name="spinBox_BoardID">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>91</x>
              <y>30</y>
-             <width>69</width>
-             <height>22</height>
-            </rect>
-           </property>
-           <item>
-            <property name="text">
-             <string>100</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>200</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>320</string>
-            </property>
-           </item>
-          </widget>
-          <widget class="QLineEdit" name="lineEdit_Controller">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>60</y>
-             <width>71</width>
+             <width>61</width>
              <height>22</height>
             </rect>
            </property>
           </widget>
-          <widget class="QLineEdit" name="lineEdit_Accuracy">
+          <widget class="QLabel" name="label_BoardID">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>90</y>
-             <width>71</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="cB_closeLoop">
-           <property name="geometry">
-            <rect>
-             <x>110</x>
+             <x>30</x>
              <y>30</y>
-             <width>131</width>
-             <height>20</height>
+             <width>47</width>
+             <height>13</height>
             </rect>
            </property>
            <property name="text">
-            <string>Close Current Loop</string>
+            <string>Board ID:</string>
            </property>
           </widget>
-          <widget class="QLabel" name="label_Controller">
+          <widget class="QSpinBox" name="spinBox_PrimAddress">
            <property name="geometry">
             <rect>
-             <x>110</x>
+             <x>101</x>
              <y>60</y>
-             <width>191</width>
+             <width>51</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_PrimAddress">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>60</y>
+             <width>91</width>
              <height>16</height>
             </rect>
            </property>
            <property name="text">
-            <string>Controller Dead band % Fullscale</string>
+            <string>Primary Address:</string>
            </property>
           </widget>
-          <widget class="QLabel" name="label_Accuracy">
+          <widget class="QComboBox" name="cb_SecAddress">
            <property name="geometry">
             <rect>
              <x>110</x>
              <y>90</y>
-             <width>191</width>
+             <width>141</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_SecAddress">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>101</width>
              <height>16</height>
             </rect>
            </property>
            <property name="text">
-            <string>Accuracy Dead Band % Fullscale</string>
+            <string>Secondary Address:</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pb_OpenCalInstConx">
+           <property name="geometry">
+            <rect>
+             <x>180</x>
+             <y>20</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Open</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pb_CloseCalInstConx">
+           <property name="geometry">
+            <rect>
+             <x>180</x>
+             <y>50</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Close</string>
            </property>
           </widget>
          </widget>
         </item>
-        <item row="1" column="7" rowspan="2">
-         <widget class="QGroupBox" name="gB_Mode">
+        <item row="0" column="7">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>30</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="6" column="3" colspan="4">
+         <widget class="QProgressBar" name="progressBar">
+          <property name="value">
+           <number>24</number>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="7" rowspan="4" colspan="2">
+         <widget class="QGroupBox" name="gb_Compare">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="title">
-           <string>Mode</string>
-          </property>
-          <widget class="QRadioButton" name="button_Free">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>30</y>
-             <width>91</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Free</string>
-           </property>
-          </widget>
-          <widget class="QRadioButton" name="button_Readings">
-           <property name="geometry">
-            <rect>
-             <x>100</x>
-             <y>30</y>
-             <width>101</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string># of Readings</string>
-           </property>
-          </widget>
-          <widget class="QRadioButton" name="button_Duration">
-           <property name="geometry">
-            <rect>
-             <x>220</x>
-             <y>30</y>
-             <width>91</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Duration</string>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="6" column="7" rowspan="2">
-         <widget class="QGroupBox" name="gB_Informtation">
-          <property name="title">
-           <string>Information</string>
-          </property>
-          <widget class="QLabel" name="label_startTime">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>71</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Start Time:</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_terminateTime">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>101</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Terminate Time:</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_Duration">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>70</y>
-             <width>55</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Duration:</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_totalNumReadings">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>90</y>
-             <width>161</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Total Number of Readings:</string>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="0" column="3" rowspan="3">
-         <widget class="QGroupBox" name="gB_Voltage">
-          <property name="title">
-           <string>Voltage</string>
-          </property>
-          <widget class="QLineEdit" name="lineEdit_Voltage">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>20</y>
-             <width>61</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pb_setVoltage">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>75</width>
-             <height>24</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Set Voltage</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pb_voltageOff">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>80</y>
-             <width>75</width>
-             <height>24</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Voltage Off</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_Volts">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>20</y>
-             <width>21</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>V</string>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="9" column="7" rowspan="4">
-         <widget class="QGroupBox" name="gb_Compare">
           <property name="title">
            <string>Compare</string>
           </property>
@@ -609,143 +864,280 @@ p, li { white-space: pre-wrap; }
           </widget>
          </widget>
         </item>
-        <item row="7" column="3" rowspan="6" colspan="4">
-         <widget class="QGroupBox" name="gb_Data">
-          <property name="title">
-           <string>Data</string>
+        <item row="1" column="7" rowspan="2" colspan="2">
+         <widget class="QGroupBox" name="gB_Mode">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QScrollArea" name="scrollArea">
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>770</width>
-                <height>519</height>
-               </rect>
-              </property>
-              <widget class="QTextBrowser" name="textBrowser_lowerData">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>200</y>
-                 <width>601</width>
-                 <height>192</height>
-                </rect>
-               </property>
-              </widget>
-              <widget class="QTableWidget" name="tableWidget_Data">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>781</width>
-                 <height>201</height>
-                </rect>
-               </property>
-               <attribute name="horizontalHeaderDefaultSectionSize">
-                <number>154</number>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>Instantaneous Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Maximum Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Minimum Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Average Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Temperature Risen</string>
-                </property>
-               </column>
-              </widget>
-              <widget class="QCheckBox" name="cb_PhaseData">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>220</y>
-                 <width>52</width>
-                 <height>17</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Phase</string>
-               </property>
-              </widget>
-              <widget class="QCheckBox" name="cb_DataFrequency">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>250</y>
-                 <width>74</width>
-                 <height>17</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Frequency</string>
-               </property>
-              </widget>
-              <widget class="QCheckBox" name="cb_CurrentData">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>280</y>
-                 <width>60</width>
-                 <height>17</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Current</string>
-               </property>
-              </widget>
-              <widget class="QCheckBox" name="cb_VoltsData">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>310</y>
-                 <width>46</width>
-                 <height>17</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Volts</string>
-               </property>
-              </widget>
-             </widget>
-            </widget>
-           </item>
-          </layout>
+          <property name="title">
+           <string>Mode</string>
+          </property>
+          <widget class="QRadioButton" name="button_Free">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>30</y>
+             <width>91</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Free</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="button_Readings">
+           <property name="geometry">
+            <rect>
+             <x>100</x>
+             <y>30</y>
+             <width>101</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string># of Readings</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="button_Duration">
+           <property name="geometry">
+            <rect>
+             <x>220</x>
+             <y>30</y>
+             <width>91</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Duration</string>
+           </property>
+          </widget>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QRadioButton" name="button_slot200">
-          <property name="text">
-           <string>Slot 200</string>
+        <item row="6" column="8" rowspan="2">
+         <widget class="QGroupBox" name="gB_Informtation">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
+          <property name="title">
+           <string>Information</string>
+          </property>
+          <widget class="QLabel" name="label_startTime">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>30</y>
+             <width>71</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Start Time:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_terminateTime">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>101</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Terminate Time:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_Duration">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>70</y>
+             <width>55</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Duration:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_totalNumReadings">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>161</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Total Number of Readings:</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item row="8" column="7" colspan="2">
+         <widget class="QGroupBox" name="gB_Radian">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>500</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Radian Standard</string>
+          </property>
+          <widget class="QLineEdit" name="lineEdit_baudRateRadian">
+           <property name="geometry">
+            <rect>
+             <x>30</x>
+             <y>40</y>
+             <width>61</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_baudRateRadian">
+           <property name="geometry">
+            <rect>
+             <x>30</x>
+             <y>20</y>
+             <width>55</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>BaudRate</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_PortRadian">
+           <property name="geometry">
+            <rect>
+             <x>130</x>
+             <y>20</y>
+             <width>31</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Port</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="cB_PortRadian">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>40</y>
+             <width>51</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pb_ConnectRadian">
+           <property name="geometry">
+            <rect>
+             <x>210</x>
+             <y>30</y>
+             <width>75</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Connect</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item row="0" column="3" rowspan="2">
+         <widget class="QGroupBox" name="gB_Voltage">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Voltage</string>
+          </property>
+          <widget class="QLineEdit" name="lineEdit_Voltage">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>20</y>
+             <width>61</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pb_setVoltage">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>75</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Set Voltage</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pb_voltageOff">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>80</y>
+             <width>75</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Voltage Off</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_Volts">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>20</y>
+             <width>21</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>V</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="cB_sourceOff">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>130</y>
+             <width>228</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Turn Off Power Source When Test Is Done</string>
+           </property>
+          </widget>
          </widget>
         </item>
         <item row="0" column="0" rowspan="2" colspan="2">
          <widget class="QGroupBox" name="gb_connectionOne">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -839,21 +1231,21 @@ p, li { white-space: pre-wrap; }
           </widget>
          </widget>
         </item>
-        <item row="0" column="6" rowspan="2">
-         <widget class="QGroupBox" name="gB_Parameters">
+        <item row="0" column="4" rowspan="2" colspan="2">
+         <widget class="QGroupBox" name="gB_controlSettings">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="title">
-           <string>Parameters</string>
+           <string>Control Settings</string>
           </property>
-          <widget class="QComboBox" name="cB_readIntervals">
+          <widget class="QComboBox" name="comboBox">
            <property name="geometry">
             <rect>
-             <x>120</x>
+             <x>10</x>
              <y>30</y>
              <width>69</width>
              <height>22</height>
@@ -861,284 +1253,85 @@ p, li { white-space: pre-wrap; }
            </property>
            <item>
             <property name="text">
-             <string>5</string>
+             <string>100</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>10</string>
+             <string>200</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>15</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>20</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>30</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>60</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>120</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>180</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>300</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>600</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>900</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1200</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1800</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>3600</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>7200</string>
+             <string>320</string>
             </property>
            </item>
           </widget>
-          <widget class="QLabel" name="label_readingIntervals">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>101</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Reading Intervals</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_Seconds">
-           <property name="geometry">
-            <rect>
-             <x>200</x>
-             <y>30</y>
-             <width>55</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>seconds</string>
-           </property>
-          </widget>
-          <widget class="QRadioButton" name="button_RTD">
+          <widget class="QLineEdit" name="lineEdit_Controller">
            <property name="geometry">
             <rect>
              <x>10</x>
              <y>60</y>
-             <width>101</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>RTD (4 Wire)</string>
-           </property>
-          </widget>
-          <widget class="QRadioButton" name="button_Thermocouple">
-           <property name="geometry">
-            <rect>
-             <x>130</x>
-             <y>60</y>
-             <width>111</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Thermocouple</string>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="10" column="0" colspan="3">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="title">
-           <string>PAC Power ASX115</string>
-          </property>
-          <widget class="QLineEdit" name="lineEdit">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>40</y>
              <width>71</width>
-             <height>20</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>20</y>
-             <width>51</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>BaudRate</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="comboBox_2">
-           <property name="geometry">
-            <rect>
-             <x>100</x>
-             <y>40</y>
-             <width>69</width>
              <height>22</height>
             </rect>
            </property>
           </widget>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLineEdit" name="lineEdit_Accuracy">
            <property name="geometry">
             <rect>
-             <x>120</x>
-             <y>20</y>
-             <width>41</width>
+             <x>10</x>
+             <y>90</y>
+             <width>71</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="cB_closeLoop">
+           <property name="geometry">
+            <rect>
+             <x>110</x>
+             <y>30</y>
+             <width>131</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Close Current Loop</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_Controller">
+           <property name="geometry">
+            <rect>
+             <x>110</x>
+             <y>60</y>
+             <width>191</width>
              <height>16</height>
             </rect>
            </property>
            <property name="text">
-            <string>Power</string>
+            <string>Controller Dead band % Fullscale</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QLabel" name="label_Accuracy">
            <property name="geometry">
             <rect>
-             <x>190</x>
-             <y>30</y>
-             <width>75</width>
-             <height>31</height>
+             <x>110</x>
+             <y>90</y>
+             <width>191</width>
+             <height>16</height>
             </rect>
            </property>
            <property name="text">
-            <string>Connect</string>
+            <string>Accuracy Dead Band % Fullscale</string>
            </property>
           </widget>
          </widget>
         </item>
-        <item row="2" column="6" rowspan="3">
-         <widget class="QTextBrowser" name="textBrowser_State">
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9.75pt;&quot;&gt;INITIAL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0" rowspan="4" colspan="2">
-         <widget class="QTextBrowser" name="textBrowser_SlotData">
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Gain             Offset&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QRadioButton" name="button_slot100">
-          <property name="text">
-           <string>Slot 100</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="3" colspan="4">
-         <widget class="QProgressBar" name="progressBar">
-          <property name="value">
-           <number>24</number>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QRadioButton" name="button_slot300">
-          <property name="text">
-           <string>Slot 300</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="7">
-         <widget class="QLabel" name="label_timeStamp">
-          <property name="text">
-           <string>TIMESTAMP HERE</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="3">
-         <widget class="QCheckBox" name="cB_sourceOff">
-          <property name="text">
-           <string>Turn Off Power Source When Test Is Done</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QCheckBox" name="cB_Calibration">
-          <property name="text">
-           <string>Calibration</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Minimum</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="5" rowspan="2">
+        <item row="2" column="4" rowspan="3">
          <widget class="QPushButton" name="pB_Start">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
+           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -1146,108 +1339,6 @@ p, li { white-space: pre-wrap; }
           <property name="text">
            <string>Start Reading!</string>
           </property>
-         </widget>
-        </item>
-        <item row="11" column="0" rowspan="2" colspan="3">
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="title">
-           <string>Cal Inst Connection</string>
-          </property>
-          <widget class="QSpinBox" name="spinBox_BoardID">
-           <property name="geometry">
-            <rect>
-             <x>91</x>
-             <y>30</y>
-             <width>61</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_BoardID">
-           <property name="geometry">
-            <rect>
-             <x>30</x>
-             <y>30</y>
-             <width>47</width>
-             <height>13</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Board ID:</string>
-           </property>
-          </widget>
-          <widget class="QSpinBox" name="spinBox_PrimAddress">
-           <property name="geometry">
-            <rect>
-             <x>101</x>
-             <y>60</y>
-             <width>51</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_PrimAddress">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>60</y>
-             <width>91</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Primary Address:</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="cb_SecAddress">
-           <property name="geometry">
-            <rect>
-             <x>110</x>
-             <y>90</y>
-             <width>69</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_SecAddress">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>90</y>
-             <width>101</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Secondary Address:</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pb_OpenCalInstConx">
-           <property name="geometry">
-            <rect>
-             <x>180</x>
-             <y>20</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Open</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pb_CloseCalInstConx">
-           <property name="geometry">
-            <rect>
-             <x>180</x>
-             <y>50</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Close</string>
-           </property>
-          </widget>
          </widget>
         </item>
        </layout>
