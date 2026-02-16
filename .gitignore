@@ -12,3 +12,14 @@ obj/
 
 # app output/logs
 output/
+
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+dist/
+build/
+env/
+.idea/
+.vscode/
