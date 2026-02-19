@@ -1,0 +1,27 @@
+This is what we've done so far:
+Channel Configuration Flow:
+
+Connect DAQ → sends *IDN? query
+Identify succeeds (response contains "AGILENT" or "34970") → gB_ChannelData appears
+User configures channels:
+Check the channels you want to scan (e.g., 101, 103, 105)
+Assign each a type (A Jaw Line, B Jaw Line, C Coil, Ambient, etc.)
+Enter gain/offset for calibration (defaults to 1.0 and 0.0)
+Click "Start Reading!":
+Reads which channels are checked → builds scan list from only those channels
+Updates the ChannelConfig with the selected type name and calibration values
+Those names appear in the table's "Channel" column (e.g., "A Jaw Line@101")
+Fallback: If the channel config panel isn't visible yet (DAQ not identified), it falls back to the old slot-based selection (all 20 channels in the selected slot).
+
+Duration Panel: Also fully wired — hidden until you select the Duration mode, then you can enter hours/minutes/seconds.
+
+Try it out: connect your DAQ, identify it, then configure some channels and start a test!
+
+What we need to do next:
+When clicking start read-immediately close or hide cal inst connection and DO NOT let user modify or change baudrate for agilent connection, rtd or thermocouple choices in parameters sections and anything in gB_Mode, as well as stop users from modifying volts/current/frequency/phase choices in gB_Data
+
+Create grid/rows for sample, arms and timestamp in gB_Data just like the \original so we have values when test starts
+
+Implement DAQ Log, Current Controller, Radian, and PAC Power
+
+Users are not able to read inside gB_ChannelData checkboxes so they have no idea what they are selcting, I, as the developer just memorized what I select (A Jaw Line, B Jaw Line, C Jaw Line, etc...)
