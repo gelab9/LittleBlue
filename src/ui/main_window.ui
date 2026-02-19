@@ -18,14 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1000</width>
-    <height>500</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1500</width>
-    <height>1000</height>
+    <width>1466</width>
+    <height>800</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -34,1715 +34,1751 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_15">
     <item row="0" column="0">
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="whatsThis">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <widget class="QScrollArea" name="scrollArea_2">
+      <property name="widgetResizable">
+       <bool>true</bool>
       </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>DAQ</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="3" rowspan="4">
-         <widget class="QGroupBox" name="gB_Voltage">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Voltage</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="lineEdit_Voltage"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_Volts">
-             <property name="text">
-              <string>V</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QPushButton" name="pb_setVoltage">
-             <property name="text">
-              <string>Set Voltage</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QPushButton" name="pb_voltageOff">
-             <property name="text">
-              <string>Voltage Off</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0" colspan="2">
-            <widget class="QCheckBox" name="cB_sourceOff">
-             <property name="text">
-              <string>Turn Off Power Source When Test Is Done</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="0" column="7">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Minimum</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>100</width>
-            <height>10</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="0" colspan="2">
-         <widget class="QGroupBox" name="gb_connectionOne">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>34970A Connection</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_baudRate24970A">
-             <property name="text">
-              <string>Baud Rate</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_Port2470A">
-             <property name="text">
-              <string>Port</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QComboBox" name="cb_baudRate24970A">
-             <item>
-              <property name="text">
-               <string>9600</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>19200</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>38400</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>57600</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>115200</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="cb_Port24970A"/>
-           </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="pb_Connect34970A">
-             <property name="text">
-              <string>Connect</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QRadioButton" name="button_slot100">
-          <property name="text">
-           <string>Slot 100</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0" rowspan="5" colspan="3">
-         <widget class="QGroupBox" name="gB_ChannelData">
-          <property name="title">
-           <string/>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_13">
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Gain&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Offset&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QCheckBox" name="cB_101">
-             <property name="text">
-              <string>101</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="comboBox_101">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLineEdit" name="gain_101"/>
-           </item>
-           <item row="1" column="3">
-            <widget class="QLineEdit" name="offset_101"/>
-           </item>
-           <item row="2" column="0">
-            <widget class="QCheckBox" name="cB_102">
-             <property name="text">
-              <string>102</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QComboBox" name="comboBox_102">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="QLineEdit" name="gain_102"/>
-           </item>
-           <item row="2" column="3">
-            <widget class="QLineEdit" name="offset_102"/>
-           </item>
-           <item row="3" column="0">
-            <widget class="QCheckBox" name="cB_103">
-             <property name="text">
-              <string>103</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QComboBox" name="comboBox_103">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <widget class="QLineEdit" name="gain_103"/>
-           </item>
-           <item row="3" column="3">
-            <widget class="QLineEdit" name="offset_103"/>
-           </item>
-           <item row="4" column="0">
-            <widget class="QCheckBox" name="cB_104">
-             <property name="text">
-              <string>104</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QComboBox" name="comboBox_104">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="4" column="2">
-            <widget class="QLineEdit" name="gain_104"/>
-           </item>
-           <item row="4" column="3">
-            <widget class="QLineEdit" name="offset_104"/>
-           </item>
-           <item row="5" column="0">
-            <widget class="QCheckBox" name="cB_105">
-             <property name="text">
-              <string>105</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="1">
-            <widget class="QComboBox" name="comboBox_105">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="5" column="2">
-            <widget class="QLineEdit" name="gain_105"/>
-           </item>
-           <item row="5" column="3">
-            <widget class="QLineEdit" name="offset_105"/>
-           </item>
-           <item row="6" column="0">
-            <widget class="QCheckBox" name="cB_106">
-             <property name="text">
-              <string>106</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="1">
-            <widget class="QComboBox" name="comboBox_106">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="6" column="2">
-            <widget class="QLineEdit" name="gain_106"/>
-           </item>
-           <item row="6" column="3">
-            <widget class="QLineEdit" name="offset_106"/>
-           </item>
-           <item row="7" column="0">
-            <widget class="QCheckBox" name="cB_107">
-             <property name="text">
-              <string>107</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="1">
-            <widget class="QComboBox" name="comboBox_107">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="7" column="2">
-            <widget class="QLineEdit" name="gain_107"/>
-           </item>
-           <item row="7" column="3">
-            <widget class="QLineEdit" name="offset_107"/>
-           </item>
-           <item row="8" column="0">
-            <widget class="QCheckBox" name="cB_108">
-             <property name="text">
-              <string>108</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="1">
-            <widget class="QComboBox" name="comboBox_108">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="8" column="2">
-            <widget class="QLineEdit" name="gain_108"/>
-           </item>
-           <item row="8" column="3">
-            <widget class="QLineEdit" name="offset_108"/>
-           </item>
-           <item row="9" column="0">
-            <widget class="QCheckBox" name="cB_109">
-             <property name="text">
-              <string>109</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="1">
-            <widget class="QComboBox" name="comboBox_109">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="9" column="2">
-            <widget class="QLineEdit" name="gain_109"/>
-           </item>
-           <item row="9" column="3">
-            <widget class="QLineEdit" name="offset_109"/>
-           </item>
-           <item row="10" column="0">
-            <widget class="QCheckBox" name="cB_110">
-             <property name="text">
-              <string>110</string>
-             </property>
-            </widget>
-           </item>
-           <item row="10" column="1">
-            <widget class="QComboBox" name="comboBox_110">
-             <item>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Line</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Jaw Load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>A Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>B Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>C Coil</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ambient</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="10" column="2">
-            <widget class="QLineEdit" name="gain_110"/>
-           </item>
-           <item row="10" column="3">
-            <widget class="QLineEdit" name="offset_110"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QRadioButton" name="button_slot200">
-          <property name="text">
-           <string>Slot 200</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QRadioButton" name="button_slot300">
-          <property name="text">
-           <string>Slot 300</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="4" rowspan="2" colspan="2">
-         <widget class="QGroupBox" name="gB_controlSettings">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Control Settings</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_6">
-           <item row="0" column="0">
-            <widget class="QComboBox" name="comboBox">
-             <item>
-              <property name="text">
-               <string>100</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>200</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>320</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QCheckBox" name="cB_closeLoop">
-             <property name="text">
-              <string>Close Current Loop</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="lineEdit_Controller"/>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="label_Controller">
-             <property name="text">
-              <string>Controller Dead band % Fullscale</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLineEdit" name="lineEdit_Accuracy"/>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="label_Accuracy">
-             <property name="text">
-              <string>Accuracy Dead Band % Fullscale</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="2" column="4" rowspan="3">
-         <widget class="QPushButton" name="pB_Start">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Start Reading!</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="8">
-         <widget class="QGroupBox" name="gB_Radian">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>500</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Radian Standard</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_10">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_baudRateRadian">
-             <property name="text">
-              <string>BaudRate</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_PortRadian">
-             <property name="text">
-              <string>Port</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2" rowspan="2">
-            <widget class="QPushButton" name="pb_ConnectRadian">
-             <property name="text">
-              <string>Connect</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="lineEdit_baudRateRadian"/>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="cB_PortRadian"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="6" column="3" rowspan="6" colspan="5">
-         <widget class="QGroupBox" name="gb_Data">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>790</width>
-            <height>430</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Data</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_12">
-           <item row="0" column="0">
-            <widget class="QScrollArea" name="scrollArea">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>768</width>
-                <height>377</height>
-               </rect>
-              </property>
-              <widget class="QTextBrowser" name="textBrowser_lowerData">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>200</y>
-                 <width>601</width>
-                 <height>192</height>
-                </rect>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1399</width>
+         <height>703</height>
+        </rect>
+       </property>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>-3</y>
+          <width>1401</width>
+          <height>631</height>
+         </rect>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>DAQ</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_17">
+          <item row="0" column="3" rowspan="4">
+           <widget class="QGroupBox" name="gB_Voltage">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Voltage</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_18">
+             <item row="0" column="0">
+              <widget class="QLineEdit" name="lineEdit_Voltage"/>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_Volts">
+               <property name="text">
+                <string>V</string>
                </property>
               </widget>
-              <widget class="QTableWidget" name="tableWidget_Data">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>781</width>
-                 <height>201</height>
-                </rect>
-               </property>
-               <attribute name="horizontalHeaderDefaultSectionSize">
-                <number>154</number>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>Instantaneous Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Maximum Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Minimum Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Average Reading</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Temperature Risen</string>
-                </property>
-               </column>
-              </widget>
-              <widget class="QCheckBox" name="cb_PhaseData">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>220</y>
-                 <width>52</width>
-                 <height>17</height>
-                </rect>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QPushButton" name="pb_setVoltage">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="text">
-                <string>Phase</string>
+                <string>Set Voltage</string>
                </property>
               </widget>
-              <widget class="QCheckBox" name="cb_DataFrequency">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>250</y>
-                 <width>74</width>
-                 <height>17</height>
-                </rect>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QPushButton" name="pb_voltageOff">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="text">
-                <string>Frequency</string>
+                <string>Voltage Off</string>
                </property>
               </widget>
-              <widget class="QCheckBox" name="cb_CurrentData">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>280</y>
-                 <width>60</width>
-                 <height>17</height>
-                </rect>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QCheckBox" name="cB_sourceOff">
+               <property name="text">
+                <string>Turn Off Power Source When Test Is Done</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>100</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QGroupBox" name="gb_connectionOne">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>34970A Connection</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_19">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_baudRate24970A">
+               <property name="text">
+                <string>Baud Rate</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_Port2470A">
+               <property name="text">
+                <string>Port</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QComboBox" name="cb_baudRate24970A">
+               <item>
+                <property name="text">
+                 <string>9600</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>19200</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>38400</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>57600</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>115200</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="cb_Port24970A"/>
+             </item>
+             <item row="1" column="2">
+              <widget class="QPushButton" name="pb_Connect34970A">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="text">
-                <string>Current</string>
+                <string>Connect</string>
                </property>
               </widget>
-              <widget class="QCheckBox" name="cb_VoltsData">
-               <property name="geometry">
-                <rect>
-                 <x>640</x>
-                 <y>310</y>
-                 <width>46</width>
-                 <height>17</height>
-                </rect>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="button_slot100">
+            <property name="text">
+             <string>Slot 100</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" rowspan="5" colspan="3">
+           <widget class="QGroupBox" name="gB_ChannelData">
+            <property name="title">
+             <string/>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_20">
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Gain&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Offset&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="cB_101">
+               <property name="text">
+                <string>101</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="comboBox_101">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLineEdit" name="gain_101"/>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLineEdit" name="offset_101"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="cB_102">
+               <property name="text">
+                <string>102</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="comboBox_102">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLineEdit" name="gain_102"/>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLineEdit" name="offset_102"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="cB_103">
+               <property name="text">
+                <string>103</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="comboBox_103">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLineEdit" name="gain_103"/>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLineEdit" name="offset_103"/>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="cB_104">
+               <property name="text">
+                <string>104</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QComboBox" name="comboBox_104">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLineEdit" name="gain_104"/>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLineEdit" name="offset_104"/>
+             </item>
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="cB_105">
+               <property name="text">
+                <string>105</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QComboBox" name="comboBox_105">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="5" column="2">
+              <widget class="QLineEdit" name="gain_105"/>
+             </item>
+             <item row="5" column="3">
+              <widget class="QLineEdit" name="offset_105"/>
+             </item>
+             <item row="6" column="0">
+              <widget class="QCheckBox" name="cB_106">
+               <property name="text">
+                <string>106</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QComboBox" name="comboBox_106">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="6" column="2">
+              <widget class="QLineEdit" name="gain_106"/>
+             </item>
+             <item row="6" column="3">
+              <widget class="QLineEdit" name="offset_106"/>
+             </item>
+             <item row="7" column="0">
+              <widget class="QCheckBox" name="cB_107">
+               <property name="text">
+                <string>107</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="comboBox_107">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="7" column="2">
+              <widget class="QLineEdit" name="gain_107"/>
+             </item>
+             <item row="7" column="3">
+              <widget class="QLineEdit" name="offset_107"/>
+             </item>
+             <item row="8" column="0">
+              <widget class="QCheckBox" name="cB_108">
+               <property name="text">
+                <string>108</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QComboBox" name="comboBox_108">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="8" column="2">
+              <widget class="QLineEdit" name="gain_108"/>
+             </item>
+             <item row="8" column="3">
+              <widget class="QLineEdit" name="offset_108"/>
+             </item>
+             <item row="9" column="0">
+              <widget class="QCheckBox" name="cB_109">
+               <property name="text">
+                <string>109</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="1">
+              <widget class="QComboBox" name="comboBox_109">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="9" column="2">
+              <widget class="QLineEdit" name="gain_109"/>
+             </item>
+             <item row="9" column="3">
+              <widget class="QLineEdit" name="offset_109"/>
+             </item>
+             <item row="10" column="0">
+              <widget class="QCheckBox" name="cB_110">
+               <property name="text">
+                <string>110</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="1">
+              <widget class="QComboBox" name="comboBox_110">
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Line</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Jaw Load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>A Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>B Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C Coil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ambient</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="10" column="2">
+              <widget class="QLineEdit" name="gain_110"/>
+             </item>
+             <item row="10" column="3">
+              <widget class="QLineEdit" name="offset_110"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QRadioButton" name="button_slot200">
+            <property name="text">
+             <string>Slot 200</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QRadioButton" name="button_slot300">
+            <property name="text">
+             <string>Slot 300</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4" rowspan="2" colspan="2">
+           <widget class="QGroupBox" name="gB_controlSettings">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Control Settings</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_21">
+             <item row="0" column="0">
+              <widget class="QComboBox" name="comboBox_13">
+               <item>
+                <property name="text">
+                 <string>100</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>200</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>320</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="cB_closeLoop">
+               <property name="text">
+                <string>Close Current Loop</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="lineEdit_Controller"/>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label_Controller">
+               <property name="text">
+                <string>Controller Dead band % Fullscale</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLineEdit" name="lineEdit_Accuracy"/>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="label_Accuracy">
+               <property name="text">
+                <string>Accuracy Dead Band % Fullscale</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="2" column="4" rowspan="3">
+           <widget class="QPushButton" name="pB_Start">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Start Reading!</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="8">
+           <widget class="QGroupBox" name="gB_Radian">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Radian Standard</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_22">
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="lineEdit_baudRateRadian"/>
+             </item>
+             <item row="0" column="2" rowspan="2">
+              <widget class="QPushButton" name="pb_ConnectRadian">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="text">
-                <string>Volts</string>
+                <string>Connect</string>
                </property>
               </widget>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="0" column="6" rowspan="2">
-         <widget class="QGroupBox" name="gB_Parameters">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Parameters</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_7">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_readingIntervals">
-             <property name="text">
-              <string>Reading Intervals</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="cB_readIntervals">
-             <item>
-              <property name="text">
-               <string>5</string>
-              </property>
              </item>
-             <item>
-              <property name="text">
-               <string>10</string>
-              </property>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="cB_PortRadian"/>
              </item>
-             <item>
-              <property name="text">
-               <string>15</string>
-              </property>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_PortRadian">
+               <property name="text">
+                <string>Port</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>20</string>
-              </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_baudRateRadian">
+               <property name="text">
+                <string>BaudRate</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>30</string>
-              </property>
+            </layout>
+           </widget>
+          </item>
+          <item row="6" column="3" rowspan="6" colspan="5">
+           <widget class="QGroupBox" name="gb_Data">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>790</width>
+              <height>430</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Data</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_23">
+             <item row="0" column="0">
+              <widget class="QScrollArea" name="scrollArea_3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="widgetResizable">
+                <bool>true</bool>
+               </property>
+               <widget class="QWidget" name="scrollAreaWidgetContents_3">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>768</width>
+                  <height>327</height>
+                 </rect>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_24">
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QTableWidget" name="tableWidget_Data">
+                   <attribute name="horizontalHeaderDefaultSectionSize">
+                    <number>154</number>
+                   </attribute>
+                   <column>
+                    <property name="text">
+                     <string>Instantaneous Reading</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Maximum Reading</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Minimum Reading</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Average Reading</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Temperature Risen</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" rowspan="4">
+                  <widget class="QTextBrowser" name="textBrowser_lowerData"/>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QCheckBox" name="cb_PhaseData">
+                   <property name="text">
+                    <string>Phase</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QCheckBox" name="cb_DataFrequency">
+                   <property name="text">
+                    <string>Frequency</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QCheckBox" name="cb_CurrentData">
+                   <property name="text">
+                    <string>Current</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QCheckBox" name="cb_VoltsData">
+                   <property name="text">
+                    <string>Volts</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>60</string>
-              </property>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="6" rowspan="2">
+           <widget class="QGroupBox" name="gB_Parameters">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Parameters</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_25">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_readingIntervals">
+               <property name="text">
+                <string>Reading Intervals</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>120</string>
-              </property>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="cB_readIntervals">
+               <item>
+                <property name="text">
+                 <string>5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>10</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>15</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>20</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>30</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>60</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>120</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>180</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>300</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>600</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>900</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>1200</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>1800</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>3600</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>7200</string>
+                </property>
+               </item>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>180</string>
-              </property>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_Seconds">
+               <property name="text">
+                <string>seconds</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>300</string>
-              </property>
+             <item row="1" column="0">
+              <widget class="QRadioButton" name="button_RTD">
+               <property name="text">
+                <string>RTD (4 Wire)</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>600</string>
-              </property>
+             <item row="1" column="1" colspan="2">
+              <widget class="QRadioButton" name="button_Thermocouple">
+               <property name="text">
+                <string>Thermocouple</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>900</string>
-              </property>
+            </layout>
+           </widget>
+          </item>
+          <item row="9" column="0" colspan="3">
+           <widget class="QGroupBox" name="gB_PACPower">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>PAC Power ASX115</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_26">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_BaudRatePAC">
+               <property name="text">
+                <string>BaudRate</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>1200</string>
-              </property>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_PowerPAC">
+               <property name="text">
+                <string>Power</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>1800</string>
-              </property>
+             <item row="0" column="2" rowspan="2">
+              <widget class="QPushButton" name="pushButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Connect</string>
+               </property>
+              </widget>
              </item>
-             <item>
-              <property name="text">
-               <string>3600</string>
-              </property>
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="lineEdit_PACBaud"/>
              </item>
-             <item>
-              <property name="text">
-               <string>7200</string>
-              </property>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="comboBox_PowerPac"/>
              </item>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_Seconds">
-             <property name="text">
-              <string>seconds</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="button_RTD">
-             <property name="text">
-              <string>RTD (4 Wire)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" colspan="2">
-            <widget class="QRadioButton" name="button_Thermocouple">
-             <property name="text">
-              <string>Thermocouple</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="9" column="0" colspan="3">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>PAC Power ASX115</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>BaudRate</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Power</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2" rowspan="2">
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>Connect</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="lineEdit"/>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="comboBox_2"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="10" column="0" rowspan="2" colspan="3">
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Cal Inst Connection</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_BoardID">
-             <property name="text">
-              <string>Board ID:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1" rowspan="2" colspan="3">
-            <widget class="QSpinBox" name="spinBox_BoardID"/>
-           </item>
-           <item row="0" column="4">
-            <widget class="QPushButton" name="pb_OpenCalInstConx">
-             <property name="text">
-              <string>Open</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="4" rowspan="2">
-            <widget class="QPushButton" name="pb_CloseCalInstConx">
-             <property name="text">
-              <string>Close</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QLabel" name="label_PrimAddress">
-             <property name="text">
-              <string>Primary Address:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2" colspan="2">
-            <widget class="QSpinBox" name="spinBox_PrimAddress"/>
-           </item>
-           <item row="3" column="0" colspan="3">
-            <widget class="QLabel" name="label_SecAddress">
-             <property name="text">
-              <string>Secondary Address:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="3" colspan="2">
-            <widget class="QComboBox" name="cb_SecAddress"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="5" column="8" rowspan="2">
-         <widget class="QGroupBox" name="gB_Informtation">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Information</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_9">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_startTime">
-             <property name="text">
-              <string>Start Time:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_terminateTime">
-             <property name="text">
-              <string>Terminate Time:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_Duration">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Duration:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_totalNumReadings">
-             <property name="text">
-              <string>Total Number of Readings:</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="1" column="7" rowspan="2" colspan="2">
-         <widget class="QGroupBox" name="gB_Mode">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Mode</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_8">
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="button_Free">
-             <property name="text">
-              <string>Free</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QRadioButton" name="button_Readings">
-             <property name="text">
-              <string># of Readings</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QRadioButton" name="button_Duration">
-             <property name="text">
-              <string>Duration</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QCheckBox" name="cB_Calibration">
-          <property name="text">
-           <string>Calibration</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="8">
-         <widget class="QLabel" name="label_timeStamp">
-          <property name="text">
-           <string>TIMESTAMP HERE</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="6" rowspan="3">
-         <widget class="QTextBrowser" name="textBrowser_State">
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+            </layout>
+           </widget>
+          </item>
+          <item row="10" column="0" rowspan="2" colspan="3">
+           <widget class="QGroupBox" name="groupBox_4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Cal Inst Connection</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_27">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_BoardID">
+               <property name="text">
+                <string>Board ID:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" rowspan="2" colspan="3">
+              <widget class="QSpinBox" name="spinBox_BoardID"/>
+             </item>
+             <item row="0" column="4">
+              <widget class="QPushButton" name="pb_OpenCalInstConx">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Open</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4" rowspan="2">
+              <widget class="QPushButton" name="pb_CloseCalInstConx">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Close</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QLabel" name="label_PrimAddress">
+               <property name="text">
+                <string>Primary Address:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2" colspan="2">
+              <widget class="QSpinBox" name="spinBox_PrimAddress"/>
+             </item>
+             <item row="3" column="0" colspan="3">
+              <widget class="QLabel" name="label_SecAddress">
+               <property name="text">
+                <string>Secondary Address:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3" colspan="2">
+              <widget class="QComboBox" name="cb_SecAddress"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="5" column="8" rowspan="2">
+           <widget class="QGroupBox" name="gB_Informtation">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Information</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_28">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_startTime">
+               <property name="text">
+                <string>Start Time:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_terminateTime">
+               <property name="text">
+                <string>Terminate Time:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_Duration">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Duration:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_totalNumReadings">
+               <property name="text">
+                <string>Total Number of Readings:</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="7" rowspan="2" colspan="2">
+           <widget class="QGroupBox" name="gB_Mode">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Mode</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_29">
+             <item row="0" column="0">
+              <widget class="QRadioButton" name="button_Free">
+               <property name="text">
+                <string>Free</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QRadioButton" name="button_Readings">
+               <property name="text">
+                <string># of Readings</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QRadioButton" name="button_Duration">
+               <property name="text">
+                <string>Duration</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="cB_Calibration">
+            <property name="text">
+             <string>Calibration</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="8">
+           <widget class="QLabel" name="label_timeStamp">
+            <property name="text">
+             <string>TIMESTAMP HERE</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="6" rowspan="3">
+           <widget class="QTextBrowser" name="textBrowser_State">
+            <property name="html">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9.75pt;&quot;&gt;INITIAL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Minimum</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="3" column="8" rowspan="2">
-         <widget class="QGroupBox" name="gB_Duration">
-          <property name="title">
-           <string>Duration</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_14">
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="lineEdit_Hours"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_Hours">
-             <property name="text">
-              <string>Hours</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLineEdit" name="lineEdit_Minutes"/>
-           </item>
-           <item row="0" column="3">
-            <widget class="QLabel" name="label_Minutes">
-             <property name="text">
-              <string>Minutes</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="4">
-            <widget class="QLineEdit" name="lineEdit_Seconds"/>
-           </item>
-           <item row="0" column="5">
-            <widget class="QLabel" name="label_Seconds_2">
-             <property name="text">
-              <string>Seconds</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="8" column="8" rowspan="4">
-         <widget class="QGroupBox" name="gb_Compare">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Compare</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_11">
-           <item row="1" column="0">
-            <widget class="QComboBox" name="comboBox_3"/>
-           </item>
-           <item row="2" column="0">
-            <widget class="QComboBox" name="comboBox_4"/>
-           </item>
-           <item row="1" column="3">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>°C</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QComboBox" name="comboBox_9"/>
-           </item>
-           <item row="2" column="3">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>°C</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="comboBox_8"/>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLineEdit" name="lineEdit_2"/>
-           </item>
-           <item row="3" column="0">
-            <widget class="QComboBox" name="comboBox_5"/>
-           </item>
-           <item row="3" column="1">
-            <widget class="QComboBox" name="comboBox_10"/>
-           </item>
-           <item row="2" column="2">
-            <widget class="QLineEdit" name="lineEdit_3"/>
-           </item>
-           <item row="4" column="3">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>°C</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QComboBox" name="comboBox_7"/>
-           </item>
-           <item row="5" column="1">
-            <widget class="QComboBox" name="comboBox_12"/>
-           </item>
-           <item row="5" column="2">
-            <widget class="QLineEdit" name="lineEdit_6"/>
-           </item>
-           <item row="5" column="3">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>°C</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QComboBox" name="comboBox_6"/>
-           </item>
-           <item row="4" column="2">
-            <widget class="QLineEdit" name="lineEdit_5"/>
-           </item>
-           <item row="3" column="2">
-            <widget class="QLineEdit" name="lineEdit_4"/>
-           </item>
-           <item row="3" column="3">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>°C</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QComboBox" name="comboBox_11"/>
-           </item>
-           <item row="0" column="0" colspan="4">
-            <widget class="QLabel" name="label_10">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>500</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Red Font Indicates a Higher Temperature&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="5" column="3" colspan="5">
-         <widget class="QProgressBar" name="progressBar">
-          <property name="value">
-           <number>24</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>DAQ Plot</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_3">
-       <attribute name="title">
-        <string>DAQ Log</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_4">
-       <attribute name="title">
-        <string>Current Controller</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_6">
-       <attribute name="title">
-        <string>Radian</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_7">
-       <attribute name="title">
-        <string>PAC Power</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_5">
-       <attribute name="title">
-        <string>Error Log</string>
-       </attribute>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="8" rowspan="2">
+           <widget class="QGroupBox" name="gB_Duration">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Duration</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_30">
+             <item row="0" column="0">
+              <widget class="QLineEdit" name="lineEdit_Hours"/>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_Hours_2">
+               <property name="text">
+                <string>Hours</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLineEdit" name="lineEdit_Minutes"/>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_Minutes_2">
+               <property name="text">
+                <string>Minutes</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QLineEdit" name="lineEdit_Seconds"/>
+             </item>
+             <item row="0" column="5">
+              <widget class="QLabel" name="label_Seconds_2">
+               <property name="text">
+                <string>Seconds</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="8" column="8" rowspan="4">
+           <widget class="QGroupBox" name="gb_Compare">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Compare</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_31">
+             <item row="1" column="0">
+              <widget class="QComboBox" name="comboBox_15"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QComboBox" name="comboBox_16"/>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>°C</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="comboBox_17"/>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>°C</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="comboBox_18"/>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLineEdit" name="lineEdit_8"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QComboBox" name="comboBox_19"/>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="comboBox_20"/>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLineEdit" name="lineEdit_9"/>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>°C</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QComboBox" name="comboBox_21"/>
+             </item>
+             <item row="5" column="1">
+              <widget class="QComboBox" name="comboBox_22"/>
+             </item>
+             <item row="5" column="2">
+              <widget class="QLineEdit" name="lineEdit_10"/>
+             </item>
+             <item row="5" column="3">
+              <widget class="QLabel" name="label_18">
+               <property name="text">
+                <string>°C</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QComboBox" name="comboBox_23"/>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLineEdit" name="lineEdit_11"/>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLineEdit" name="lineEdit_12"/>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>°C</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QComboBox" name="comboBox_24"/>
+             </item>
+             <item row="0" column="0" colspan="4">
+              <widget class="QLabel" name="label_20">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>500</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Red Font Indicates a Higher Temperature&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="5" column="3" colspan="5">
+           <widget class="QProgressBar" name="progressBar">
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>DAQ Plot</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>DAQ Log</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tab_4">
+         <attribute name="title">
+          <string>Current Controller</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tab_5">
+         <attribute name="title">
+          <string>Radian</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tab_6">
+         <attribute name="title">
+          <string>PAC Power</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tab_7">
+         <attribute name="title">
+          <string>Error Log</string>
+         </attribute>
+        </widget>
+       </widget>
       </widget>
      </widget>
     </item>

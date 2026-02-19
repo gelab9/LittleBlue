@@ -134,11 +134,11 @@ class MainWindow(QMainWindow):
         self.comparison = ComparisonTracker(logger=self.logger)
         # UI widget references for comparison pairs: (comboA, comboB, diffLineEdit)
         self._compare_widgets = [
-            (self.ui.comboBox_3, self.ui.comboBox_8, self.ui.lineEdit_2),
-            (self.ui.comboBox_4, self.ui.comboBox_9, self.ui.lineEdit_3),
-            (self.ui.comboBox_5, self.ui.comboBox_10, self.ui.lineEdit_4),
-            (self.ui.comboBox_6, self.ui.comboBox_11, self.ui.lineEdit_5),
-            (self.ui.comboBox_7, self.ui.comboBox_12, self.ui.lineEdit_6),
+            (self.ui.comboBox_15, self.ui.comboBox_18, self.ui.lineEdit_8),
+            (self.ui.comboBox_16, self.ui.comboBox_17, self.ui.lineEdit_9),
+            (self.ui.comboBox_19, self.ui.comboBox_20, self.ui.lineEdit_12),
+            (self.ui.comboBox_23, self.ui.comboBox_24, self.ui.lineEdit_11),
+            (self.ui.comboBox_21, self.ui.comboBox_22, self.ui.lineEdit_10),
         ]
 
         # Plot widget (embedded in tab_2 "DAQ Plot")
@@ -219,8 +219,8 @@ class MainWindow(QMainWindow):
         self.ui.cb_Port24970A.addItems(ports)
         self.ui.cB_PortRadian.clear()
         self.ui.cB_PortRadian.addItems(ports)
-        self.ui.comboBox_2.clear()
-        self.ui.comboBox_2.addItems(ports)
+        self.ui.comboBox_PowerPac.clear()
+        self.ui.comboBox_PowerPac.addItems(ports)
         self.logger.info(f"Detected serial ports: {ports}")
 
     def populate_defaults(self):
@@ -1439,8 +1439,8 @@ class MainWindow(QMainWindow):
         s.setValue("radian/port", self.ui.cB_PortRadian.currentText())
 
         # PAC Power
-        s.setValue("pac/port", self.ui.comboBox_2.currentText())
-        s.setValue("pac/baud", self.ui.lineEdit.text())
+        s.setValue("pac/port", self.ui.comboBox_PowerPac.currentText())
+        s.setValue("pac/baud", self.ui.lineEdit_PACBaud.text())
 
         # Cal Inst GPIB
         s.setValue("cal_inst/board_id", self.ui.spinBox_BoardID.value())
@@ -1504,10 +1504,10 @@ class MainWindow(QMainWindow):
         self._select_combo_value(self.ui.cB_PortRadian, s.value("radian/port", ""))
 
         # PAC Power
-        self._select_combo_value(self.ui.comboBox_2, s.value("pac/port", ""))
+        self._select_combo_value(self.ui.comboBox_PowerPac, s.value("pac/port", ""))
         pac_baud = s.value("pac/baud", "")
         if pac_baud:
-            self.ui.lineEdit.setText(str(pac_baud))
+            self.ui.lineEdit_PACBaud.setText(str(pac_baud))
 
         # Cal Inst GPIB
         board_id = s.value("cal_inst/board_id", 0, type=int)
