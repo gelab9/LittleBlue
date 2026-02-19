@@ -1090,3 +1090,52 @@
 2026-02-19 12:46:35 - SmartMeterApp - INFO - Application initialized successfully
 2026-02-19 12:46:42 - SmartMeterApp - INFO - Settings saved
 2026-02-19 12:46:42 - SmartMeterApp - INFO - Application closed normally
+2026-02-19 14:00:40 - SmartMeterApp - INFO - ============================================================
+2026-02-19 14:00:40 - SmartMeterApp - INFO - Application starting
+2026-02-19 14:00:40 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-19 14:00:40 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-19 14:00:40 - SmartMeterApp - INFO - ============================================================
+2026-02-19 14:00:40 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-19 14:00:40 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-19 14:00:40 - SmartMeterApp - INFO - UI defaults populated
+2026-02-19 14:00:40 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
+2026-02-19 14:04:31 - SmartMeterApp - INFO - ============================================================
+2026-02-19 14:04:31 - SmartMeterApp - INFO - Application starting
+2026-02-19 14:04:31 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-19 14:04:31 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-19 14:04:31 - SmartMeterApp - INFO - ============================================================
+2026-02-19 14:04:31 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-19 14:04:31 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-19 14:04:31 - SmartMeterApp - INFO - UI defaults populated
+2026-02-19 14:04:31 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
+2026-02-19 14:04:31 - SmartMeterApp - INFO - Settings restored
+2026-02-19 14:04:31 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-19 14:04:49 - SmartMeterApp - INFO - Settings saved
+2026-02-19 14:04:49 - SmartMeterApp - INFO - Application closed normally
+2026-02-19 14:10:22 - SmartMeterApp - INFO - ============================================================
+2026-02-19 14:10:22 - SmartMeterApp - INFO - Application starting
+2026-02-19 14:10:22 - SmartMeterApp - INFO - Mock Mode: False
+2026-02-19 14:10:22 - SmartMeterApp - INFO - Poll Interval: 500ms
+2026-02-19 14:10:22 - SmartMeterApp - INFO - ============================================================
+2026-02-19 14:10:22 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-19 14:10:22 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-19 14:10:22 - SmartMeterApp - INFO - UI defaults populated
+2026-02-19 14:10:22 - SmartMeterApp - INFO - Detected serial ports: ['COM3']
+2026-02-19 14:10:22 - SmartMeterApp - INFO - Settings restored
+2026-02-19 14:10:22 - SmartMeterApp - INFO - Application initialized successfully
+2026-02-19 14:10:27 - SmartMeterApp - DEBUG - Test mode changed to: Duration
+2026-02-19 14:10:27 - SmartMeterApp - DEBUG - Test mode changed to: Duration
+2026-02-19 14:10:29 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-19 14:10:29 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-19 14:10:32 - SmartMeterApp - DEBUG - Slot changed to: Slot 200
+2026-02-19 14:10:32 - SmartMeterApp - DEBUG - Slot changed to: Slot 200
+2026-02-19 14:10:32 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-19 14:10:32 - SmartMeterApp - DEBUG - Slot changed to: Slot 100
+2026-02-19 14:12:06 - SmartMeterApp - DEBUG - Test mode changed to: # of Readings
+2026-02-19 14:12:06 - SmartMeterApp - DEBUG - Test mode changed to: # of Readings
+2026-02-19 14:12:13 - SmartMeterApp - DEBUG - Test mode changed to: Duration
+2026-02-19 14:12:13 - SmartMeterApp - DEBUG - Test mode changed to: Duration
+2026-02-19 14:12:15 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-19 14:12:15 - SmartMeterApp - DEBUG - Test mode changed to: Free
+2026-02-19 14:15:03 - SmartMeterApp - INFO - Settings saved
+2026-02-19 14:15:03 - SmartMeterApp - INFO - Application closed normally

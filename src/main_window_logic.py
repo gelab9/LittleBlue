@@ -6,7 +6,7 @@ from datetime import datetime
 from PyQt6.QtWidgets import (
     QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout,
     QTextBrowser, QHBoxLayout, QPushButton, QComboBox, QLabel, QSpinBox,
-    QTimeEdit, QLineEdit,
+    QLineEdit,
 )
 from PyQt6.QtCore import QTimer, QThread, pyqtSignal, QSettings, QObject, QTime
 from PyQt6.QtGui import QColor, QTextCharFormat, QFont
@@ -103,6 +103,11 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # Hidden until DAQ is identified
+        self.ui.gB_ChannelData.setVisible(False)
+        # Hidden until Duration mode is selected
+        self.ui.gB_Duration.setVisible(False)
+
         # Real model objects (replacing Null* stubs)
         self.statistics = StatisticsTracker()
         self.test_controller = TestController()
@@ -147,16 +152,16 @@ class MainWindow(QMainWindow):
         tab2_layout.setContentsMargins(4, 4, 4, 4)
         tab2_layout.addWidget(self.plot_widget)
 
-        # Error Log tab (tab_5)
+        # Error Log tab (tab_7)
         self._setup_error_log_tab()
 
         # DAQ Log tab (tab_3)
         self._setup_daq_log_tab()
 
-        # Radian tab (tab_6)
+        # Radian tab (tab_5)
         self._setup_radian_tab()
 
-        # PAC Power tab (tab_7)
+        # PAC Power tab (tab_6)
         self._setup_pac_power_tab()
 
         # Mode input widgets (Duration HH:MM:SS, Readings count)
@@ -238,7 +243,7 @@ class MainWindow(QMainWindow):
         self.refresh_serial_ports()
 
     def update_timestamp(self):
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z%z")
         self.ui.label_timeStamp.setText(current_time)
 
     # ----------------------------------------------------------------
@@ -246,34 +251,24 @@ class MainWindow(QMainWindow):
     # ----------------------------------------------------------------
 
     def _setup_mode_inputs(self):
-        """Add Duration (HH:MM:SS) and Readings (count) inputs to gB_Mode."""
-        # Duration: time edit placed below the radio buttons
-        self._duration_edit = QTimeEdit(self.ui.gB_Mode)
-        self._duration_edit.setDisplayFormat("HH:mm:ss")
-        self._duration_edit.setTime(QTime(1, 0, 0))
-        self._duration_edit.setVisible(False)
-
-        # Readings: spin box for target count
+        """Add Readings (count) spin box to gB_Mode; Duration uses gB_Duration from UI."""
+        # Readings: spin box for target count (no dedicated UI widget yet)
         self._readings_spinbox = QSpinBox(self.ui.gB_Mode)
         self._readings_spinbox.setRange(1, 999999)
         self._readings_spinbox.setValue(100)
         self._readings_spinbox.setVisible(False)
 
-        # Add to the mode groupbox layout
         mode_layout = self.ui.gB_Mode.layout()
         if mode_layout is not None:
-            mode_layout.addWidget(self._duration_edit)
             mode_layout.addWidget(self._readings_spinbox)
         else:
-            # Fallback: position manually
-            self._duration_edit.move(10, 90)
             self._readings_spinbox.move(10, 90)
 
         # Show the right widget for the current mode
         self._update_mode_input_visibility()
 
     def _update_mode_input_visibility(self):
-        self._duration_edit.setVisible(self.ui.button_Duration.isChecked())
+        self.ui.gB_Duration.setVisible(self.ui.button_Duration.isChecked())
         self._readings_spinbox.setVisible(self.ui.button_Readings.isChecked())
 
     # ----------------------------------------------------------------
@@ -334,7 +329,10 @@ class MainWindow(QMainWindow):
             self.ui.textBrowser_State.setText(str(data))
 
         elif action == "daq_idn":
-            self.ui.textBrowser_State.setText(str(data))
+            idn = data.get("response", str(data))
+            self.ui.textBrowser_State.setText(idn)
+            if "AGILENT" in idn.upper() or "34970" in idn:
+                self.ui.gB_ChannelData.setVisible(True)
 
         elif action == "daq_latest":
             self.logger.debug(f"RAW LATEST: {data}")
@@ -522,6 +520,42 @@ class MainWindow(QMainWindow):
         else:
             return list(range(301, 321))
 
+    def _read_channel_config_from_ui(self) -> list[int]:
+        """Read enabled channels from gB_ChannelData (101-110) and update channel_configs."""
+        enabled_channels = []
+
+        for ch_id in range(101, 111):  # Channels 101-110
+            checkbox = getattr(self.ui, f"cB_{ch_id}", None)
+            if checkbox and checkbox.isChecked():
+                enabled_channels.append(ch_id)
+
+                # Read channel type from combobox
+                combo = getattr(self.ui, f"comboBox_{ch_id}", None)
+                channel_type = combo.currentText() if combo else ""
+
+                # Read gain/offset
+                gain_edit = getattr(self.ui, f"gain_{ch_id}", None)
+                offset_edit = getattr(self.ui, f"offset_{ch_id}", None)
+
+                try:
+                    gain = float(gain_edit.text()) if (gain_edit and gain_edit.text()) else 1.0
+                except ValueError:
+                    gain = 1.0
+
+                try:
+                    offset = float(offset_edit.text()) if (offset_edit and offset_edit.text()) else 0.0
+                except ValueError:
+                    offset = 0.0
+
+                # Update the channel config with UI values
+                cfg = self._get_channel_config(ch_id)
+                if cfg:
+                    cfg.channel_name = channel_type if channel_type else f"CH{ch_id}"
+                    cfg.gain = gain
+                    cfg.offset = offset
+
+        return enabled_channels
+
     def _get_channel_config(self, channel_id: int) -> ChannelConfig | None:
         for cfg in self.channel_configs:
             if cfg.channel_number == channel_id:
@@ -629,7 +663,18 @@ class MainWindow(QMainWindow):
             self._update_test_info()
             return
 
-        channels = self.get_selected_daq_channels()
+        # Use channel config panel if visible (after DAQ identified), else slot-based
+        if self.ui.gB_ChannelData.isVisible():
+            channels = self._read_channel_config_from_ui()
+            if not channels:
+                QMessageBox.warning(
+                    self, "No Channels Selected",
+                    "Please check at least one channel in the Channel Data panel"
+                )
+                return
+        else:
+            channels = self.get_selected_daq_channels()
+
         scan_list = ",".join(str(ch) for ch in channels)
         self._active_channels = channels
 
@@ -647,8 +692,13 @@ class MainWindow(QMainWindow):
             self.test_controller.target_readings = self._readings_spinbox.value()
         else:
             self.test_controller.mode = TestController.MODE_DURATION
-            t = self._duration_edit.time()
-            self.test_controller.target_duration_s = t.hour() * 3600 + t.minute() * 60 + t.second()
+            try:
+                h = int(self.ui.lineEdit_Hours.text() or "0")
+                m = int(self.ui.lineEdit_Minutes.text() or "0")
+                sec = int(self.ui.lineEdit_Seconds.text() or "0")
+            except ValueError:
+                h, m, sec = 1, 0, 0
+            self.test_controller.target_duration_s = h * 3600 + m * 60 + sec
 
         # Initialize CSV logger
         self.csv_logger = CsvLogger(self.data_dir)
@@ -938,7 +988,7 @@ class MainWindow(QMainWindow):
             return
 
         try:
-            target_current = float(self.ui.comboBox.currentText() or "0")
+            target_current = float(self.ui.comboBox_13.currentText() or "0")
         except ValueError:
             return
         if target_current <= 0:
@@ -1038,8 +1088,8 @@ class MainWindow(QMainWindow):
             self.api_post("pac_disconnect", "/pac/disconnect", {})
             return
 
-        baud_rate_str = self.ui.lineEdit.text().strip()
-        port = self.ui.comboBox_2.currentText()
+        baud_rate_str = self.ui.lineEdit_PACBaud.text().strip()
+        port = self.ui.comboBox_PowerPac.currentText()
 
         if not port:
             QMessageBox.warning(self, "Connection Error", "Please select a COM port for PAC Power")
@@ -1094,8 +1144,8 @@ class MainWindow(QMainWindow):
     # ----------------------------------------------------------------
 
     def _setup_radian_tab(self):
-        """Build Radian tab (tab_6) with instant and accumulated metrics."""
-        layout = QVBoxLayout(self.ui.tab_6)
+        """Build Radian tab (tab_5) with instant and accumulated metrics."""
+        layout = QVBoxLayout(self.ui.tab_5)
         layout.setContentsMargins(4, 4, 4, 4)
 
         # Instant metrics section
@@ -1166,8 +1216,8 @@ class MainWindow(QMainWindow):
     # ----------------------------------------------------------------
 
     def _setup_pac_power_tab(self):
-        """Build PAC Power tab (tab_7) with voltage/frequency controls."""
-        layout = QVBoxLayout(self.ui.tab_7)
+        """Build PAC Power tab (tab_6) with voltage/frequency controls."""
+        layout = QVBoxLayout(self.ui.tab_6)
         layout.setContentsMargins(4, 4, 4, 4)
 
         # Voltage control
@@ -1323,7 +1373,7 @@ class MainWindow(QMainWindow):
 
     def _setup_error_log_tab(self):
         """Build the Error Log tab UI and attach the Qt log handler."""
-        layout = QVBoxLayout(self.ui.tab_5)
+        layout = QVBoxLayout(self.ui.tab_7)
         layout.setContentsMargins(4, 4, 4, 4)
 
         # Controls row
@@ -1479,7 +1529,9 @@ class MainWindow(QMainWindow):
         s.setValue("test/read_interval_idx", self.ui.cB_readIntervals.currentIndex())
 
         # Mode inputs
-        s.setValue("test/duration_time", self._duration_edit.time().toString("HH:mm:ss"))
+        s.setValue("test/duration_hours", self.ui.lineEdit_Hours.text())
+        s.setValue("test/duration_minutes", self.ui.lineEdit_Minutes.text())
+        s.setValue("test/duration_seconds", self.ui.lineEdit_Seconds.text())
         s.setValue("test/target_readings", self._readings_spinbox.value())
 
         self.logger.info("Settings saved")
@@ -1555,10 +1607,9 @@ class MainWindow(QMainWindow):
             self.ui.cB_readIntervals.setCurrentIndex(read_idx)
 
         # Mode inputs
-        dur_str = s.value("test/duration_time", "01:00:00")
-        dur_time = QTime.fromString(str(dur_str), "HH:mm:ss")
-        if dur_time.isValid():
-            self._duration_edit.setTime(dur_time)
+        self.ui.lineEdit_Hours.setText(str(s.value("test/duration_hours", "1")))
+        self.ui.lineEdit_Minutes.setText(str(s.value("test/duration_minutes", "0")))
+        self.ui.lineEdit_Seconds.setText(str(s.value("test/duration_seconds", "0")))
         target_readings = s.value("test/target_readings", 100, type=int)
         self._readings_spinbox.setValue(target_readings)
 
