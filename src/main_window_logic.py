@@ -181,6 +181,14 @@ class MainWindow(QMainWindow):
         self.populate_defaults()
         self._restore_settings()
 
+        # API in-flight counter — used to drive indeterminate progress bar animation
+        self._api_calls_in_flight = 0
+
+        # Clock timer: keep label_timeStamp current, fires every second
+        self._clock_timer = QTimer()
+        self._clock_timer.timeout.connect(self.update_timestamp)
+        self._clock_timer.start(1000)
+
         # Poll timer
         self.poll_timer = QTimer()
         self.poll_timer.timeout.connect(self.on_poll)
@@ -246,6 +254,9 @@ class MainWindow(QMainWindow):
         baud_rates = ["9600", "19200", "38400", "57600", "115200"]
         self.ui.cb_baudRate24970A.clear()
         self.ui.cb_baudRate24970A.addItems(baud_rates)
+
+        # Start progress bar in indeterminate/animated mode (overrides any .ui default value)
+        self.ui.progressBar.setRange(0, 0)
 
         self.update_timestamp()
         self.logger.info("UI defaults populated")
@@ -359,8 +370,23 @@ class MainWindow(QMainWindow):
 
     def on_api_progress(self, msg: str):
         self.ui.textBrowser_State.setText(msg)
+        self._api_calls_in_flight += 1
+        # Show busy animation unless a deterministic test is already tracking progress
+        is_deterministic = (
+            self.test_controller.is_running
+            and self.test_controller.mode in (
+                TestController.MODE_READINGS, TestController.MODE_DURATION
+            )
+        )
+        if not is_deterministic:
+            self.ui.progressBar.setRange(0, 0)
 
     def on_api_finished(self, action: str, res: ApiResult):
+        # Decrement counter and restore bar to idle whenever no calls remain outside a test
+        self._api_calls_in_flight = max(0, self._api_calls_in_flight - 1)
+        if self._api_calls_in_flight == 0 and not self.test_controller.is_running:
+            self.ui.progressBar.setRange(0, 0)  # back to animated idle
+
         if not res.ok:
             self.logger.error(f"{action} failed: {res.status} {res.error}")
             QMessageBox.critical(self, "API Error", f"{action} failed:\n{res.error}")
@@ -717,6 +743,7 @@ class MainWindow(QMainWindow):
             self.ui.textBrowser_lowerData.append(
                 f"Log Terminated at:\t\t{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
             )
+            self.ui.progressBar.setRange(0, 0)  # back to animated idle
             self._unlock_ui_after_test()
             return
 
@@ -790,7 +817,12 @@ class MainWindow(QMainWindow):
         # Start test
         self.test_controller.start()
         self.test_start_time = datetime.now()
-        self.ui.progressBar.setValue(0)
+        # Free mode has no defined end — animate as indeterminate; others show deterministic %
+        if self.test_controller.mode == TestController.MODE_FREE:
+            self.ui.progressBar.setRange(0, 0)
+        else:
+            self.ui.progressBar.setRange(0, 100)
+            self.ui.progressBar.setValue(0)
         self.ui.pB_Start.setText("Stop Test")
         self.ui.pB_Start.setStyleSheet("background-color: #ff6b6b;")
         self.ui.textBrowser_State.setText("RUNNING")
@@ -832,7 +864,7 @@ class MainWindow(QMainWindow):
             self.csv_logger = None
 
         self.plot_widget.stop_test()
-        self.ui.progressBar.setValue(100)
+        self.ui.progressBar.setRange(0, 0)  # back to animated idle
         self.ui.pB_Start.setText("Start Reading!")
         self.ui.pB_Start.setStyleSheet("")
         self.ui.textBrowser_State.setText("TEST COMPLETE")
@@ -857,6 +889,7 @@ class MainWindow(QMainWindow):
 
     def _update_progress_bar(self):
         """Update the progress bar based on the current test mode."""
+        self.ui.progressBar.setRange(0, 100)  # ensure normal range for deterministic modes
         if self.test_controller.mode == TestController.MODE_READINGS:
             target = self.test_controller.target_readings
             if target > 0:
