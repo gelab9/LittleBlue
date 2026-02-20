@@ -108,6 +108,15 @@ class MainWindow(QMainWindow):
         # Hidden until Duration mode is selected
         self.ui.gB_Duration.setVisible(False)
 
+        # Make channel type dropdowns wide enough to read their selected text
+        for ch_id in range(101, 111):
+            combo = getattr(self.ui, f"comboBox_{ch_id}", None)
+            if combo:
+                combo.setMinimumWidth(130)
+                combo.setSizeAdjustPolicy(
+                    QComboBox.SizeAdjustPolicy.AdjustToContents
+                )
+
         # Real model objects (replacing Null* stubs)
         self.statistics = StatisticsTracker()
         self.test_controller = TestController()
@@ -270,6 +279,50 @@ class MainWindow(QMainWindow):
     def _update_mode_input_visibility(self):
         self.ui.gB_Duration.setVisible(self.ui.button_Duration.isChecked())
         self._readings_spinbox.setVisible(self.ui.button_Readings.isChecked())
+
+    # ----------------------------------------------------------------
+    # UI lock / unlock during test
+    # ----------------------------------------------------------------
+
+    def _lock_ui_for_test(self):
+        """Disable controls that must not change while a test is running."""
+        self.ui.cb_baudRate24970A.setEnabled(False)
+        self.ui.button_RTD.setEnabled(False)
+        self.ui.button_Thermocouple.setEnabled(False)
+        self.ui.button_Free.setEnabled(False)
+        self.ui.button_Readings.setEnabled(False)
+        self.ui.button_Duration.setEnabled(False)
+        self.ui.cb_VoltsData.setEnabled(False)
+        self.ui.cb_CurrentData.setEnabled(False)
+        self.ui.cb_DataFrequency.setEnabled(False)
+        self.ui.cb_PhaseData.setEnabled(False)
+        self.ui.cB_readIntervals.setEnabled(False)
+        self.ui.spinBox_BoardID.setEnabled(False)
+        self.ui.spinBox_PrimAddress.setEnabled(False)
+        self.ui.cb_SecAddress.setEnabled(False)
+        self.ui.pb_OpenCalInstConx.setEnabled(False)
+        self.ui.pb_CloseCalInstConx.setEnabled(False)
+
+    def _unlock_ui_after_test(self):
+        """Re-enable controls after a test stops."""
+        self.ui.cb_baudRate24970A.setEnabled(True)
+        self.ui.button_RTD.setEnabled(True)
+        self.ui.button_Thermocouple.setEnabled(True)
+        self.ui.button_Free.setEnabled(True)
+        self.ui.button_Readings.setEnabled(True)
+        self.ui.button_Duration.setEnabled(True)
+        self.ui.cb_VoltsData.setEnabled(True)
+        self.ui.cb_CurrentData.setEnabled(True)
+        self.ui.cb_DataFrequency.setEnabled(True)
+        self.ui.cb_PhaseData.setEnabled(True)
+        self.ui.cB_readIntervals.setEnabled(True)
+        # Cal Inst inputs — only unlock if not currently connected
+        if not self.cal_inst_connected:
+            self.ui.spinBox_BoardID.setEnabled(True)
+            self.ui.spinBox_PrimAddress.setEnabled(True)
+            self.ui.cb_SecAddress.setEnabled(True)
+            self.ui.pb_OpenCalInstConx.setEnabled(True)
+        self.ui.pb_CloseCalInstConx.setEnabled(self.cal_inst_connected)
 
     # ----------------------------------------------------------------
     # SCPI helpers
@@ -661,6 +714,10 @@ class MainWindow(QMainWindow):
             self.ui.pB_Start.setStyleSheet("")
             self.ui.textBrowser_State.setText("STOPPED")
             self._update_test_info()
+            self.ui.textBrowser_lowerData.append(
+                f"Log Terminated at:\t\t{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
+            self._unlock_ui_after_test()
             return
 
         # Use channel config panel if visible (after DAQ identified), else slot-based
@@ -740,6 +797,8 @@ class MainWindow(QMainWindow):
         self.ui.label_startTime.setText(
             f"Start Time: {self.test_start_time.strftime('%H:%M:%S')}"
         )
+        self._lock_ui_for_test()
+        self._init_data_log_display()
         self.poll_timer.start(self.poll_interval_ms)
 
     def on_poll(self):
@@ -778,6 +837,10 @@ class MainWindow(QMainWindow):
         self.ui.pB_Start.setStyleSheet("")
         self.ui.textBrowser_State.setText("TEST COMPLETE")
         self._update_test_info()
+        self.ui.textBrowser_lowerData.append(
+            f"Log Terminated at:\t\t{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        )
+        self._unlock_ui_after_test()
 
         # Turn off power source if requested
         if self.ui.cB_sourceOff.isChecked():
@@ -823,6 +886,47 @@ class MainWindow(QMainWindow):
     # Data display
     # ----------------------------------------------------------------
 
+    def _init_data_log_display(self):
+        """Clear textBrowser_lowerData and write the column header row."""
+        self.ui.textBrowser_lowerData.clear()
+        header = "Sample"
+        if self.ui.cb_VoltsData.isChecked():
+            header += "\t\tVrms"
+        if self.ui.cb_CurrentData.isChecked():
+            header += "\t\tArms"
+        if self.ui.cb_DataFrequency.isChecked():
+            header += "\t\tHz"
+        if self.ui.cb_PhaseData.isChecked():
+            header += "\t\tDeg"
+        header += "\t\tTime Stamp"
+        self.ui.textBrowser_lowerData.append(f"<b>{header}</b>")
+
+    def _append_data_log_row(self):
+        """Append one sample row to textBrowser_lowerData (mirrors original lbDataLog)."""
+        metrics = self._last_radian_metrics
+
+        def fmt(val):
+            av = abs(val)
+            if av < 10:
+                return f"{val:.5f}"
+            elif av < 100:
+                return f"{val:.4f}"
+            return f"{val:.3f}"
+
+        row = str(self.test_controller.reading_count)
+        if self.ui.cb_VoltsData.isChecked():
+            row += "\t\t" + (fmt(metrics.volt) if metrics else "--")
+        if self.ui.cb_CurrentData.isChecked():
+            row += "\t\t" + (fmt(metrics.amp) if metrics else "--")
+        if self.ui.cb_DataFrequency.isChecked():
+            row += "\t\t" + (fmt(metrics.frequency) if metrics else "--")
+        if self.ui.cb_PhaseData.isChecked():
+            row += "\t\t" + (fmt(metrics.phase) if metrics else "--")
+        row += "\t\t" + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.ui.textBrowser_lowerData.append(row)
+        sb = self.ui.textBrowser_lowerData.verticalScrollBar()
+        sb.setValue(sb.maximum())
+
     def apply_latest_reading(self, data: dict):
         """Handle structured reading data (from /daq/latest)."""
         if not data:
@@ -841,9 +945,6 @@ class MainWindow(QMainWindow):
         resp = (resp or "").strip()
         if not resp:
             return
-
-        # Append raw data to lower text browser
-        self.ui.textBrowser_lowerData.append(resp)
 
         # Parse comma-separated response
         # With FORM:READ:CHAN ON and FORM:READ:TIME ON, format is:
@@ -879,6 +980,7 @@ class MainWindow(QMainWindow):
         if channel_values:
             self.test_controller.record_reading()
             self._update_progress_bar()
+            self._append_data_log_row()
 
             # Log to CSV
             if self.csv_logger:
