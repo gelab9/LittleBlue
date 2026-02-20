@@ -30,9 +30,10 @@ class LocalApiClient:
         except Exception as e:
             return ApiResult(ok=False, status=0, data=None, error=str(e))
 
-    def post(self, path: str, payload: Dict[str, Any]) -> ApiResult:
+    def post(self, path: str, payload: Dict[str, Any], timeout_s: Optional[float] = None) -> ApiResult:
         try:
-            r = self.session.post(self.base_url + path, json=payload, timeout=self.timeout_s)
+            t = timeout_s if timeout_s is not None else self.timeout_s
+            r = self.session.post(self.base_url + path, json=payload, timeout=t)
             return ApiResult(ok=r.ok, status=r.status_code, data=_safe_json(r), error=None if r.ok else r.text)
         except Exception as e:
             return ApiResult(ok=False, status=0, data=None, error=str(e))
@@ -48,7 +49,8 @@ class ApiWorker(QObject):
     @pyqtSlot(str, dict)
     def do_post(self, action: str, payload: dict):
         self.progress.emit(f"{action}...")
-        res = self.api.post(payload["path"], payload.get("json", {}))
+        timeout = payload.get("timeout_s", None)  # optional per-request override
+        res = self.api.post(payload["path"], payload.get("json", {}), timeout_s=timeout)
         self.finished.emit(action, res)
 
     @pyqtSlot(str, str)

@@ -219,6 +219,9 @@ class MainWindow(QMainWindow):
         # PAC Power
         self.ui.pushButton.clicked.connect(self.on_connect_pac_power)
 
+        # Close loop control
+        self.ui.cB_closeLoop.stateChanged.connect(self._on_close_loop_toggled)
+
         # Data filter checkboxes
         self.ui.cb_VoltsData.stateChanged.connect(self.on_data_filter_changed)
         self.ui.cb_CurrentData.stateChanged.connect(self.on_data_filter_changed)
@@ -257,6 +260,10 @@ class MainWindow(QMainWindow):
 
         # Start progress bar in indeterminate/animated mode (overrides any .ui default value)
         self.ui.progressBar.setRange(0, 0)
+
+        # Default deadband values for closed-loop current control
+        self.ui.lineEdit_Controller.setText("5")
+        self.ui.lineEdit_Accuracy.setText("1")
 
         self.update_timestamp()
         self.logger.info("UI defaults populated")
@@ -358,8 +365,10 @@ class MainWindow(QMainWindow):
             QtCore.Q_ARG(str, path),
         )
 
-    def api_post(self, action: str, path: str, json_payload: dict):
+    def api_post(self, action: str, path: str, json_payload: dict, timeout_s: float = None):
         payload = {"path": path, "json": json_payload}
+        if timeout_s is not None:
+            payload["timeout_s"] = timeout_s
         QtCore.QMetaObject.invokeMethod(
             self.api_worker,
             "do_post",
@@ -389,7 +398,13 @@ class MainWindow(QMainWindow):
 
         if not res.ok:
             self.logger.error(f"{action} failed: {res.status} {res.error}")
-            QMessageBox.critical(self, "API Error", f"{action} failed:\n{res.error}")
+            # Polling actions can fail transiently (instrument busy, partial read, etc.).
+            # Log only — no popup — so the test can keep running uninterrupted.
+            _TRANSIENT_ACTIONS = {"daq_read", "radian_instant_metrics", "daq_err",
+                                  "pac_beep", "pac_init_voltage", "pac_zero_voltage",
+                                  "daq_idn", "health", "daq_status"}
+            if action not in _TRANSIENT_ACTIONS:
+                QMessageBox.critical(self, "API Error", f"{action} failed:\n{res.error}")
             return
 
         data = res.data or {}
@@ -398,6 +413,11 @@ class MainWindow(QMainWindow):
             self.daq_connected = True
             self.ui.pb_Connect34970A.setText("Disconnect")
             self.ui.textBrowser_State.setText("CONNECTED")
+            self.ui.gB_ChannelData.setVisible(True)  # show channel UI immediately on connect
+            # Fire follow-ups only after a confirmed successful connect
+            self.api_get("health", "/health")
+            self.api_get("daq_status", "/daq/status")
+            self.api_get("daq_idn", "/daq/idn")
 
         elif action == "daq_disconnect":
             self.daq_connected = False
@@ -408,10 +428,9 @@ class MainWindow(QMainWindow):
             self.ui.textBrowser_State.setText(str(data))
 
         elif action == "daq_idn":
-            idn = data.get("response", str(data))
+            idn = data.get("idn", str(data))  # backend returns {"idn": "..."}
             self.ui.textBrowser_State.setText(idn)
-            if "AGILENT" in idn.upper() or "34970" in idn:
-                self.ui.gB_ChannelData.setVisible(True)
+            self.ui.textBrowser_lowerData.append(f"DAQ IDN: {idn}")
 
         elif action == "daq_latest":
             self.logger.debug(f"RAW LATEST: {data}")
@@ -512,6 +531,11 @@ class MainWindow(QMainWindow):
             self.ui.pushButton.setText("Disconnect")
             self.ui.textBrowser_State.setText(f"PAC POWER CONNECTED: {data.get('port', '')}")
             self.api_get("pac_identify", "/pac/identify")
+            # Matching original: beep to confirm comms, then init voltage=0 output=OFF
+            self.api_post("pac_beep", "/pac/send", {"cmd": ":SYST:BEEP"})
+            self.pac_power_device.voltage_setpoint = 0.0
+            self.api_post("pac_init_voltage", "/pac/send", {"cmd": ":VOLT1 0"})
+            self.api_post("pac_output_off", "/pac/output-off", {})
 
         elif action == "pac_disconnect":
             self.pac_connected = False
@@ -695,9 +719,6 @@ class MainWindow(QMainWindow):
             return
 
         self.api_post("daq_connect", "/daq/connect", {"port": port, "baud": baud_rate})
-        self.api_get("health", "/health")
-        self.api_get("daq_status", "/daq/status")
-        self.api_get("daq_idn", "/daq/idn")
 
     def on_set_voltage(self):
         voltage_str = self.ui.lineEdit_Voltage.text()
@@ -707,8 +728,10 @@ class MainWindow(QMainWindow):
                 raise ValueError("Voltage must be between 0 and 300V")
             self.logger.info(f"Setting voltage to {voltage}V")
             if self.cal_inst_connected:
+                self.cal_inst_device.voltage_setpoint = voltage  # update immediately, don't wait for API response
                 self.api_post("cal_inst_set_voltage", "/cal-inst/set-voltage", {"voltage": voltage})
             elif self.pac_connected:
+                self.pac_power_device.voltage_setpoint = voltage  # update immediately, don't wait for API response
                 self.api_post("pac_set_voltage", "/pac/set-voltage", {"voltage": voltage})
                 self.api_post("pac_output_on", "/pac/output-on", {})
             else:
@@ -722,6 +745,9 @@ class MainWindow(QMainWindow):
         if self.cal_inst_connected:
             self.api_post("cal_inst_voltage_off", "/cal-inst/voltage-off", {})
         elif self.pac_connected:
+            # Matching original: zero voltage then disable output
+            self.pac_power_device.voltage_setpoint = 0.0
+            self.api_post("pac_zero_voltage", "/pac/send", {"cmd": ":VOLT1 0"})
             self.api_post("pac_output_off", "/pac/output-off", {})
         else:
             QMessageBox.warning(self, "Not Connected", "No voltage source connected (Cal Inst or PAC Power)")
@@ -795,12 +821,13 @@ class MainWindow(QMainWindow):
 
         # Configure DAQ via single sequenced setup call
         use_rtd = self.ui.button_RTD.isChecked()
+        # daq_setup issues many SCPI commands with sleep delays; use a generous timeout
         self.api_post("daq_setup", "/daq/setup", {
             "scanList": scan_list,
             "useRtd": use_rtd,
             "tcType": "K",
             "triggerTimerSeconds": interval_seconds,
-        })
+        }, timeout_s=30.0)
 
         # Populate compare comboboxes with active channels
         self._populate_compare_combos(channels)
@@ -1107,6 +1134,19 @@ class MainWindow(QMainWindow):
     # Close current loop (proportional voltage control)
     # ----------------------------------------------------------------
 
+    def _on_close_loop_toggled(self, _):
+        """Enable/disable manual voltage controls based on close loop checkbox state.
+        Mirrors the original chkCloseLoop_CheckedChanged behavior."""
+        loop_on = self.ui.cB_closeLoop.isChecked()
+        # Disable manual voltage input when close loop is active (matching original VB behavior)
+        self.ui.lineEdit_Voltage.setEnabled(not loop_on)
+        self.ui.pb_setVoltage.setEnabled(not loop_on)
+        self.ui.pb_voltageOff.setEnabled(not loop_on)
+        # Keep deadband/setpoint controls always editable
+        self.ui.lineEdit_Controller.setEnabled(True)
+        self.ui.lineEdit_Accuracy.setEnabled(True)
+        self.ui.comboBox_13.setEnabled(True)
+
     def _execute_close_loop(self):
         """Proportional control: adjust voltage to maintain target current."""
         if not self.ui.cB_closeLoop.isChecked():
@@ -1159,8 +1199,10 @@ class MainWindow(QMainWindow):
                 )
 
                 if self.cal_inst_connected:
+                    self.cal_inst_device.voltage_setpoint = new_voltage  # update immediately so next iteration uses new value
                     self.api_post("cal_inst_set_voltage", "/cal-inst/set-voltage", {"voltage": new_voltage})
                 elif self.pac_connected:
+                    self.pac_power_device.voltage_setpoint = new_voltage  # update immediately so next iteration uses new value
                     self.api_post("pac_set_voltage", "/pac/set-voltage", {"voltage": new_voltage})
 
     # ----------------------------------------------------------------

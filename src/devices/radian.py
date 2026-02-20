@@ -83,7 +83,7 @@ class RadianDevice(DeviceBase):
             packet = RadianPacket.from_bytes(data)
             # ALL_RD2X response: 10 TI floats * 4 bytes = 40 bytes of data
             if packet is None or len(packet.data) < 40:
-                self.logger.error("Invalid packet or insufficient data for instant metrics")
+                self.logger.warning("Invalid packet or insufficient data for instant metrics")
                 return None
 
             # Parse each metric per original mRadian.vb ALL_RD2X case:
