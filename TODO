@@ -1,6 +1,5 @@
-Fetch files updated and created from MacOS yesterday
+Need to fix close current loop where current will not decrease when this is selected
 
-Summary of what we had done at 9:40 pm 02/19/2026:
-UI Lockout on test start, formatted data log in textBrowser and made readable channel type dropdowns
+Follow notes from bigblue.txt for more directions in finishing applications
 
-Test all changes tomorrow morning
+Implement Turn off power source when test completed button
