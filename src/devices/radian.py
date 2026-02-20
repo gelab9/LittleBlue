@@ -81,37 +81,25 @@ class RadianDevice(DeviceBase):
         try:
             # Parse Radian packet structure
             packet = RadianPacket.from_bytes(data)
-            if packet is None or len(packet.data) < 32:  # Need at least 8 floats * 4 bytes
+            # ALL_RD2X response: 10 TI floats * 4 bytes = 40 bytes of data
+            if packet is None or len(packet.data) < 40:
                 self.logger.error("Invalid packet or insufficient data for instant metrics")
                 return None
 
-            # Extract TI float values (4 bytes each)
+            # Parse each metric per original mRadian.vb ALL_RD2X case:
+            # Volt(0-3), Amp(4-7), Watt(8-11), VA(12-15), VAR(16-19),
+            # Freq(20-23), Phase(24-27), PF(28-31), AnalogSense(32-35), DeltaPhase(36-39)
             metrics = RadianInstantMetrics()
-            offset = 0
 
-            # Parse each metric (order based on original VB code)
-            metrics.volt = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
-            offset += 4
-
-            metrics.amp = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
-            offset += 4
-
-            metrics.watt = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
-            offset += 4
-
-            metrics.va = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
-            offset += 4
-
-            metrics.var = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
-            offset += 4
-
-            metrics.frequency = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
-            offset += 4
-
-            metrics.phase = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
-            offset += 4
-
-            metrics.power_factor = ti_float_to_ieee_single(packet.data[offset:offset+4]) or 0.0
+            metrics.volt         = ti_float_to_ieee_single(packet.data[0:4])   or 0.0
+            metrics.amp          = ti_float_to_ieee_single(packet.data[4:8])   or 0.0
+            metrics.watt         = ti_float_to_ieee_single(packet.data[8:12])  or 0.0
+            metrics.va           = ti_float_to_ieee_single(packet.data[12:16]) or 0.0
+            metrics.var          = ti_float_to_ieee_single(packet.data[16:20]) or 0.0
+            metrics.frequency    = ti_float_to_ieee_single(packet.data[20:24]) or 0.0
+            metrics.phase        = ti_float_to_ieee_single(packet.data[24:28]) or 0.0
+            metrics.power_factor = ti_float_to_ieee_single(packet.data[28:32]) or 0.0
+            # bytes 32-39 = AnalogSense + DeltaPhase (not stored in model)
 
             self.logger.debug(f"Parsed instant metrics: V={metrics.volt:.2f}, "
                             f"A={metrics.amp:.2f}, W={metrics.watt:.2f}")

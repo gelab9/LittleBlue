@@ -843,7 +843,7 @@ class MainWindow(QMainWindow):
         # Also fetch Radian instant metrics if connected (for DAQ log + close loop)
         if self.radian_connected:
             self.api_post("radian_instant_metrics", "/radian/command", {
-                "hexCommand": "A6040000",
+                "hexCommand": "A60D0008002400000014FFFD",
                 "timeoutMs": 2000,
             })
 
