@@ -3,6 +3,12 @@
 import sys
 from pathlib import Path
 
+# Force matplotlib to use the Qt backend before any other matplotlib import.
+# Without this, macOS activates its native backend first, then backend_qtagg
+# tries to initialize a second one — causing a segmentation fault.
+import matplotlib
+matplotlib.use("QtAgg")
+
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
 

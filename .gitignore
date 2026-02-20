@@ -13,6 +13,7 @@ obj/
 # app output/logs
 output/
 
+venv/
 .venv/
 __pycache__/
 *.pyc
