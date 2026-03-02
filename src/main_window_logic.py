@@ -1565,8 +1565,11 @@ class MainWindow(QMainWindow):
         if not self.radian_connected:
             QMessageBox.warning(self, "Not Connected", "Radian is not connected")
             return
+        # Request the full RD2X instant metrics packet (matches original implementation)
+        # This returns 10 TI floats (40 bytes) needed by the parser.
+        full_all_cmd = "A60D0008002400000014FFFD"
         self.api_post("radian_tab_instant", "/radian/command", {
-            "hexCommand": "A6040000",
+            "hexCommand": full_all_cmd,
             "timeoutMs": 2000,
         })
 
