@@ -1,7 +1,5 @@
 1. Need to fix close current loop where current will not decrease when this is selected
 
-Follow notes from bigblue.txt for more directions in finishing applications
-
 2. Implement Turn off power source when test completed button
 
 3. In gB_Data where in my lower text browser i need to be able to have the same exact data output that is displayed like in the original.
@@ -9,7 +7,7 @@ Follow notes from bigblue.txt for more directions in finishing applications
 3. Make changes to GUI so we can see all the options from dropdowns because we can
 t so far
 
-4. Implement Slot 200 and 300 (BEFORE WE DO THIS: Do I need to create this section and then would I need to create a separate main window that has the same everything as MainWindow where we do this for "state" changes of gB_ChannelData? Meaning, would I have to create a separate MainWindow with a different gB_Channel data for slot 200 or 300, or would I be able to keep my MainWindow and somehow have different group Boxes that essentially have the same content but just go from channels 201-210 and 301-310? How would we do this? DO NOT DO THIS, JUST GIVE ME THE PLAN).
+4. Implement Slot 200 and 300 (BEFORE WE DO THIS: Do I need to create this section and then would I need to create a separate main window that has the same everything as MainWindow where we do this for "state" changes of gB_ChannelData? Meaning, would I have to create a separate MainWindow with a different gB_Channel data for slot 200 or 300, or would I be able to keep my MainWindow and somehow have different group Boxes that essentially have the same content but just go from channels 201-210 and 301-310? How would we do this? DO NOT DO THIS, JUST GIVE ME THE PLAN). -- DONE
 
 4. Update GUI so it looks colorful and modern, ask claude for UI ideas.
 
@@ -17,23 +15,23 @@ t so far
 
 Temperature Rise Testing Checklist: 
 
-Ensure you can change the Baud rate and Port for each of the 3 devices. 
+Ensure you can change the Baud rate and Port for each of the 3 devices. --DONE
 
-Ensure each device successfully connects 
+Ensure each device successfully connects --DONE
 
-Ensure you can change the voltage, as well as turn the voltage off 
+Ensure you can change the voltage, as well as turn the voltage off --SEMI DONE
 
-Ensure “Turn Off Power Source When Test Is Done” works correctly 
+Ensure “Turn Off Power Source When Test Is Done” works correctly --TEST 
 
-Ensure “Close Current Loop” makes the current stabilize to desired setpoint 
+Ensure “Close Current Loop” makes the current stabilize to desired setpoint --TEST
 
-Ensure Reading Intervals amount of seconds changes with dropdown 
+Ensure Reading Intervals amount of seconds changes with dropdown --TEST
 
-Ensure RTD (4-Wire) and Thermocouple buttons correctly swap modes 
+Ensure RTD (4-Wire) and Thermocouple buttons correctly swap modes --TEST
 
-Ensure Free, # of Readings, Duration Mode works correctly 
+Ensure Free, # of Readings, Duration Mode works correctly --TEST
 
-Ensure the Instantaneous, Maximum, Minimum, Average, and Temperature Risen columns are displaying results correctly 
+Ensure the Instantaneous, Maximum, Minimum, Average, and Temperature Risen columns are displaying results correctly --TEST
 
 Ensure the Current/Volts/Frequency/Phase is displayed correctly at bottom of window 
 

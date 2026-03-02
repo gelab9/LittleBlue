@@ -108,7 +108,7 @@ class MainWindow(QMainWindow):
         # Hidden until Duration mode is selected
         self.ui.gB_Duration.setVisible(False)
 
-        # Make channel type dropdowns wide enough to read their selected text
+        # Make all dropdowns wide enough to show their full option text
         for ch_id in range(101, 111):
             combo = getattr(self.ui, f"comboBox_{ch_id}", None)
             if combo:
@@ -116,6 +116,19 @@ class MainWindow(QMainWindow):
                 combo.setSizeAdjustPolicy(
                     QComboBox.SizeAdjustPolicy.AdjustToContents
                 )
+
+        _other_combos = [
+            "cb_baudRate24970A", "cb_Port24970A", "cB_PortRadian",
+            "cB_readIntervals", "comboBox_PowerPac", "cb_SecAddress",
+            "comboBox_13",
+        ]
+        for name in _other_combos:
+            combo = getattr(self.ui, name, None)
+            if combo:
+                combo.setSizeAdjustPolicy(
+                    QComboBox.SizeAdjustPolicy.AdjustToContents
+                )
+                combo.setMinimumContentsLength(8)  # reserve space even when empty
 
         # Real model objects (replacing Null* stubs)
         self.statistics = StatisticsTracker()
@@ -129,6 +142,10 @@ class MainWindow(QMainWindow):
         self._active_channels: list[int] = []
         # Map channel_id -> table row index for fast updates
         self._channel_row_map: dict[int, int] = {}
+
+        # Slot state tracking — active slot and per-slot widget state cache
+        self._current_slot: int = 100  # 100, 200, or 300
+        self._slot_channel_states: dict[int, dict] = {100: {}, 200: {}, 300: {}}
 
         # State
         self.test_start_time: datetime | None = None
@@ -262,8 +279,8 @@ class MainWindow(QMainWindow):
         self.ui.progressBar.setRange(0, 0)
 
         # Default deadband values for closed-loop current control
-        self.ui.lineEdit_Controller.setText("5")
-        self.ui.lineEdit_Accuracy.setText("1")
+        self.ui.lineEdit_Controller.setText("10")
+        self.ui.lineEdit_Accuracy.setText(".1")
 
         self.update_timestamp()
         self.logger.info("UI defaults populated")
@@ -620,25 +637,31 @@ class MainWindow(QMainWindow):
             return list(range(101, 121))
         elif self.ui.button_slot200.isChecked():
             return list(range(201, 221))
-        else:
+        elif self.ui.button_slot300.isChecked():
             return list(range(301, 321))
 
     def _read_channel_config_from_ui(self) -> list[int]:
-        """Read enabled channels from gB_ChannelData (101-110) and update channel_configs."""
+        """Read enabled channels from gB_ChannelData and update channel_configs.
+
+        Widget names are always cB_101..cB_110, but the actual channel numbers
+        depend on the active slot (100→101-110, 200→201-210, 300→301-310).
+        """
         enabled_channels = []
+        base = self._current_slot  # 100, 200, or 300
 
-        for ch_id in range(101, 111):  # Channels 101-110
-            checkbox = getattr(self.ui, f"cB_{ch_id}", None)
+        for idx in range(10):
+            widget_ch = 101 + idx       # widget name suffix (always 101-110)
+            actual_ch = base + 1 + idx  # real channel number for this slot
+
+            checkbox = getattr(self.ui, f"cB_{widget_ch}", None)
             if checkbox and checkbox.isChecked():
-                enabled_channels.append(ch_id)
+                enabled_channels.append(actual_ch)
 
-                # Read channel type from combobox
-                combo = getattr(self.ui, f"comboBox_{ch_id}", None)
+                combo = getattr(self.ui, f"comboBox_{widget_ch}", None)
                 channel_type = combo.currentText() if combo else ""
 
-                # Read gain/offset
-                gain_edit = getattr(self.ui, f"gain_{ch_id}", None)
-                offset_edit = getattr(self.ui, f"offset_{ch_id}", None)
+                gain_edit   = getattr(self.ui, f"gain_{widget_ch}", None)
+                offset_edit = getattr(self.ui, f"offset_{widget_ch}", None)
 
                 try:
                     gain = float(gain_edit.text()) if (gain_edit and gain_edit.text()) else 1.0
@@ -650,10 +673,9 @@ class MainWindow(QMainWindow):
                 except ValueError:
                     offset = 0.0
 
-                # Update the channel config with UI values
-                cfg = self._get_channel_config(ch_id)
+                cfg = self._get_channel_config(actual_ch)
                 if cfg:
-                    cfg.channel_name = channel_type if channel_type else f"CH{ch_id}"
+                    cfg.channel_name = channel_type if channel_type else f"CH{actual_ch}"
                     cfg.gain = gain
                     cfg.offset = offset
 
@@ -951,7 +973,7 @@ class MainWindow(QMainWindow):
         self.ui.textBrowser_lowerData.clear()
         header = "Sample"
         if self.ui.cb_VoltsData.isChecked():
-            header += "\t\tVrms"
+            header += "\tVrms"        # single tab before Volts (matches original)
         if self.ui.cb_CurrentData.isChecked():
             header += "\t\tArms"
         if self.ui.cb_DataFrequency.isChecked():
@@ -966,16 +988,17 @@ class MainWindow(QMainWindow):
         metrics = self._last_radian_metrics
 
         def fmt(val):
+            """Format like original VB: zero-padded integers, fixed decimal places."""
             av = abs(val)
             if av < 10:
-                return f"{val:.5f}"
+                return f"{val:8.5f}"    # "0.00000" style
             elif av < 100:
-                return f"{val:.4f}"
-            return f"{val:.3f}"
+                return f"{val:8.4f}"    # "00.0000" style
+            return f"{val:8.3f}"        # "000.000" style
 
         row = str(self.test_controller.reading_count)
         if self.ui.cb_VoltsData.isChecked():
-            row += "\t\t" + (fmt(metrics.volt) if metrics else "--")
+            row += "\t" + (fmt(metrics.volt) if metrics else "--")    # single tab before Volts
         if self.ui.cb_CurrentData.isChecked():
             row += "\t\t" + (fmt(metrics.amp) if metrics else "--")
         if self.ui.cb_DataFrequency.isChecked():
@@ -1179,31 +1202,39 @@ class MainWindow(QMainWindow):
         accuracy_deadband = accuracy_db_pct / 100.0 * target_current
         difference = measured_current - target_current
 
+        if self.cal_inst_connected:
+            old_voltage = self.cal_inst_device.voltage_setpoint
+        elif self.pac_connected:
+            old_voltage = self.pac_power_device.voltage_setpoint
+        else:
+            return
+
+        if old_voltage <= 0:
+            return
+
+        new_voltage = None
+
         if abs(difference) < control_deadband:
+            # Within control band: fine-tune only if outside accuracy deadband
             if abs(difference) > accuracy_deadband / 1.7:
-                if self.cal_inst_connected:
-                    old_voltage = self.cal_inst_device.voltage_setpoint
-                elif self.pac_connected:
-                    old_voltage = self.pac_power_device.voltage_setpoint
-                else:
-                    return
-
-                if old_voltage <= 0:
-                    return
-
                 new_voltage = round(old_voltage * target_current / measured_current, 1)
+        elif measured_current > target_current:
+            # Outside control band and current is too high: apply proportional reduction
+            # so the loop can actively bring a high current down to target
+            new_voltage = round(old_voltage * target_current / measured_current, 1)
 
-                self.logger.info(
-                    f"Close Loop: Measured={measured_current:.3f}A, "
-                    f"Target={target_current}A, OldV={old_voltage}V, NewV={new_voltage}V"
-                )
+        if new_voltage is not None:
+            self.logger.info(
+                f"Close Loop: Measured={measured_current:.3f}A, "
+                f"Target={target_current}A, OldV={old_voltage}V, NewV={new_voltage}V"
+            )
 
-                if self.cal_inst_connected:
-                    self.cal_inst_device.voltage_setpoint = new_voltage  # update immediately so next iteration uses new value
-                    self.api_post("cal_inst_set_voltage", "/cal-inst/set-voltage", {"voltage": new_voltage})
-                elif self.pac_connected:
-                    self.pac_power_device.voltage_setpoint = new_voltage  # update immediately so next iteration uses new value
-                    self.api_post("pac_set_voltage", "/pac/set-voltage", {"voltage": new_voltage})
+            if self.cal_inst_connected:
+                self.cal_inst_device.voltage_setpoint = new_voltage  # update immediately so next iteration uses new value
+                self.api_post("cal_inst_set_voltage", "/cal-inst/set-voltage", {"voltage": new_voltage})
+            elif self.pac_connected:
+                self.pac_power_device.voltage_setpoint = new_voltage  # update immediately so next iteration uses new value
+                self.api_post("pac_set_voltage", "/pac/set-voltage", {"voltage": new_voltage})
 
     # ----------------------------------------------------------------
     # Radian tab handlers
@@ -1309,12 +1340,65 @@ class MainWindow(QMainWindow):
 
     def on_slot_changed(self):
         if self.ui.button_slot100.isChecked():
-            slot = "Slot 100"
+            new_slot = 100
         elif self.ui.button_slot200.isChecked():
-            slot = "Slot 200"
+            new_slot = 200
+        elif self.ui.button_slot300.isChecked():
+            new_slot = 300
         else:
-            slot = "Slot 300"
-        self.logger.debug(f"Slot changed to: {slot}")
+            return
+        if new_slot == self._current_slot:
+            return
+        self._save_slot_state(self._current_slot)
+        self._current_slot = new_slot
+        self._update_channel_labels(new_slot)
+        self._restore_slot_state(new_slot)
+        self.logger.debug(f"Slot changed to: Slot {new_slot}")
+
+    def _update_channel_labels(self, slot: int):
+        """Relabel gB_ChannelData checkboxes to show the correct channel numbers for slot."""
+        for idx in range(10):
+            widget_ch = 101 + idx       # widget name (always cB_101..cB_110)
+            actual_ch = slot + 1 + idx  # 101-110, 201-210, or 301-310
+            cb = getattr(self.ui, f"cB_{widget_ch}", None)
+            if cb:
+                cb.setText(str(actual_ch))
+
+    def _save_slot_state(self, slot: int):
+        """Snapshot gB_ChannelData widget values into per-slot cache."""
+        state = {}
+        for idx in range(10):
+            widget_ch = 101 + idx
+            cb        = getattr(self.ui, f"cB_{widget_ch}", None)
+            combo     = getattr(self.ui, f"comboBox_{widget_ch}", None)
+            gain_edit = getattr(self.ui, f"gain_{widget_ch}", None)
+            off_edit  = getattr(self.ui, f"offset_{widget_ch}", None)
+            state[idx] = {
+                "checked":   cb.isChecked()       if cb        else False,
+                "combo_idx": combo.currentIndex() if combo     else 0,
+                "gain":      gain_edit.text()     if gain_edit else "1.0",
+                "offset":    off_edit.text()      if off_edit  else "0.0",
+            }
+        self._slot_channel_states[slot] = state
+
+    def _restore_slot_state(self, slot: int):
+        """Restore gB_ChannelData widgets from the per-slot cache (or defaults if empty)."""
+        state = self._slot_channel_states.get(slot, {})
+        for idx in range(10):
+            widget_ch = 101 + idx
+            row       = state.get(idx, {})
+            cb        = getattr(self.ui, f"cB_{widget_ch}", None)
+            combo     = getattr(self.ui, f"comboBox_{widget_ch}", None)
+            gain_edit = getattr(self.ui, f"gain_{widget_ch}", None)
+            off_edit  = getattr(self.ui, f"offset_{widget_ch}", None)
+            if cb:
+                cb.setChecked(row.get("checked", False))
+            if combo:
+                combo.setCurrentIndex(row.get("combo_idx", 0))
+            if gain_edit:
+                gain_edit.setText(row.get("gain", "1.0"))
+            if off_edit:
+                off_edit.setText(row.get("offset", "0.0"))
 
     # ----------------------------------------------------------------
     # Radian tab
@@ -1687,7 +1771,7 @@ class MainWindow(QMainWindow):
             s.setValue("test/slot", 100)
         elif self.ui.button_slot200.isChecked():
             s.setValue("test/slot", 200)
-        else:
+        elif self.ui.button_slot300.isChecked():
             s.setValue("test/slot", 300)
 
         # Sensor type
@@ -1758,8 +1842,10 @@ class MainWindow(QMainWindow):
         slot = s.value("test/slot", 100, type=int)
         if slot == 200:
             self.ui.button_slot200.setChecked(True)
+            slot = s.value("test/slot", 200, type=int)
         elif slot == 300:
             self.ui.button_slot300.setChecked(True)
+            slot = s.value("test/slot", 300, type=int)
         else:
             self.ui.button_slot100.setChecked(True)
 
