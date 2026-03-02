@@ -419,7 +419,8 @@ class MainWindow(QMainWindow):
             # Log only — no popup — so the test can keep running uninterrupted.
             _TRANSIENT_ACTIONS = {"daq_read", "radian_instant_metrics", "daq_err",
                                   "pac_beep", "pac_init_voltage", "pac_zero_voltage",
-                                  "daq_idn", "health", "daq_status"}
+                                  "daq_idn", "health", "daq_status", "daq_abort",
+                                  "pac_poll_metrics"}
             if action not in _TRANSIENT_ACTIONS:
                 QMessageBox.critical(self, "API Error", f"{action} failed:\n{res.error}")
             return
@@ -465,6 +466,9 @@ class MainWindow(QMainWindow):
         elif action == "daq_stop":
             self.ui.textBrowser_State.setText("STOPPED")
 
+        elif action == "daq_abort":
+            self.logger.debug("DAQ ABOR sent — instrument returned to idle")
+
         elif action == "daq_query":
             self.ui.textBrowser_State.setText(data.get("response", str(data)))
 
@@ -478,9 +482,12 @@ class MainWindow(QMainWindow):
                 self.ui.textBrowser_lowerData.append(f"SYST:ERR? -> {err}")
         
         elif action == "radian_connect":
-            self.radian_connected = True
+            # Serial port opened — verify the device actually responds before
+            # marking as connected.  Do NOT set radian_connected here yet.
+            port = data.get("port", "")
             self.ui.pb_ConnectRadian.setText("Disconnect")
-            self.ui.textBrowser_State.setText(f"RADIAN CONNECTED: {data.get('port', '')}")
+            self.ui.textBrowser_State.setText(f"Radian port open ({port}) — verifying device...")
+            self.api_get("radian_identify", "/radian/identify")
 
         elif action == "radian_disconnect":
             self.radian_connected = False
@@ -489,7 +496,31 @@ class MainWindow(QMainWindow):
 
         elif action == "radian_identify":
             response = data.get("response", "")
-            self.ui.textBrowser_lowerData.append(f"Radian ID: {response}")
+            if response:
+                # Device replied — confirmed truly connected
+                self.radian_connected = True
+                short = response[:20] + ("..." if len(response) > 20 else "")
+                self.ui.textBrowser_State.setText(f"RADIAN CONNECTED — ID: {short}")
+                self.ui.textBrowser_lowerData.append(f"Radian ID: {response}")
+            else:
+                # Port opened but device never answered
+                self.radian_connected = False
+                self.ui.pb_ConnectRadian.setText("Connect")
+                self.ui.textBrowser_State.setText("Radian NOT responding — check device and cable")
+                self.ui.textBrowser_lowerData.append(
+                    "WARNING: Radian serial port opened but device did not respond."
+                )
+                QMessageBox.warning(
+                    self,
+                    "Radian Not Responding",
+                    "The serial port opened but the Radian device did not respond.\n\n"
+                    "Please check:\n"
+                    "  • Radian is powered on\n"
+                    "  • Cable is firmly connected\n"
+                    "  • Correct COM port and baud rate are selected",
+                )
+                # Clean up the open port on the backend
+                self.api_post("radian_disconnect", "/radian/disconnect", {})
 
         elif action == "radian_instant_metrics":
             hex_resp = data.get("response", "")
@@ -560,11 +591,11 @@ class MainWindow(QMainWindow):
             self.ui.pushButton.setText("Disconnect")
             self.ui.textBrowser_State.setText(f"PAC POWER CONNECTED: {data.get('port', '')}")
             self.api_get("pac_identify", "/pac/identify")
-            # Matching original: beep to confirm comms, then init voltage=0 output=OFF
+            # Matching original: beep to confirm comms then zero the voltage setpoint.
+            # Do NOT send output-off — the original leaves output state as-is on connect.
             self.api_post("pac_beep", "/pac/send", {"cmd": ":SYST:BEEP"})
             self.pac_power_device.voltage_setpoint = 0.0
             self.api_post("pac_init_voltage", "/pac/send", {"cmd": ":VOLT1 0"})
-            self.api_post("pac_output_off", "/pac/output-off", {})
 
         elif action == "pac_disconnect":
             self.pac_connected = False
@@ -604,6 +635,13 @@ class MainWindow(QMainWindow):
                 f"V={m.volt_ln[0]:.2f}V  I={m.current_rms[0]:.3f}A  "
                 f"F={m.frequency:.2f}Hz  P={m.power[0]:.2f}W  PF={m.pf[0]:.3f}"
             )
+
+        elif action == "pac_poll_metrics":
+            # Silent poll used during tests when Radian is absent — just refresh metrics
+            self.pac_power_device.update_voltage_from_api(data)
+            self.pac_power_device.update_current_from_api(data)
+            self.pac_power_device.update_frequency_from_api(data)
+            self.pac_power_device.update_power_from_api(data)
 
         elif action == "pac_tab_get_voltage":
             v1 = data.get("volt1", "?")
@@ -742,7 +780,10 @@ class MainWindow(QMainWindow):
         )
         table.item(row, self.COL_AVERAGE).setText(f"{stats.average:.2f}")
         temp_rise = self.statistics.get_temp_rise(channel_id)
-        table.item(row, self.COL_TEMP_RISE).setText(f"{temp_rise:.2f}")
+        if temp_rise is None:
+            table.item(row, self.COL_TEMP_RISE).setText("N/A")
+        else:
+            table.item(row, self.COL_TEMP_RISE).setText(f"{temp_rise:.3f}")
 
     # ----------------------------------------------------------------
     # DAQ tab handlers
@@ -812,6 +853,9 @@ class MainWindow(QMainWindow):
             )
             self.ui.progressBar.setRange(0, 0)  # back to animated idle
             self._unlock_ui_after_test()
+            # Reset DAQ to idle state (abort any ongoing scan)
+            if self.daq_connected:
+                self.daq_write("daq_abort", "ABOR")
             return
 
         # Use channel config panel if visible (after DAQ identified), else slot-based
@@ -831,6 +875,20 @@ class MainWindow(QMainWindow):
 
         # Reset statistics for new test
         self.statistics.reset()
+
+        # Detect which channel (if any) is marked as "Ambient" — used for temp rise
+        self.statistics.ambient_channel = None
+        base = self._current_slot
+        for idx in range(10):
+            widget_ch = 101 + idx
+            actual_ch = base + 1 + idx
+            if actual_ch not in channels:
+                continue
+            combo = getattr(self.ui, f"comboBox_{widget_ch}", None)
+            if combo and combo.currentText() == "Ambient":
+                self.statistics.ambient_channel = actual_ch
+                self.logger.info(f"Ambient channel set to {actual_ch}")
+                break
 
         # Setup data table
         self.setup_data_table(channels)
@@ -908,12 +966,16 @@ class MainWindow(QMainWindow):
             self.on_test_complete()
             return
         self.daq_query("daq_read", "READ?")
-        # Also fetch Radian instant metrics if connected (for DAQ log + close loop)
+        # Fetch power-meter metrics for the lower data log display
         if self.radian_connected:
+            # Radian: full metrics for close-loop control + display
             self.api_post("radian_instant_metrics", "/radian/command", {
                 "hexCommand": "A60D0008002400000014FFFD",
                 "timeoutMs": 2000,
             })
+        elif self.pac_connected:
+            # PAC fallback: silent measurement for lower browser display only
+            self.api_get("pac_poll_metrics", "/pac/measure/all")
 
     def on_test_complete(self):
         """Handle test completion (auto-stop from mode or manual)."""
@@ -931,6 +993,10 @@ class MainWindow(QMainWindow):
             self.csv_logger.close()
             self.csv_logger = None
 
+        # Reset DAQ to idle state (abort any ongoing scan)
+        if self.daq_connected:
+            self.daq_write("daq_abort", "ABOR")
+
         self.plot_widget.stop_test()
         self.ui.progressBar.setRange(0, 0)  # back to animated idle
         self.ui.pB_Start.setText("Start Reading!")
@@ -942,8 +1008,8 @@ class MainWindow(QMainWindow):
         )
         self._unlock_ui_after_test()
 
-        # Turn off power source if requested
-        if self.ui.cB_sourceOff.isChecked():
+        # Turn off power source if requested and a source is actually connected
+        if self.ui.cB_sourceOff.isChecked() and (self.cal_inst_connected or self.pac_connected):
             self.logger.info("Turning off power source after test completion")
             self.on_voltage_off()
 
@@ -1003,27 +1069,47 @@ class MainWindow(QMainWindow):
         self.ui.textBrowser_lowerData.append(f"<b>{header}</b>")
 
     def _append_data_log_row(self):
-        """Append one sample row to textBrowser_lowerData (mirrors original lbDataLog)."""
-        metrics = self._last_radian_metrics
+        """Append one sample row to textBrowser_lowerData (mirrors original lbDataLog).
 
+        Data source priority:
+          1. Radian instant metrics (when Radian is connected)
+          2. PAC Power measurements (when Radian absent but PAC is connected)
+          3. "--" placeholder (no instrument available)
+        """
         def fmt(val):
-            """Format like original VB: zero-padded integers, fixed decimal places."""
+            """Format like original VB: magnitude-based decimal places."""
             av = abs(val)
             if av < 10:
-                return f"{val:8.5f}"    # "0.00000" style
+                return f"{val:8.5f}"
             elif av < 100:
-                return f"{val:8.4f}"    # "00.0000" style
-            return f"{val:8.3f}"        # "000.000" style
+                return f"{val:8.4f}"
+            return f"{val:8.3f}"
+
+        # Resolve display values from best available source
+        radian = self._last_radian_metrics
+        if radian is not None:
+            volt_val = radian.volt
+            amp_val  = radian.amp
+            freq_val = radian.frequency
+            phase_val = radian.phase
+        elif self.pac_connected:
+            pm = self.pac_power_device.metrics
+            volt_val  = pm.volt_ln[0]       if pm.volt_ln       else None
+            amp_val   = pm.current_rms[0]   if pm.current_rms   else None
+            freq_val  = pm.frequency        if pm.frequency > 0 else None
+            phase_val = None  # PAC does not provide phase angle
+        else:
+            volt_val = amp_val = freq_val = phase_val = None
 
         row = str(self.test_controller.reading_count)
         if self.ui.cb_VoltsData.isChecked():
-            row += "\t" + (fmt(metrics.volt) if metrics else "--")    # single tab before Volts
+            row += "\t" + (fmt(volt_val) if volt_val is not None else "--")
         if self.ui.cb_CurrentData.isChecked():
-            row += "\t\t" + (fmt(metrics.amp) if metrics else "--")
+            row += "\t\t" + (fmt(amp_val) if amp_val is not None else "--")
         if self.ui.cb_DataFrequency.isChecked():
-            row += "\t\t" + (fmt(metrics.frequency) if metrics else "--")
+            row += "\t\t" + (fmt(freq_val) if freq_val is not None else "--")
         if self.ui.cb_PhaseData.isChecked():
-            row += "\t\t" + (fmt(metrics.phase) if metrics else "--")
+            row += "\t\t" + (fmt(phase_val) if phase_val is not None else "--")
         row += "\t\t" + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.ui.textBrowser_lowerData.append(row)
         sb = self.ui.textBrowser_lowerData.verticalScrollBar()
@@ -1084,9 +1170,27 @@ class MainWindow(QMainWindow):
             self._update_progress_bar()
             self._append_data_log_row()
 
-            # Log to CSV
+            # Log to CSV — use Radian if connected, otherwise PAC fallback
             if self.csv_logger:
-                self.csv_logger.append_row(timestamp_str, channel_values)
+                rad = self._last_radian_metrics
+                if rad is not None:
+                    csv_vrms = rad.volt
+                    csv_arms = rad.amp
+                    csv_hz   = rad.frequency
+                    csv_deg  = rad.phase
+                elif self.pac_connected:
+                    pm = self.pac_power_device.metrics
+                    csv_vrms = pm.volt_ln[0]      if pm.volt_ln      else None
+                    csv_arms = pm.current_rms[0]  if pm.current_rms  else None
+                    csv_hz   = pm.frequency       if pm.frequency > 0 else None
+                    csv_deg  = None
+                else:
+                    csv_vrms = csv_arms = csv_hz = csv_deg = None
+                self.csv_logger.append_row(
+                    timestamp_str, channel_values,
+                    radian_vrms=csv_vrms, radian_arms=csv_arms,
+                    radian_hz=csv_hz,    radian_deg=csv_deg,
+                )
 
             # Update channel comparisons
             self._update_comparisons(channel_values)
@@ -1234,13 +1338,15 @@ class MainWindow(QMainWindow):
         new_voltage = None
 
         if abs(difference) < control_deadband:
-            # Within control band: fine-tune only if outside accuracy deadband
+            # Within control band: fine-tune only if outside the accuracy deadband.
+            # The formula is naturally bidirectional:
+            #   measured > target  →  ratio < 1  →  voltage decreases  →  current drops
+            #   measured < target  →  ratio > 1  →  voltage increases  →  current rises
+            # Outside the control band we do NOT adjust — large corrections would cause
+            # runaway voltage swings (e.g. 200 V → 10 V in a single step). The operator
+            # must manually bring the current near the setpoint first.
             if abs(difference) > accuracy_deadband / 1.7:
                 new_voltage = round(old_voltage * target_current / measured_current, 1)
-        elif measured_current > target_current:
-            # Outside control band and current is too high: apply proportional reduction
-            # so the loop can actively bring a high current down to target
-            new_voltage = round(old_voltage * target_current / measured_current, 1)
 
         if new_voltage is not None:
             self.logger.info(

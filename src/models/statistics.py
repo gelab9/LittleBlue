@@ -47,10 +47,14 @@ class StatisticsTracker:
             self.channels[channel_id] = ChannelStats(channel_id)
         self.channels[channel_id].update(value)
 
-    def get_temp_rise(self, channel_id: int) -> float:
-        """Temperature rise = current reading - ambient channel reading."""
+    def get_temp_rise(self, channel_id: int) -> float | None:
+        """Temperature rise = current reading - ambient channel reading.
+
+        Returns None when no ambient channel is configured (caller should display 'N/A').
+        Returns 0.0 when ambient is configured but readings are not yet available.
+        """
         if self.ambient_channel is None:
-            return 0.0
+            return None
         ambient = self.channels.get(self.ambient_channel)
         ch = self.channels.get(channel_id)
         if ambient is None or ch is None:
