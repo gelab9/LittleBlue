@@ -38,6 +38,6 @@ Description automatically generated
 
 Required Tests: 
 
-Run a CL200 Sim Meter followed by a 2S-SD Meter, compare results to ensure working correctly 
+Run a CL200 Sim Meter followed by a 2S-SD Meter, compare results to ensure working correctly --TESTING
 
 Run a CL320 Sim Meter followed by a 2Se-SD Meter, compare results to ensure working correctly 

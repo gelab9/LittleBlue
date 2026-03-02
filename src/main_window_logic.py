@@ -494,6 +494,11 @@ class MainWindow(QMainWindow):
         elif action == "radian_instant_metrics":
             hex_resp = data.get("response", "")
             if hex_resp:
+                # Show raw response in lower data pane for debugging (temporary)
+                try:
+                    self.ui.textBrowser_lowerData.append(f"Radian RAW: {hex_resp}")
+                except Exception:
+                    pass
                 try:
                     raw_bytes = bytes.fromhex(hex_resp)
                     metrics = self.radian_device.parse_instant_metrics(raw_bytes)
@@ -501,8 +506,15 @@ class MainWindow(QMainWindow):
                         self._last_radian_metrics = metrics
                         self._append_daq_log_entry(metrics)
                         self._execute_close_loop()
+                    else:
+                        # Parsing returned None — log for debugging
+                        self.ui.textBrowser_lowerData.append("Radian: failed to parse instant metrics (insufficient/invalid data)")
                 except (ValueError, Exception) as e:
                     self.logger.warning(f"Failed to parse Radian metrics: {e}")
+                    try:
+                        self.ui.textBrowser_lowerData.append(f"Radian parse error: {e}")
+                    except Exception:
+                        pass
 
         # Cal Inst handlers
         elif action == "cal_inst_connect":
@@ -610,11 +622,18 @@ class MainWindow(QMainWindow):
             hex_resp = data.get("response", "")
             if hex_resp:
                 try:
+                    # Also show raw hex when manually requesting from Radian tab
+                    try:
+                        self.ui.textBrowser_lowerData.append(f"Radian RAW (tab): {hex_resp}")
+                    except Exception:
+                        pass
                     raw_bytes = bytes.fromhex(hex_resp)
                     metrics = self.radian_device.parse_instant_metrics(raw_bytes)
                     if metrics:
                         self._last_radian_metrics = metrics
                         self._display_radian_instant_metrics(metrics)
+                    else:
+                        self.ui.textBrowser_lowerData.append("Radian: failed to parse instant metrics (tab request)")
                 except (ValueError, Exception) as e:
                     self.logger.warning(f"Failed to parse Radian metrics: {e}")
 
