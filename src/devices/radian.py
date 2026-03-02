@@ -70,7 +70,9 @@ class RadianDevice(DeviceBase):
     def parse_instant_metrics(self, data: bytes) -> Optional[RadianInstantMetrics]:
         """Parse instant metrics from Radian response.
 
-        The response contains TI floating-point values for each metric.
+        The response typically contains a variable number of TI floating-point
+        values.  Older RD2X devices return 9 floats (36 bytes) while later models
+        can return 10 floats (40 bytes including analog sense / delta phase).
 
         Args:
             data: Raw response bytes from Radian
@@ -79,30 +81,35 @@ class RadianDevice(DeviceBase):
             RadianInstantMetrics object or None if parsing fails
         """
         try:
-            # Parse Radian packet structure
             packet = RadianPacket.from_bytes(data)
-            # ALL_RD2X response: 10 TI floats * 4 bytes = 40 bytes of data
-            if packet is None or len(packet.data) < 40:
+            if packet is None or len(packet.data) < 32:
+                # need at least 8 floats (32 bytes) for volts through power factor
                 self.logger.warning("Invalid packet or insufficient data for instant metrics")
                 return None
 
-            # Parse each metric per original mRadian.vb ALL_RD2X case:
-            # Volt(0-3), Amp(4-7), Watt(8-11), VA(12-15), VAR(16-19),
-            # Freq(20-23), Phase(24-27), PF(28-31), AnalogSense(32-35), DeltaPhase(36-39)
+            # unpack all available floats
+            num_floats = len(packet.data) // 4
+            vals = []
+            for i in range(num_floats):
+                start = i * 4
+                vals.append(ti_float_to_ieee_single(packet.data[start:start + 4]) or 0.0)
+
             metrics = RadianInstantMetrics()
+            # assign in defined order, defaulting to 0.0 if missing
+            metrics.volt = vals[0] if len(vals) > 0 else 0.0
+            metrics.amp = vals[1] if len(vals) > 1 else 0.0
+            metrics.watt = vals[2] if len(vals) > 2 else 0.0
+            metrics.va = vals[3] if len(vals) > 3 else 0.0
+            metrics.var = vals[4] if len(vals) > 4 else 0.0
+            metrics.frequency = vals[5] if len(vals) > 5 else 0.0
+            metrics.phase = vals[6] if len(vals) > 6 else 0.0
+            metrics.power_factor = vals[7] if len(vals) > 7 else 0.0
+            # any additional floats (analog sense, delta phase) are ignored for now
 
-            metrics.volt         = ti_float_to_ieee_single(packet.data[0:4])   or 0.0
-            metrics.amp          = ti_float_to_ieee_single(packet.data[4:8])   or 0.0
-            metrics.watt         = ti_float_to_ieee_single(packet.data[8:12])  or 0.0
-            metrics.va           = ti_float_to_ieee_single(packet.data[12:16]) or 0.0
-            metrics.var          = ti_float_to_ieee_single(packet.data[16:20]) or 0.0
-            metrics.frequency    = ti_float_to_ieee_single(packet.data[20:24]) or 0.0
-            metrics.phase        = ti_float_to_ieee_single(packet.data[24:28]) or 0.0
-            metrics.power_factor = ti_float_to_ieee_single(packet.data[28:32]) or 0.0
-            # bytes 32-39 = AnalogSense + DeltaPhase (not stored in model)
-
-            self.logger.debug(f"Parsed instant metrics: V={metrics.volt:.2f}, "
-                            f"A={metrics.amp:.2f}, W={metrics.watt:.2f}")
+            self.logger.debug(
+                f"Parsed instant metrics ({num_floats} floats): V={metrics.volt:.2f}, "
+                f"A={metrics.amp:.2f}, W={metrics.watt:.2f}, PF={metrics.power_factor:.3f}"
+            )
 
             return metrics
 
