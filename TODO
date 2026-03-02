@@ -1,45 +1,36 @@
-1. Need to fix close current loop where current will not decrease when this is selected
+1. Need to fix close current loop where current will not decrease when this is selected --NOT DONE
 
-2. Implement Turn off power source when test completed button
+2. PAC Power when connected the very first time, should stay on, not immediately go off.
 
-3. In gB_Data where in my lower text browser i need to be able to have the same exact data output that is displayed like in the original.
+3. When the test is over, the agilent immediately goes to it's original state with no open or any connection
 
-3. Make changes to GUI so we can see all the options from dropdowns because we can
-t so far
+4. Implement Turn off power source when test completed button --NOT DONE, this does not work as its supposed to. PLEASE CHECK \original
 
-4. Implement Slot 200 and 300 (BEFORE WE DO THIS: Do I need to create this section and then would I need to create a separate main window that has the same everything as MainWindow where we do this for "state" changes of gB_ChannelData? Meaning, would I have to create a separate MainWindow with a different gB_Channel data for slot 200 or 300, or would I be able to keep my MainWindow and somehow have different group Boxes that essentially have the same content but just go from channels 201-210 and 301-310? How would we do this? DO NOT DO THIS, JUST GIVE ME THE PLAN). -- DONE
+5. In gB_Data where in my lower text browser i need to be able to have the same exact data output that is displayed like in the original. --NOT DONE, I need it to have the same exact information as the data that comes in the area in the middle of the original application, called Data. It does not output the exact information and the column, temperature rise does not have anything when the test is started.
 
-4. Update GUI so it looks colorful and modern, ask claude for UI ideas.
+6. Follow checklist that Fred made below:
 
-5. Follow checklist that Fred made below:
+Temperature Rise Testing Checklist, Already Implemented, I NEED it DONE, full proof: 
 
-Temperature Rise Testing Checklist: 
+Ensure you can change the voltage, as well as turn the voltage off --NOT FULL PROOF or DONE
 
-Ensure you can change the Baud rate and Port for each of the 3 devices. --DONE
+Ensure “Turn Off Power Source When Test Is Done” works correctly --NOT DONE, NOT FULL PROOF 
 
-Ensure each device successfully connects --DONE
-
-Ensure you can change the voltage, as well as turn the voltage off --SEMI DONE
-
-Ensure “Turn Off Power Source When Test Is Done” works correctly --TEST 
-
-Ensure “Close Current Loop” makes the current stabilize to desired setpoint --TEST
-
-Ensure Reading Intervals amount of seconds changes with dropdown --TEST
+Ensure “Close Current Loop” makes the current stabilize to desired setpoint --NOT DONE, NOT FULL PROOF
 
 Ensure RTD (4-Wire) and Thermocouple buttons correctly swap modes --TEST
 
 Ensure Free, # of Readings, Duration Mode works correctly --TEST
 
-Ensure the Instantaneous, Maximum, Minimum, Average, and Temperature Risen columns are displaying results correctly --TEST
+Ensure the Instantaneous, Maximum, Minimum, Average, and Temperature Risen columns are displaying results correctly --NOT DONE, NOT FULL PROOF
 
-Ensure the Current/Volts/Frequency/Phase is displayed correctly at bottom of window 
+Ensure the Current/Volts/Frequency/Phase is displayed correctly at bottom of window --NOT DONE, NOT IMPLEMTED, NOT FULL PROOF
 
-Ensure the DAQ Plot is correctly graphing the data, and that the DAQ Log displays relevant information correctly 
+Ensure data is being correctly saved to a spreadsheet during the test --IMPLEMENTED, NOT DONE, NOT FULL PROOF
 
-Ensure data is being correctly saved to a spreadsheet during the test 
+Ensure Slot 100, 200, and 300 of the DAQ are working correctly -DAQ NOT DONE, NOT FULL PROOF
 
-Ensure Slot 100, 200, and 300 of the DAQ are working correctly 
+--FOR LATER AFTER ALL WORK ABOVE IS FULLY COMPLETED AND DONE
 
 Graphical user interface, text, application
 
