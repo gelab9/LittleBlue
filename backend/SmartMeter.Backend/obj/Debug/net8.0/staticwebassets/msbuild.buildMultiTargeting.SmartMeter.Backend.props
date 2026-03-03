@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="..\build\SmartMeter.Backend.props" />
+  <Import Project="../build/SmartMeter.Backend.props" />
 </Project>

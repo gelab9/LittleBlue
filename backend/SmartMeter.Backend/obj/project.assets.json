@@ -4567,19 +4567,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gelab\\.nuget\\packages\\": {}
+    "/home/gelab/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
+      "projectUniqueName": "/home/gelab/smart_meter_gui_migration/backend/SmartMeter.Backend/SmartMeter.Backend.vbproj",
       "projectName": "SmartMeter.Backend",
-      "projectPath": "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\SmartMeter.Backend.vbproj",
-      "packagesPath": "C:\\Users\\gelab\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gelab\\Downloads\\LittleBlue-develop\\backend\\SmartMeter.Backend\\obj\\",
+      "projectPath": "/home/gelab/smart_meter_gui_migration/backend/SmartMeter.Backend/SmartMeter.Backend.vbproj",
+      "packagesPath": "/home/gelab/.nuget/packages/",
+      "outputPath": "/home/gelab/smart_meter_gui_migration/backend/SmartMeter.Backend/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\gelab\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/gelab/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -4636,7 +4636,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.418/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/home/gelab/.dotnet/sdk/8.0.418/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

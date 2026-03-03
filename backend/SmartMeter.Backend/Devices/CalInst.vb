@@ -4,11 +4,12 @@
 ''' Uses NationalInstruments.NI4882 for GPIB bus communication.
 ''' </summary>
 
-Imports NationalInstruments.NI4882
+' NationalInstruments.NI4882 namespace is now defined locally in Ni4882Wrapper.vb
+' Imports NationalInstruments.NI4882
 
 Namespace Devices
     Public Class CalInst
-        Private _device As Device
+        Private _device As NationalInstruments.NI4882.Device
         Private _isConnected As Boolean = False
 
         Public Property VoltageASetPoint As String = "0.0"
@@ -30,7 +31,7 @@ Namespace Devices
             Try
                 Disconnect()
 
-                _device = New Device(boardId, CByte(primaryAddress), CByte(secondaryAddress))
+                _device = New NationalInstruments.NI4882.Device(boardId, CByte(primaryAddress), CByte(secondaryAddress))
                 _isConnected = True
 
                 ' Turn voltage off on connect (safety)

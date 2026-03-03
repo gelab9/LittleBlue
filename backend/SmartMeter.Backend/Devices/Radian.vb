@@ -96,6 +96,9 @@ Namespace Devices
                 _port.DiscardInBuffer()
                 _port.DiscardOutBuffer()
                 _port.Write(bytes, 0, bytes.Length)
+                
+                ' Debug: log sent command
+                Console.WriteLine($"[Radian] Sent {bytes.Length} bytes: {BitConverter.ToString(bytes).Replace("-", "")}")
 
             Catch ex As Exception
                 Throw New Exception($"Failed to send Radian command: {ex.Message}")
@@ -125,12 +128,16 @@ Namespace Devices
                         Dim buffer(bytesToRead - 1) As Byte
                         Dim bytesRead = _port.Read(buffer, 0, bytesToRead)
                         receivedData.AddRange(buffer.Take(bytesRead))
+                        
+                        ' Debug: log received data
+                        Console.WriteLine($"[Radian] Received {bytesRead} bytes: {BitConverter.ToString(buffer, 0, bytesRead).Replace("-", "")}")
 
                         ' Check if we have enough data to determine packet length
                         If receivedData.Count >= 4 AndAlso expectedLength = 0 Then
                             ' Length is at bytes 2-3 (big-endian)
                             expectedLength = (CInt(receivedData(2)) << 8) Or receivedData(3)
                             expectedLength += 6  ' Add header (4 bytes) + checksum (2 bytes)
+                            Console.WriteLine($"[Radian] Detected packet length: {expectedLength}, current buffer: {receivedData.Count}")
                         End If
 
                         ' Check if we received complete packet
@@ -142,6 +149,9 @@ Namespace Devices
                     End If
                 End While
 
+                ' Timeout - log what we got
+                Console.WriteLine($"[Radian] Timeout after {timeoutMs}ms. Received {receivedData.Count} bytes.")
+                
                 ' Timeout - return what we have
                 If receivedData.Count > 0 Then
                     Return receivedData.ToArray()
