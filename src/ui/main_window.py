@@ -18,8 +18,8 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setMinimumSize(QtCore.QSize(0, 0))
-        MainWindow.setMaximumSize(QtCore.QSize(1466, 800))
+        MainWindow.setMinimumSize(QtCore.QSize(1024, 700))
+        MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_15 = QtWidgets.QGridLayout(self.centralwidget)
@@ -28,10 +28,11 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 1399, 703))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 1609, 898))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
+        self.gridLayout = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_2)
+        self.gridLayout.setObjectName("gridLayout")
         self.tabWidget = QtWidgets.QTabWidget(parent=self.scrollAreaWidgetContents_2)
-        self.tabWidget.setGeometry(QtCore.QRect(0, -3, 1401, 631))
         self.tabWidget.setObjectName("tabWidget")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
@@ -446,7 +447,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.gb_Data.sizePolicy().hasHeightForWidth())
         self.gb_Data.setSizePolicy(sizePolicy)
-        self.gb_Data.setMaximumSize(QtCore.QSize(790, 430))
+        self.gb_Data.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.gb_Data.setObjectName("gb_Data")
         self.gridLayout_23 = QtWidgets.QGridLayout(self.gb_Data)
         self.gridLayout_23.setObjectName("gridLayout_23")
@@ -459,7 +460,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName("scrollArea_3")
         self.scrollAreaWidgetContents_3 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 768, 327))
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 890, 544))
         self.scrollAreaWidgetContents_3.setObjectName("scrollAreaWidgetContents_3")
         self.gridLayout_24 = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_3)
         self.gridLayout_24.setObjectName("gridLayout_24")
@@ -794,6 +795,7 @@ class Ui_MainWindow(object):
         self.tab_7 = QtWidgets.QWidget()
         self.tab_7.setObjectName("tab_7")
         self.tabWidget.addTab(self.tab_7, "")
+        self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
         self.gridLayout_15.addWidget(self.scrollArea_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -1016,8 +1018,8 @@ class Ui_MainWindow(object):
         self.textBrowser_State.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9.75pt;\">INITIAL</span></p></body></html>"))
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:9.75pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">INITIAL</p></body></html>"))
         self.gB_Duration.setTitle(_translate("MainWindow", "Duration"))
         self.label_Hours_2.setText(_translate("MainWindow", "Hours"))
         self.label_Minutes_2.setText(_translate("MainWindow", "Minutes"))
@@ -1037,3 +1039,13 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_6), _translate("MainWindow", "PAC Power"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_7), _translate("MainWindow", "Error Log"))
         self.menuTemperature_Rise.setTitle(_translate("MainWindow", "Temperature Rise"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec())

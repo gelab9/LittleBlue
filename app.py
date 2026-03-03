@@ -19,7 +19,12 @@ from src.main_window_logic import MainWindow
 def main():
     """Launch the application."""
     app = QApplication(sys.argv)
+    qss_path = Path(__file__).parent / "style.qss"
+    with open(qss_path, "r") as f:
+        app.setStyleSheet(f.read())
+    
     window = MainWindow()
+    window.setWindowTitle("Temperature Rise")
     window.show()
     sys.exit(app.exec())
 
