@@ -9,48 +9,49 @@
   "pons_status_per_source": {
     "Va": {
       "status": "failed",
-      "timestamp": "2026-01-13T14:56:50.912885",
+      "timestamp": "2026-03-03T12:48:57.562427",
       "error": "Serial port not open"
     },
     "Vb": {
       "status": "failed",
-      "timestamp": "2026-01-13T14:56:50.912905",
+      "timestamp": "2026-03-03T12:48:57.562442",
       "error": "Serial port not open"
     },
     "Vc": {
       "status": "failed",
-      "timestamp": "2026-01-13T14:56:50.912915",
+      "timestamp": "2026-03-03T12:48:57.562448",
       "error": "Serial port not open"
     },
     "Ia": {
       "status": "failed",
-      "timestamp": "2026-01-13T14:56:50.912924",
+      "timestamp": "2026-03-03T12:48:57.562453",
       "error": "Serial port not open"
     },
     "Ib": {
       "status": "failed",
-      "timestamp": "2026-01-13T14:56:50.912932",
+      "timestamp": "2026-03-03T12:48:57.562458",
       "error": "Serial port not open"
     },
     "Ic": {
       "status": "failed",
-      "timestamp": "2026-01-13T14:56:50.912939",
+      "timestamp": "2026-03-03T12:48:57.562463",
       "error": "Serial port not open"
     }
   },
   "source_reset_state": {
     "status": "failed",
-    "timestamp": "2026-01-13T14:56:50.913497",
+    "timestamp": "2026-03-03T12:48:57.563615",
     "error": "Source reset failed for: Va: Serial port not open, Vb: Serial port not open, Vc: Serial port not open, Ia: Serial port not open, Ib: Serial port not open, Ic: Serial port not open"
   },
   "routing_state": {
-    "status": "open",
-    "timestamp": "2026-01-13T14:56:53.071434"
+    "status": "failed",
+    "timestamp": "2026-03-03T12:49:02.468111",
+    "error": "No module named 'gpiozero'"
   },
   "ranging_state": {
     "status": "failed",
-    "timestamp": "2026-01-13T14:56:53.073218",
-    "error": "[Errno 2] No such file or directory"
+    "timestamp": "2026-03-03T12:49:05.646060",
+    "error": "No module named 'smbus'"
   },
   "ct_config": {
     "routing_i2c_addr": 60,
@@ -67,6 +68,6 @@
     "last_routing_command": 255
   },
   "app_paths": {
-    "temperature_rise": "Z:\\uslafvs001038\\Software\\TempRise Fixture\\Current_Temperature\\Current_Temperature\\bin\\Debug\\Current_Temperature.exe"
+    "temperature_rise": "C:\\dev\\TempRise\\app.py"
   }
 }

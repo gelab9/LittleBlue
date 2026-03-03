@@ -27,6 +27,8 @@ from datetime import datetime
 
 # ========== Environment Fixes ==========
 def fix_runtime_permissions():
+    if sys.platform == "win32":
+        return
     runtime_dir = f"/run/user/{os.getuid()}"
     try:
         if os.path.exists(runtime_dir):
@@ -39,12 +41,14 @@ def fix_runtime_permissions():
 
 fix_runtime_permissions()
 
-# Set once, only if not already provided by the environment
-os.environ.setdefault("QT_QPA_PLATFORM", "xcb")
+# Set once, only if not already provided by the environment (Linux/xcb only)
+if sys.platform != "win32":
+    os.environ.setdefault("QT_QPA_PLATFORM", "xcb")
 
 # ========== External Libraries ==========
 import serial
-import smbus  # or smbus2 if that's what the rest of your code uses
+if sys.platform != "win32":
+    import smbus  # Linux I2C library, not available on Windows
 
 # ========== PyQt6 ==========
 from PyQt6.QtCore import QThread, QTimer, Qt, pyqtSignal, QThreadPool
@@ -3770,7 +3774,7 @@ class MainWindow(QMainWindow, QThread):
                 return
             
             # Launch the application in a separate process
-            self.temperature_rise_process = subprocess.Popen(app_path)
+            self.temperature_rise_process = subprocess.Popen([sys.executable, app_path])
             self.temperature_rise_active = True
             self.append_log("Temperature Rise application launched.", "positive")
             

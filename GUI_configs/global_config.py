@@ -30,7 +30,7 @@ class GlobalConfig:
 
         # External application paths (machine-specific)
         self.app_paths = {
-            "temperature_rise": r"Z:\Software\TempRise Fixture\Current_Temperature\Current_Temperature\bin\Debug\Current_Temperature.exe"
+            "temperature_rise": r"C:\dev\TempRise\app.py"
         }
 
     def to_dict(self):
