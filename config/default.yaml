@@ -10,3 +10,13 @@ logging:
 app:
   mock_mode: false
   poll_interval_ms: 500
+
+email:
+  smtp_server: ""                # internal SMTP relay address
+  smtp_port: 25
+  smtp_use_tls: false
+  from_address: "temperature.rise@landisgyr.com"
+  domain: "@landisgyr.com"
+  ldap_server: "uslafvs001034.am.bm.net"
+  ldap_base_dn: "DC=am,DC=bm,DC=net"
+  ldap_port: 389

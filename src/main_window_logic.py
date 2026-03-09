@@ -6,13 +6,16 @@ from datetime import datetime
 from PyQt6.QtWidgets import (
     QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout,
     QTextBrowser, QHBoxLayout, QPushButton, QComboBox, QLabel, QSpinBox,
-    QLineEdit,
+    QLineEdit, QSizePolicy, QGroupBox, QRadioButton, QCheckBox, QTextEdit,
+    QGridLayout,
 )
 from PyQt6.QtCore import QTimer, QThread, pyqtSignal, QSettings, QObject, QTime
-from PyQt6.QtGui import QColor, QTextCharFormat, QFont
+from PyQt6.QtGui import QColor, QTextCharFormat, QFont, QAction
 from PyQt6 import QtCore
 
 from src.ui.main_window import Ui_MainWindow
+from src.ui.email_dialog import EmailDialog
+from src.util.email_service import LdapLookup, EmailService
 from src.util.config_loader import ConfigLoader
 from src.util.logging_setup import LoggingSetup
 from src.util.csv_logger import CsvLogger
@@ -130,6 +133,9 @@ class MainWindow(QMainWindow):
                 )
                 combo.setMinimumContentsLength(8)  # reserve space even when empty
 
+        # Tighten up the DAQ tab layout
+        self._tighten_layout()
+
         # Real model objects (replacing Null* stubs)
         self.statistics = StatisticsTracker()
         self.test_controller = TestController()
@@ -190,6 +196,9 @@ class MainWindow(QMainWindow):
         # PAC Power tab (tab_6)
         self._setup_pac_power_tab()
 
+        # Current Controller tab (tab_4)
+        self._setup_current_controller_tab()
+
         # Mode input widgets (Duration HH:MM:SS, Readings count)
         self._setup_mode_inputs()
 
@@ -211,12 +220,135 @@ class MainWindow(QMainWindow):
         self.poll_timer.timeout.connect(self.on_poll)
         self.poll_interval_ms = self.config.get_poll_interval_ms()
 
+        # Current Controller data logger state
+        self._cc_logging_active = False
+        self._cc_sample_count = 0
+        self._cc_logged_data: list[str] = []
+        self._cc_logger_timer = QTimer()
+        self._cc_logger_timer.timeout.connect(self._cc_on_logger_tick)
+
+        # Email notification state
+        self._email_recipients_to: list[str] = []
+        self._email_recipients_cc: list[str] = []
+        self._email_notify_test_done = True
+        self._email_notify_threshold = False
+        self._email_operator = ""
+        self._email_serial = ""
+        self._email_simulated = False
+        self._email_project = ""
+        self._email_notes = ""
+        self._last_warning_time = 0.0
+
+        # LDAP lookup service
+        ldap_server = self.config.get("email.ldap_server", "")
+        ldap_base_dn = self.config.get("email.ldap_base_dn", "")
+        ldap_port = self.config.get("email.ldap_port", 389)
+        self._ldap_lookup: LdapLookup | None = None
+        if ldap_server:
+            self._ldap_lookup = LdapLookup(ldap_server, ldap_base_dn, ldap_port)
+
+        # Email sending service
+        smtp_server = self.config.get("email.smtp_server", "")
+        smtp_port = self.config.get("email.smtp_port", 25)
+        smtp_tls = self.config.get("email.smtp_use_tls", False)
+        from_addr = self.config.get("email.from_address", "")
+        self._email_service = EmailService(smtp_server, smtp_port, smtp_tls, from_addr)
+        self._email_domain = self.config.get("email.domain", "@landisgyr.com")
+
+        # Email menu action
+        email_action = QAction("Email", self)
+        email_action.triggered.connect(self._open_email_dialog)
+        self.ui.menubar.addAction(email_action)
+
         self.setWindowTitle("Smart Meter GUI - Test & Development")
         self.logger.info("Application initialized successfully")
 
     # ----------------------------------------------------------------
     # Setup
     # ----------------------------------------------------------------
+
+    def _tighten_layout(self):
+        """Remove extra spacing and fix alignment on the DAQ tab grid."""
+        grid = self.ui.gridLayout_17
+
+        # --- Reduce overall grid spacing and margins ---
+        grid.setContentsMargins(4, 4, 4, 4)
+        grid.setHorizontalSpacing(4)
+        grid.setVerticalSpacing(4)
+
+        # --- Remove the two spacer items that create dead gaps ---
+        # Walk the grid backwards so removing items doesn't shift indices
+        for i in reversed(range(grid.count())):
+            item = grid.itemAt(i)
+            if item and item.spacerItem():
+                grid.removeItem(item)
+
+        # --- Column stretch: give the data area (cols 3-7) most of the room ---
+        # Left panel cols (connection + channels)
+        grid.setColumnStretch(0, 1)
+        grid.setColumnStretch(1, 1)
+        grid.setColumnStretch(2, 0)   # was spacer column, collapse it
+        # Middle panel cols (voltage, controls, start, state, parameters)
+        grid.setColumnStretch(3, 2)
+        grid.setColumnStretch(4, 2)
+        grid.setColumnStretch(5, 1)
+        grid.setColumnStretch(6, 1)
+        grid.setColumnStretch(7, 0)   # was spacer column, collapse it
+        # Right panel col (timestamp, mode, duration, info, radian, compare)
+        grid.setColumnStretch(8, 3)
+
+        # --- Row stretch: let the data/channel rows expand, keep header rows compact ---
+        # Top rows (connection boxes, controls, voltage, slot radios)
+        for r in range(5):
+            grid.setRowStretch(r, 0)
+        # Progress bar row
+        grid.setRowStretch(5, 0)
+        # Data table + channel area rows — these should absorb vertical space
+        for r in range(6, 12):
+            grid.setRowStretch(r, 1)
+
+        # --- Constrain small group boxes so they don't balloon vertically ---
+        preferred_v = QSizePolicy.Policy.Preferred
+        compact_boxes = [
+            self.ui.gb_connectionOne,
+            self.ui.gB_Voltage,
+            self.ui.gB_controlSettings,
+            self.ui.gB_Parameters,
+            self.ui.gB_Mode,
+            self.ui.gB_Duration,
+            self.ui.gB_PACPower,
+            self.ui.gB_Radian,
+            self.ui.gB_Informtation,
+        ]
+        for box in compact_boxes:
+            sp = box.sizePolicy()
+            sp.setVerticalPolicy(preferred_v)
+            box.setSizePolicy(sp)
+
+        # State browser doesn't need to be tall
+        self.ui.textBrowser_State.setMaximumHeight(80)
+
+        # Tighten sub-layouts inside group boxes
+        for layout_name in [
+            "gridLayout_18", "gridLayout_19", "gridLayout_20",
+            "gridLayout_21", "gridLayout_25", "gridLayout_26",
+            "gridLayout_27", "gridLayout_22", "gridLayout_28",
+            "gridLayout_29", "gridLayout_30", "gridLayout_31",
+        ]:
+            sub = getattr(self.ui, layout_name, None)
+            if sub:
+                sub.setContentsMargins(4, 2, 4, 2)
+                sub.setHorizontalSpacing(4)
+                sub.setVerticalSpacing(2)
+
+        # Also tighten the scroll-area inner layout for the Data group
+        self.ui.gridLayout_24.setContentsMargins(2, 2, 2, 2)
+        self.ui.gridLayout_24.setHorizontalSpacing(4)
+        self.ui.gridLayout_24.setVerticalSpacing(2)
+
+        # Outer layouts
+        self.ui.gridLayout_15.setContentsMargins(2, 2, 2, 2)
+        self.ui.gridLayout.setContentsMargins(2, 2, 2, 2)
 
     def setup_connections(self):
         """Connect UI signals to slots."""
@@ -337,6 +469,8 @@ class MainWindow(QMainWindow):
         self.ui.cb_SecAddress.setEnabled(False)
         self.ui.pb_OpenCalInstConx.setEnabled(False)
         self.ui.pb_CloseCalInstConx.setEnabled(False)
+        # Current Controller — disable logger start during DAQ test
+        self._cc_toggle_logger_btn.setEnabled(False)
 
     def _unlock_ui_after_test(self):
         """Re-enable controls after a test stops."""
@@ -358,6 +492,9 @@ class MainWindow(QMainWindow):
             self.ui.cb_SecAddress.setEnabled(True)
             self.ui.pb_OpenCalInstConx.setEnabled(True)
         self.ui.pb_CloseCalInstConx.setEnabled(self.cal_inst_connected)
+        # Current Controller — re-enable logger start (only if not actively logging)
+        if not self._cc_logging_active:
+            self._cc_toggle_logger_btn.setEnabled(True)
 
     # ----------------------------------------------------------------
     # SCPI helpers
@@ -420,7 +557,7 @@ class MainWindow(QMainWindow):
             _TRANSIENT_ACTIONS = {"daq_read", "radian_instant_metrics", "daq_err",
                                   "pac_beep", "pac_init_voltage", "pac_zero_voltage",
                                   "daq_idn", "health", "daq_status", "daq_abort",
-                                  "pac_poll_metrics"}
+                                  "pac_poll_metrics", "cc_instant_metrics"}
             if action not in _TRANSIENT_ACTIONS:
                 QMessageBox.critical(self, "API Error", f"{action} failed:\n{res.error}")
             return
@@ -674,6 +811,42 @@ class MainWindow(QMainWindow):
                         self.ui.textBrowser_lowerData.append("Radian: failed to parse instant metrics (tab request)")
                 except (ValueError, Exception) as e:
                     self.logger.warning(f"Failed to parse Radian metrics: {e}")
+
+        # Current Controller tab handlers
+        elif action == "cc_instant_metrics":
+            hex_resp = data.get("response", "")
+            if hex_resp:
+                try:
+                    raw_bytes = bytes.fromhex(hex_resp)
+                    metrics = self.radian_device.parse_instant_metrics(raw_bytes)
+                    if metrics:
+                        line = self._cc_format_metrics_line(metrics)
+                        self._cc_logged_data.append(line)
+                        self._cc_data_log_browser.append(line)
+                        self._cc_append_gpib_log(f"Sample {self._cc_sample_count}: OK")
+                    else:
+                        self._cc_append_gpib_log("Failed to parse metrics (insufficient data)")
+                except (ValueError, Exception) as e:
+                    self.logger.warning(f"CC logger parse error: {e}")
+                    self._cc_append_gpib_log(f"Parse error: {e}")
+
+        elif action == "cc_tab_instant":
+            hex_resp = data.get("response", "")
+            if hex_resp:
+                try:
+                    raw_bytes = bytes.fromhex(hex_resp)
+                    metrics = self.radian_device.parse_instant_metrics(raw_bytes)
+                    if metrics:
+                        self._cc_append_gpib_log(
+                            f"V={metrics.volt:.3f}V  I={metrics.amp:.3f}A  "
+                            f"W={metrics.watt:.2f}W  F={metrics.frequency:.2f}Hz  "
+                            f"Phase={metrics.phase:.2f}deg  PF={metrics.power_factor:.3f}"
+                        )
+                    else:
+                        self._cc_append_gpib_log("Failed to parse instant metrics")
+                except (ValueError, Exception) as e:
+                    self.logger.warning(f"CC manual metrics parse error: {e}")
+                    self._cc_append_gpib_log(f"Parse error: {e}")
 
         # NOTE: Do NOT auto-query SYST:ERR? after daq_read — the READ?
         # response for many channels takes time to transmit and a follow-up
@@ -989,7 +1162,11 @@ class MainWindow(QMainWindow):
             f"Readings: {self.test_controller.reading_count}"
         )
 
+        # Capture log path before closing the logger
+        completed_log_path = ""
         if self.csv_logger:
+            if self.csv_logger.filepath:
+                completed_log_path = str(self.csv_logger.filepath)
             self.csv_logger.close()
             self.csv_logger = None
 
@@ -1012,6 +1189,9 @@ class MainWindow(QMainWindow):
         if self.ui.cB_sourceOff.isChecked() and (self.cal_inst_connected or self.pac_connected):
             self.logger.info("Turning off power source after test completion")
             self.on_voltage_off()
+
+        # Send test-complete email notification
+        self._send_test_complete_email(log_path=completed_log_path)
 
         QMessageBox.information(
             self,
@@ -1266,15 +1446,25 @@ class MainWindow(QMainWindow):
             else:
                 diff_edit.setStyleSheet("")
 
-        # Log threshold warnings
+        # Log threshold warnings and send email
         if exceeded:
+            warning_lines = []
             for idx in exceeded:
                 pair = self.comparison.pairs[idx]
-                self.ui.textBrowser_lowerData.append(
+                msg = (
                     f"WARNING: Threshold exceeded on pair {idx + 1}: "
                     f"CH{pair.channel_a} vs CH{pair.channel_b}, "
                     f"diff={pair.difference:.3f}\u00b0C >= {pair.threshold}\u00b0C"
                 )
+                self.ui.textBrowser_lowerData.append(msg)
+                warning_lines.append(
+                    f"CH{pair.channel_a}: {pair.value_a:.3f}\u00b0C\n"
+                    f"CH{pair.channel_b}: {pair.value_b:.3f}\u00b0C\n"
+                    f"Temperature Difference: {pair.difference:.3f}\u00b0C\n"
+                    f"Threshold: {pair.threshold}\u00b0C"
+                )
+            if warning_lines:
+                self._send_threshold_warning_email("\n\n".join(warning_lines))
 
     # ----------------------------------------------------------------
     # Close current loop (proportional voltage control)
@@ -1524,6 +1714,294 @@ class MainWindow(QMainWindow):
                 gain_edit.setText(row.get("gain", "1.0"))
             if off_edit:
                 off_edit.setText(row.get("offset", "0.0"))
+
+    # ----------------------------------------------------------------
+    # Current Controller tab
+    # ----------------------------------------------------------------
+
+    def _setup_current_controller_tab(self):
+        """Build Current Controller tab (tab_4) with data logger, save data,
+        metrics, and GPIB log sections."""
+        layout = QVBoxLayout(self.ui.tab_4)
+        layout.setContentsMargins(4, 4, 4, 4)
+
+        # --- Top row: Data Logger | Save Data | Metrics ---
+        top_row = QHBoxLayout()
+
+        # A. Data Logger group box
+        gb_data_logger = QGroupBox("Data Logger")
+        dl_layout = QVBoxLayout(gb_data_logger)
+        self._cc_toggle_logger_btn = QPushButton("Start Logger")
+        self._cc_toggle_logger_btn.setMinimumHeight(38)
+        self._cc_toggle_logger_btn.clicked.connect(self._cc_on_toggle_logger)
+        dl_layout.addWidget(self._cc_toggle_logger_btn)
+        interval_row = QHBoxLayout()
+        interval_row.addWidget(QLabel("Sample Interval"))
+        self._cc_interval_edit = QLineEdit("5")
+        self._cc_interval_edit.setMaximumWidth(55)
+        interval_row.addWidget(self._cc_interval_edit)
+        interval_row.addWidget(QLabel("Seconds"))
+        interval_row.addStretch()
+        dl_layout.addLayout(interval_row)
+        gb_data_logger.setMaximumWidth(200)
+        top_row.addWidget(gb_data_logger)
+
+        # B. Save Data group box
+        gb_save_data = QGroupBox("Save Data")
+        sd_layout = QVBoxLayout(gb_save_data)
+        self._cc_save_results_btn = QPushButton("Save Results")
+        self._cc_save_results_btn.setMinimumHeight(38)
+        self._cc_save_results_btn.clicked.connect(self._cc_on_save_results)
+        sd_layout.addWidget(self._cc_save_results_btn)
+        # Delimiter selection
+        delim_row = QHBoxLayout()
+        delim_row.addWidget(QLabel("Delimiter:"))
+        self._cc_rb_comma = QRadioButton("Comma")
+        self._cc_rb_comma.setChecked(True)
+        self._cc_rb_tab = QRadioButton("Tab")
+        self._cc_rb_space = QRadioButton("Space")
+        self._cc_rb_semicolon = QRadioButton("Semi-Colon")
+        delim_row.addWidget(self._cc_rb_tab)
+        delim_row.addWidget(self._cc_rb_comma)
+        delim_row.addWidget(self._cc_rb_space)
+        delim_row.addWidget(self._cc_rb_semicolon)
+        sd_layout.addLayout(delim_row)
+        # Overwrite checkbox
+        self._cc_overwrite_chk = QCheckBox("Over Write File")
+        sd_layout.addWidget(self._cc_overwrite_chk)
+        # File header notes
+        sd_layout.addWidget(QLabel("File Header Notes:"))
+        self._cc_notes_edit = QTextEdit()
+        self._cc_notes_edit.setMaximumHeight(55)
+        self._cc_notes_edit.setPlaceholderText("Enter notes for the file header...")
+        sd_layout.addWidget(self._cc_notes_edit)
+        top_row.addWidget(gb_save_data)
+
+        # C. Metrics group box
+        gb_metrics = QGroupBox("Metrics")
+        met_layout = QVBoxLayout(gb_metrics)
+        self._cc_metric_combo = QComboBox()
+        self._cc_metric_combo.addItems([
+            "All Instant Metrics", "Volts", "Amps", "Watts", "VA",
+            "Frequency", "Phase", "VAR", "Power Factor",
+        ])
+        met_layout.addWidget(self._cc_metric_combo)
+        self._cc_get_metrics_btn = QPushButton("Update\nInstant\nMetrics")
+        self._cc_get_metrics_btn.setMinimumHeight(48)
+        self._cc_get_metrics_btn.clicked.connect(self._cc_on_get_metrics)
+        met_layout.addWidget(self._cc_get_metrics_btn)
+        met_layout.addStretch()
+        gb_metrics.setMaximumWidth(200)
+        top_row.addWidget(gb_metrics)
+
+        # D. GPIB Log section
+        gpib_group = QGroupBox("GPIB Log")
+        gpib_layout = QVBoxLayout(gpib_group)
+        gpib_controls = QHBoxLayout()
+        self._cc_verbose_chk = QCheckBox("Verbose")
+        self._cc_verbose_chk.setChecked(True)
+        self._cc_save_gpib_log_btn = QPushButton("Save Log")
+        self._cc_save_gpib_log_btn.clicked.connect(self._cc_on_save_gpib_log)
+        self._cc_clear_gpib_log_btn = QPushButton("Clear Log")
+        self._cc_clear_gpib_log_btn.clicked.connect(
+            lambda: self._cc_gpib_log_browser.clear())
+        gpib_controls.addWidget(self._cc_verbose_chk)
+        gpib_controls.addStretch()
+        gpib_controls.addWidget(self._cc_save_gpib_log_btn)
+        gpib_controls.addWidget(self._cc_clear_gpib_log_btn)
+        gpib_layout.addLayout(gpib_controls)
+        self._cc_gpib_log_browser = QTextBrowser()
+        self._cc_gpib_log_browser.setFont(QFont("Consolas", 9))
+        gpib_layout.addWidget(self._cc_gpib_log_browser)
+        top_row.addWidget(gpib_group)
+
+        layout.addLayout(top_row)
+
+        # E. Data Log display (bottom)
+        layout.addWidget(QLabel("Data Log:"))
+        self._cc_data_log_browser = QTextBrowser()
+        self._cc_data_log_browser.setFont(QFont("Consolas", 9))
+        layout.addWidget(self._cc_data_log_browser)
+
+    # -- Current Controller handlers --
+
+    def _cc_on_toggle_logger(self):
+        """Start or stop the Current Controller data logger."""
+        if self._cc_logging_active:
+            # Stop logging
+            self._cc_logger_timer.stop()
+            self._cc_logging_active = False
+            self._cc_toggle_logger_btn.setText("Start Logger")
+            self._cc_interval_edit.setEnabled(True)
+            self._cc_metric_combo.setEnabled(True)
+            self.logger.info(
+                f"Current Controller logger stopped after {self._cc_sample_count} samples"
+            )
+            self._cc_append_gpib_log("Logger stopped")
+            return
+
+        # Validate Radian connection
+        if not self.radian_connected:
+            QMessageBox.warning(
+                self, "Not Connected",
+                "Radian is not connected. Connect the Radian before starting the logger."
+            )
+            return
+
+        # Validate interval
+        try:
+            interval = float(self._cc_interval_edit.text().strip())
+            if interval < 0.5:
+                raise ValueError("Interval must be >= 0.5")
+        except ValueError:
+            QMessageBox.warning(
+                self, "Invalid Interval",
+                "Please enter a numeric sample interval >= 0.5 seconds."
+            )
+            return
+
+        # Start logging
+        self._cc_sample_count = 0
+        self._cc_logged_data.clear()
+        self._cc_data_log_browser.clear()
+
+        # Build header
+        header_parts = ["Sample#"]
+        selected = self._cc_metric_combo.currentText()
+        if selected == "All Instant Metrics":
+            header_parts.extend(["Volts", "Amps", "Watts", "VA", "VAR",
+                                 "Frequency", "Phase", "PF"])
+        else:
+            header_parts.append(selected)
+        header_parts.append("Timestamp")
+        self._cc_data_log_browser.append("\t".join(header_parts))
+
+        self._cc_logging_active = True
+        self._cc_toggle_logger_btn.setText("Stop Logger")
+        self._cc_interval_edit.setEnabled(False)
+        self._cc_metric_combo.setEnabled(False)
+        self._cc_logger_timer.start(int(interval * 1000))
+        self._cc_append_gpib_log(
+            f"Logger started — interval {interval}s, metric: {selected}"
+        )
+        self.logger.info(f"Current Controller logger started: interval={interval}s")
+
+    def _cc_on_logger_tick(self):
+        """Timer tick: request Radian instant metrics for the data logger."""
+        full_all_cmd = "A60D0008002400000014FFFD"
+        self.api_post("cc_instant_metrics", "/radian/command", {
+            "hexCommand": full_all_cmd,
+            "timeoutMs": 2000,
+        })
+
+    def _cc_on_get_metrics(self):
+        """Manual button: request instant metrics from Radian for Current Controller tab."""
+        if not self.radian_connected:
+            QMessageBox.warning(self, "Not Connected", "Radian is not connected")
+            return
+        full_all_cmd = "A60D0008002400000014FFFD"
+        self.api_post("cc_tab_instant", "/radian/command", {
+            "hexCommand": full_all_cmd,
+            "timeoutMs": 2000,
+        })
+
+    def _cc_format_metrics_line(self, metrics) -> str:
+        """Format a metrics object into a tab-separated data line."""
+        self._cc_sample_count += 1
+        parts = [str(self._cc_sample_count)]
+        selected = self._cc_metric_combo.currentText()
+
+        def fmt(val):
+            av = abs(val)
+            if av < 10:
+                return f"{val:.5f}"
+            elif av < 100:
+                return f"{val:.4f}"
+            return f"{val:.3f}"
+
+        if selected == "All Instant Metrics" or selected == "Volts":
+            parts.append(fmt(metrics.volt))
+        if selected == "All Instant Metrics" or selected == "Amps":
+            parts.append(fmt(metrics.amp))
+        if selected == "All Instant Metrics" or selected == "Watts":
+            parts.append(fmt(metrics.watt))
+        if selected == "All Instant Metrics" or selected == "VA":
+            parts.append(fmt(metrics.va))
+        if selected == "All Instant Metrics" or selected == "VAR":
+            parts.append(fmt(metrics.var))
+        if selected == "All Instant Metrics" or selected == "Frequency":
+            parts.append(fmt(metrics.frequency))
+        if selected == "All Instant Metrics" or selected == "Phase":
+            parts.append(fmt(metrics.phase))
+        if selected == "All Instant Metrics" or selected == "Power Factor":
+            parts.append(fmt(metrics.power_factor))
+
+        parts.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return "\t".join(parts)
+
+    def _cc_on_save_results(self):
+        """Save logged data to CSV with selected delimiter."""
+        if not self._cc_logged_data:
+            QMessageBox.information(self, "No Data", "No data has been logged yet.")
+            return
+
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Save Logger Data",
+            str(self.data_dir / "radian_log.csv"),
+            "CSV Files (*.csv);;All Files (*)",
+        )
+        if not path:
+            return
+
+        # Determine delimiter
+        if self._cc_rb_semicolon.isChecked():
+            delim = ";"
+        elif self._cc_rb_tab.isChecked():
+            delim = "\t"
+        elif self._cc_rb_space.isChecked():
+            delim = " "
+        else:
+            delim = ","
+
+        now = datetime.now()
+        notes = self._cc_notes_edit.toPlainText().strip()
+
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(f"Radian Logger System Log File\n")
+            f.write(f"Date:,{now.strftime('%Y-%m-%d')}\n")
+            f.write(f"Time:,{now.strftime('%H:%M:%S')}\n")
+            if notes:
+                f.write(f"Notes:,{notes}\n")
+            f.write("\n")
+            for line in self._cc_logged_data:
+                # Data is stored tab-separated; replace tabs with chosen delimiter
+                f.write(line.replace("\t", delim) + "\n")
+
+        self.logger.info(f"Current Controller data saved to {path}")
+        self._cc_append_gpib_log(f"Data saved to {path}")
+
+    def _cc_on_save_gpib_log(self):
+        """Save GPIB log contents to a text file."""
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Save GPIB Log",
+            str(self.data_dir / "gpib_log.txt"),
+            "Text Files (*.txt);;All Files (*)",
+        )
+        if not path:
+            return
+        now = datetime.now()
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("California Instruments GPIB System Log File\n")
+            f.write(f"Date: {now.strftime('%Y-%m-%d')}\n")
+            f.write(f"Time: {now.strftime('%H:%M:%S')}\n\n")
+            f.write(self._cc_gpib_log_browser.toPlainText())
+        self.logger.info(f"GPIB log saved to {path}")
+
+    def _cc_append_gpib_log(self, message: str):
+        """Append a message to the Current Controller GPIB log browser."""
+        if self._cc_verbose_chk.isChecked():
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            self._cc_gpib_log_browser.append(f"[{timestamp}] {message}")
 
     # ----------------------------------------------------------------
     # Radian tab
@@ -1832,10 +2310,115 @@ class MainWindow(QMainWindow):
             self.logger.info(f"Error log exported to {path}")
 
     # ----------------------------------------------------------------
+    # Email notifications
+    # ----------------------------------------------------------------
+
+    def _open_email_dialog(self):
+        """Open the email notification settings dialog."""
+        dlg = EmailDialog(self._ldap_lookup, self._email_domain, parent=self)
+        dlg.load_state(
+            to=self._email_recipients_to,
+            cc=self._email_recipients_cc,
+            notify_done=self._email_notify_test_done,
+            notify_thresh=self._email_notify_threshold,
+            operator=self._email_operator,
+            serial=self._email_serial,
+            simulated=self._email_simulated,
+            project=self._email_project,
+            notes=self._email_notes,
+        )
+        if dlg.exec() == EmailDialog.DialogCode.Accepted:
+            self._email_recipients_to = dlg.recipients_to
+            self._email_recipients_cc = dlg.recipients_cc
+            self._email_notify_test_done = dlg.notify_test_done
+            self._email_notify_threshold = dlg.notify_threshold
+            self._email_operator = dlg.operator
+            self._email_serial = dlg.serial_number
+            self._email_simulated = dlg.simulated_meter
+            self._email_project = dlg.project_number
+            self._email_notes = dlg.notes
+            self.logger.info(
+                f"Email settings updated: to={self._email_recipients_to}, "
+                f"cc={self._email_recipients_cc}"
+            )
+
+    def _get_current_metrics_dict(self) -> dict:
+        """Get latest Radian metrics as a dict for email body."""
+        m = self._last_radian_metrics
+        if m:
+            return {
+                "volt": f"{m.volt:.3f}",
+                "amp": f"{m.amp:.3f}",
+                "frequency": f"{m.frequency:.2f}",
+                "phase": f"{m.phase:.2f}",
+            }
+        return {"volt": "N/A", "amp": "N/A", "frequency": "N/A", "phase": "N/A"}
+
+    def _send_test_complete_email(self, log_path: str = ""):
+        """Send test-complete email if configured."""
+        if not self._email_recipients_to:
+            return
+        if not self._email_notify_test_done:
+            return
+
+        start = self.test_start_time.strftime("%Y-%m-%d %H:%M:%S") if self.test_start_time else "N/A"
+        end = self.test_end_time.strftime("%Y-%m-%d %H:%M:%S") if self.test_end_time else "N/A"
+
+        # Send in background thread to avoid blocking UI
+        import threading
+        threading.Thread(
+            target=self._email_service.send_test_complete,
+            args=(
+                self._email_recipients_to, self._email_recipients_cc,
+                self._email_operator, self._email_serial,
+                self._email_project, self._email_notes,
+                self._get_current_metrics_dict(),
+                log_path, start, end,
+            ),
+            daemon=True,
+        ).start()
+        self.logger.info("Test-complete email queued for sending")
+
+    def _send_threshold_warning_email(self, warning_body: str):
+        """Send threshold warning email if configured and cooldown elapsed."""
+        if not self._email_recipients_to:
+            return
+        if not self._email_notify_threshold:
+            return
+
+        import time
+        now = time.time()
+        if now - self._last_warning_time < 600:  # 10-minute cooldown
+            return
+        self._last_warning_time = now
+
+        import threading
+        threading.Thread(
+            target=self._email_service.send_threshold_warning,
+            args=(
+                self._email_recipients_to, self._email_recipients_cc,
+                self._email_operator, self._email_serial,
+                self._email_project, warning_body,
+                self._get_current_metrics_dict(),
+            ),
+            daemon=True,
+        ).start()
+        self.logger.info("Threshold warning email queued for sending")
+
+    # ----------------------------------------------------------------
     # Window close
     # ----------------------------------------------------------------
 
     def closeEvent(self, event):
+        # Stop CC logger if running
+        if self._cc_logging_active:
+            self._cc_logger_timer.stop()
+            self._cc_logging_active = False
+
+        # Close LDAP connection
+        if self._ldap_lookup:
+            self._ldap_lookup.close()
+
         if self.test_controller.is_running:
             reply = QMessageBox.question(
                 self,
@@ -1923,6 +2506,29 @@ class MainWindow(QMainWindow):
         s.setValue("test/duration_seconds", self.ui.lineEdit_Seconds.text())
         s.setValue("test/target_readings", self._readings_spinbox.value())
 
+        # Current Controller
+        s.setValue("cc/interval", self._cc_interval_edit.text())
+        s.setValue("cc/verbose", self._cc_verbose_chk.isChecked())
+        if self._cc_rb_tab.isChecked():
+            s.setValue("cc/delimiter", "tab")
+        elif self._cc_rb_space.isChecked():
+            s.setValue("cc/delimiter", "space")
+        elif self._cc_rb_semicolon.isChecked():
+            s.setValue("cc/delimiter", "semicolon")
+        else:
+            s.setValue("cc/delimiter", "comma")
+
+        # Email notifications
+        s.setValue("email/recipients_to", self._email_recipients_to)
+        s.setValue("email/recipients_cc", self._email_recipients_cc)
+        s.setValue("email/notify_test_done", self._email_notify_test_done)
+        s.setValue("email/notify_threshold", self._email_notify_threshold)
+        s.setValue("email/operator", self._email_operator)
+        s.setValue("email/serial", self._email_serial)
+        s.setValue("email/simulated", self._email_simulated)
+        s.setValue("email/project", self._email_project)
+        s.setValue("email/notes", self._email_notes)
+
         self.logger.info("Settings saved")
 
     def _restore_settings(self):
@@ -2003,6 +2609,34 @@ class MainWindow(QMainWindow):
         self.ui.lineEdit_Seconds.setText(str(s.value("test/duration_seconds", "0")))
         target_readings = s.value("test/target_readings", 100, type=int)
         self._readings_spinbox.setValue(target_readings)
+
+        # Current Controller
+        cc_interval = s.value("cc/interval", "5")
+        if cc_interval:
+            self._cc_interval_edit.setText(str(cc_interval))
+        self._cc_verbose_chk.setChecked(s.value("cc/verbose", True, type=bool))
+        cc_delim = s.value("cc/delimiter", "comma")
+        if cc_delim == "tab":
+            self._cc_rb_tab.setChecked(True)
+        elif cc_delim == "space":
+            self._cc_rb_space.setChecked(True)
+        elif cc_delim == "semicolon":
+            self._cc_rb_semicolon.setChecked(True)
+        else:
+            self._cc_rb_comma.setChecked(True)
+
+        # Email notifications
+        to_list = s.value("email/recipients_to", [])
+        self._email_recipients_to = to_list if isinstance(to_list, list) else []
+        cc_list = s.value("email/recipients_cc", [])
+        self._email_recipients_cc = cc_list if isinstance(cc_list, list) else []
+        self._email_notify_test_done = s.value("email/notify_test_done", True, type=bool)
+        self._email_notify_threshold = s.value("email/notify_threshold", False, type=bool)
+        self._email_operator = str(s.value("email/operator", ""))
+        self._email_serial = str(s.value("email/serial", ""))
+        self._email_simulated = s.value("email/simulated", False, type=bool)
+        self._email_project = str(s.value("email/project", ""))
+        self._email_notes = str(s.value("email/notes", ""))
 
         self.logger.info("Settings restored")
 
